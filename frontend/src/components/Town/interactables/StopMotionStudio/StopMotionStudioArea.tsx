@@ -28,7 +28,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
   return (
     <Container>
-      <Button colorScheme='blue'>Button </Button>
+      <Button colorScheme='blue'>Button</Button>
     </Container>
   );
 }
