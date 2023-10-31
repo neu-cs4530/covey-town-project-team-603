@@ -15,8 +15,7 @@ import { useInteractable, useInteractableAreaController } from '../../../../clas
 import useTownController from '../../../../hooks/useTownController';
 import { GameResult, GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
 import GameAreaInteractable from '../GameArea';
-import TicTacToeLeaderboard from '../Leaderboard';
-import TicTacToeArea from '../TicTacToe/TicTacToeArea';
+import StopMotionArea from '../StopMotionArea';
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
@@ -40,30 +39,30 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
  *
  */
 export default function StopMotionStudioAreaWrapper(): JSX.Element {
-  const gameArea = useInteractable<GameAreaInteractable>('StopMotionStudioArea');
+  const stopMotionArea = useInteractable<StopMotionArea>('stopMotionArea');
   const townController = useTownController();
 
   const closeModal = useCallback(() => {
-    if (gameArea) {
-      townController.interactEnd(gameArea);
-      const controller = townController.getGameAreaController(gameArea);
+    if (stopMotionArea) {
+      townController.interactEnd(stopMotionArea);
+      const controller = townController.getGameAreaController(StopMotionArea);
       controller.leaveGame();
     }
-  }, [townController, gameArea]);
+  }, [townController, stopMotionArea]);
 
-  return <Button colorScheme='blue'>BUTTTTTTTTONNNNNN</Button>;
+  //   return <Button colorScheme='blue'>BUTTTTTTTTONNNNNN</Button>;
 
-  //   if (gameArea && gameArea.getData('type') === 'StopMotionStudio') {
-  //     return (
-  //       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
-  //         <ModalOverlay />
-  //         <ModalContent>
-  //           <ModalHeader>{gameArea.name}</ModalHeader>
-  //           <ModalCloseButton />
-  //           <StopMotionStudioArea interactableID={gameArea.name}></StopMotionStudioArea>
-  //         </ModalContent>
-  //       </Modal>
-  //     );
-  //   }
-  //   return <></>;
+  if (stopMotionArea) {
+    return (
+      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{stopMotionArea.name}</ModalHeader>
+          <ModalCloseButton />
+          <StopMotionStudioArea interactableID={stopMotionArea.name}></StopMotionStudioArea>
+        </ModalContent>
+      </Modal>
+    );
+  }
+  return <></>;
 }

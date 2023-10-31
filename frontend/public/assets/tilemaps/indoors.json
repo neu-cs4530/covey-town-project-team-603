@@ -557,7 +557,7 @@
                  "visible":true,
                  "width":135.170262542241,
                  "x":2941.25292435664,
-                 "y":738.416428385755
+                 "y":739.416428385755
                 }, 
                 {
                  "height":83.8442547785938,
@@ -609,6 +609,23 @@
                  "width":1.33529176124966,
                  "x":3296.83535852584,
                  "y":1068.23340899987
+                }, 
+                {
+                 "height":83.8443,
+                 "id":53,
+                 "name":"Stop Motion",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"TicTacToe"
+                        }],
+                 "rotation":0,
+                 "type":"StopMotionArea",
+                 "visible":true,
+                 "width":131.271,
+                 "x":3107.3645,
+                 "y":768.07785
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -617,10 +634,10 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":52,
+ "nextobjectid":54,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.8.4",
  "tileheight":32,
  "tilesets":[
         {
@@ -33853,6 +33870,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":"1.10",
+ "version":"1.8",
  "width":120
 }

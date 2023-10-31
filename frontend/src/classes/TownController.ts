@@ -648,6 +648,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     }
   }
 
+  public getStopMotionAreaController<>(): {};
+
   /**
    * Retrives the game area controller corresponding to a game area by ID, or
    * throws an error if the game area controller does not exist
