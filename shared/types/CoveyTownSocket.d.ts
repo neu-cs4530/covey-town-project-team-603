@@ -174,8 +174,8 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<StopMotionGameMove> | LeaveGameCommand;
-export interface ViewingAreaUpdateCommand  {
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<MoveType> | LeaveGameCommand;
+export interface ViewingAreaUpdateCommand  { // changed GameMoveCommand<StopMotionGameMove> to GameMoveCommand<MoveType>
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
 }
@@ -225,7 +225,7 @@ export interface ClientToServerEvents {
   interactableCommand: (command: InteractableCommand & InteractableCommandBase) => void;
 }
 
-export interface StopMotionGameState {
+export interface StopMotionGameState extends GameState { // added gamestate extension
     // Who is working the animation software?
     // The software is not co-op, so there is a unique animator.
     // That would require us to resolve race conditions etc.
