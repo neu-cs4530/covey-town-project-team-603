@@ -1,12 +1,12 @@
 import Game from './Game';
-import { GameMove, StopMotionGameState, StopMotionMove, TicTacToeGameState, TicTacToeMove } from '../../types/CoveyTownSocket';
+import { GameMove, StopMotionGameMove, StopMotionGameState, TicTacToeGameState, TicTacToeMove } from '../../types/CoveyTownSocket';
 import Player from '../../lib/Player';
-import InvalidParametersError, { GAME_FULL_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, { GAME_FULL_MESSAGE, MOVE_NOT_YOUR_TURN_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
 
 /**
  * A StopMotionGame is a Game that implements stop motion animation software.
  */
-export default class StopMotionGame extends Game<StopMotionGameState, StopMotionMove> {
+export default class StopMotionGame extends Game<StopMotionGameState, StopMotionGameMove> {
     public constructor() {
         // On init, the animation is empty.
         super({
@@ -16,9 +16,19 @@ export default class StopMotionGame extends Game<StopMotionGameState, StopMotion
         });
     }
 
-
-    public applyMove() {
-
+    public applyMove(move: GameMove<StopMotionGameMove>) {
+        if (move.playerID !== this.state.animator) {
+            throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
+        } else {
+            if (move.move.frame_index >= 0 && move.move.frame_index < this.state.animation.frames.length) {
+                this.state.animation.frames[move.move.frame_index] = move.move.frame_update;
+            } else {
+                // TODO: The question becomes, how to add a new frame.
+                // We could try to encode that in the frame_index as a sentinel value, or we could
+                // use an enumerate.
+                // Meaningful data would mean enumeration probably.
+            }
+        }
     }
 
     /**

@@ -77,7 +77,7 @@ export interface FigureElement {
  * It would be complex to have the backend parse the actual raw clicks given to the frontend.
  * As such, a StopMotionMove consists of an update to the animation state.
  */
-export interface StopMotionMove {
+export interface StopMotionGameMove {
   // What frame was updated?
   frame_index: int
 
