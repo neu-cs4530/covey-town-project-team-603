@@ -25,6 +25,9 @@ export default class StopMotionGameArea extends GameArea<StopMotionGame> {
   }
 
   private _stateUpdated(updatedState: GameInstance<StopMotionGameState>) {
+    // TODO: I don't think we care. Maybe we want to use history to store the finished animations of all users?
+    // Up for the future. Commented out for now.
+    /*
     if (updatedState.state.status === 'OVER') {
       // If we haven't yet recorded the outcome, do so now.
       const gameID = this._game?.id;
@@ -43,6 +46,7 @@ export default class StopMotionGameArea extends GameArea<StopMotionGame> {
         }
       }
     }
+    */
     this._emitAreaChanged();
   }
 
