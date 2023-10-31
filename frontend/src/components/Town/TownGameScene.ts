@@ -21,6 +21,8 @@ function interactableTypeForObjectType(type: string): any {
     return ViewingArea;
   } else if (type === 'GameArea') {
     return GameArea;
+  } else if (type === 'StopMotionStudioArea') {
+    return GameArea;
   } else {
     throw new Error(`Unknown object type: ${type}`);
   }
