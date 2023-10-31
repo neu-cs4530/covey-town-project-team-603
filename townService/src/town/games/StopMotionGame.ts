@@ -12,7 +12,8 @@ export default class StopMotionGame extends Game<StopMotionGameState, StopMotion
         super({
             animator: undefined,
             animation: {frames: []},
-            spectators: []
+            spectators: [],
+            status: "WAITING_TO_START"
         });
     }
 
