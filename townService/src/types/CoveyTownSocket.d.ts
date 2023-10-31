@@ -20,7 +20,10 @@ export interface StopMotionGameState {
     // Who is working the animation software?
     // The software is not co-op, so there is a unique animator.
     // That would require us to resolve race conditions etc.
-    animator: PlayerID;
+    animator?: PlayerID;
+
+    // The animation currently loaded, worked on by the animator.
+    animation: Animation;
 
     // Who is viewing the created animations?
     // Multiple readers of data does not produce a race condition, so 
