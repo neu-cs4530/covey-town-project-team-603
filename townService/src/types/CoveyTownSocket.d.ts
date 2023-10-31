@@ -73,15 +73,26 @@ export interface FigureElement {
     children: FigureElement[]
 }
 
+export type StopMotionGameMoveType = 'UPDATE_FRAME' | 'CREATE_FRAME' | 'DELETE_FRAME'
+
 /**
  * It would be complex to have the backend parse the actual raw clicks given to the frontend.
  * As such, a StopMotionMove consists of an update to the animation state.
  */
 export interface StopMotionGameMove {
-  // What frame was updated?
+
+  type: StopMotionGameMoveType
+
+  // If the type is UPDATE_FRAME: Which frame was updated?
+  // If the type is CREATE_FRAME: Insert the new frame at what index?
+  // If the type is DELETE_FRAME: Which frame should be deleted?
   frame_index: int
 
   // We do not use a delta-based encoding yet, since that's more complex.
   // Just send over the whole new frame to apply.
-  frame_update: Frame
+
+  // If the type is UPDATE_FRAME: What updated frame to apply?
+  // If the type is CREATE_FRAME: THe new frame to insert.
+  // If the type is DELETE_FRAME: undefined.
+  frame_update?: Frame
 }

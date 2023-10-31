@@ -20,13 +20,33 @@ export default class StopMotionGame extends Game<StopMotionGameState, StopMotion
         if (move.playerID !== this.state.animator) {
             throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
         } else {
-            if (move.move.frame_index >= 0 && move.move.frame_index < this.state.animation.frames.length) {
-                this.state.animation.frames[move.move.frame_index] = move.move.frame_update;
-            } else {
-                // TODO: The question becomes, how to add a new frame.
-                // We could try to encode that in the frame_index as a sentinel value, or we could
-                // use an enumerate.
-                // Meaningful data would mean enumeration probably.
+
+            if (move.move.type === "UPDATE_FRAME")  {
+                if (move.move.frame_update === undefined) {
+                    throw new InvalidParametersError("foobar");
+                }
+                if (move.move.frame_index >= 0 && move.move.frame_index < this.state.animation.frames.length) {
+                    this.state.animation.frames[move.move.frame_index] = move.move.frame_update;
+                } else {
+                    throw new InvalidParametersError("");
+                }
+            } else if (move.move.type === "CREATE_FRAME") {
+                if (move.move.frame_update === undefined) {
+                    throw new InvalidParametersError("foobar");
+                }
+                if (move.move.frame_index >= 0 && move.move.frame_index <= this.state.animation.frames.length) {
+                    this.state.animation.frames = [
+                        ...this.state.animation.frames.slice(0, move.move.frame_index),
+                        move.move.frame_update,
+                        ...this.state.animation.frames.slice(move.move.frame_index)
+                    ]
+                } else {
+                    throw new InvalidParametersError("");
+                }
+            } else if (move.move.type === "DELETE_FRAME") {
+                // We just do this straight-up, since the frontend should have
+                // the responsibility of confirming the deletion.
+                this.state.animation.frames.splice(move.move.frame_index, 1);
             }
         }
     }
