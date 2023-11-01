@@ -50,7 +50,7 @@ export default function TownMap(): JSX.Element {
   return (
     <div id='app-container'>
       <NewConversationModal />
-      {/* <TicTacToeAreaWrapper /> */}
+      <TicTacToeAreaWrapper />
       <StopMotionStudioAreaWrapper />
       <div id='map-container' />
       <div id='social-container'>
