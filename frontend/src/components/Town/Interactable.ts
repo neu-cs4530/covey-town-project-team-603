@@ -107,5 +107,7 @@ export default abstract class Interactable extends Phaser.GameObjects.Sprite {
    * Invoked when the player is overlapping with this interactable and first
    * presses the spacebar
    */
-  interact(): void {}
+  interact(): void {
+    console.log('made it here');
+  }
 }

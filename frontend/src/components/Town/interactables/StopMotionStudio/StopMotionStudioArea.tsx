@@ -9,17 +9,17 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
-import PlayerController from '../../../../classes/PlayerController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
-import { GameResult, GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
-import GameAreaInteractable from '../GameArea';
-import StopMotionArea from '../StopMotionArea';
+import { InteractableID } from '../../../../types/CoveyTownSocket';
+// import StopMotionArea from '../StopMotionArea';
+import StopMotionAreaInteractable from '../StopMotionArea';
+import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
-  const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
-  const townController = useTownController();
+  //   const stopMotionAreaController =
+  //     useInteractableAreaController<StopMotionAreaController>(interactableID);
+  //   const townController = useTownController();
 
   useEffect(() => {
     console.log('exists');
@@ -39,18 +39,18 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
  *
  */
 export default function StopMotionStudioAreaWrapper(): JSX.Element {
-  const stopMotionArea = useInteractable<StopMotionArea>('stopMotionArea');
+  const stopMotionArea = useInteractable<StopMotionAreaInteractable>('stopMotionArea');
   const townController = useTownController();
+
+  console.log(stopMotionArea);
 
   const closeModal = useCallback(() => {
     if (stopMotionArea) {
       townController.interactEnd(stopMotionArea);
-      const controller = townController.getGameAreaController(StopMotionArea);
+      const controller = townController.getStopMotionAreaController(stopMotionArea);
       controller.leaveGame();
     }
   }, [townController, stopMotionArea]);
-
-  //   return <Button colorScheme='blue'>BUTTTTTTTTONNNNNN</Button>;
 
   if (stopMotionArea) {
     return (

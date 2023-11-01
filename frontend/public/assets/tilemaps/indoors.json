@@ -618,7 +618,7 @@
                         {
                          "name":"type",
                          "type":"string",
-                         "value":"TicTacToe"
+                         "value":"StopMotionArea"
                         }],
                  "rotation":0,
                  "type":"StopMotionArea",

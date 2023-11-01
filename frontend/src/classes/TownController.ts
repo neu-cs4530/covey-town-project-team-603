@@ -35,6 +35,8 @@ import InteractableAreaController, {
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
+import StopMotionAreaController from './interactable/StopMotionAreaController';
+import StopMotionArea from '../components/Town/interactables/StopMotionArea';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -648,7 +650,18 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     }
   }
 
-  public getStopMotionAreaController<>(): {};
+  public getStopMotionAreaController<StopMotionGameState, StopMotionStudioEventTypes>(
+    stopMotionArea: StopMotionArea,
+  ): StopMotionAreaController {
+    const existingController = this._interactableControllers.find(
+      eachExistingArea => eachExistingArea.id === stopMotionArea.name,
+    );
+    if (existingController instanceof StopMotionAreaController) {
+      return existingController as StopMotionAreaController;
+    } else {
+      throw new Error('Game area controller not created');
+    }
+  }
 
   /**
    * Retrives the game area controller corresponding to a game area by ID, or

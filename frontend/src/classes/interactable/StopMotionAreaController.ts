@@ -1,15 +1,8 @@
 import _ from 'lodash';
-import {
-  GameArea,
-  GameInstanceID,
-  GameResult,
-  GameState,
-  InteractableID,
-} from '../../types/CoveyTownSocket';
+import { GameInstanceID, InteractableID, StopMotionArea } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import InteractableAreaController, { BaseInteractableEventMap } from './InteractableAreaController';
-import StopMotionArea from '../../components/Town/interactables/StopMotionArea';
 
 export type StopMotionStudioEventTypes = BaseInteractableEventMap & {
   // add more here
@@ -48,5 +41,13 @@ export default abstract class StopMotionAreaController extends InteractableAreaC
 
   toInteractableAreaModel(): StopMotionArea {
     return this._model;
+  }
+
+  /**
+   * Sends a request to the server to leave the current game in the game area.
+   */
+  public async leaveGame() {
+    const instanceID = this._instanceID;
+    // finish this
   }
 }

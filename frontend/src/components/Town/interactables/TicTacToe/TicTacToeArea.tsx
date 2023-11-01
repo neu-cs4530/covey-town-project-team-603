@@ -209,6 +209,9 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
 export default function TicTacToeAreaWrapper(): JSX.Element {
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
   const townController = useTownController();
+
+  console.log(gameArea);
+
   const closeModal = useCallback(() => {
     if (gameArea) {
       townController.interactEnd(gameArea);

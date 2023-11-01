@@ -24,6 +24,7 @@ export interface Interactable {
   occupants: PlayerID[];
 }
 
+
 export type TownSettingsUpdate = {
   friendlyName?: string;
   isPubliclyListed?: boolean;
@@ -152,6 +153,17 @@ export interface GameArea<T extends GameState> extends Interactable {
   history: GameResult[];
 }
 
+/**
+ * Base type for an area that can host a game
+ * @see GameInstance
+ */
+export interface StopMotionArea extends Interactable {
+  game: GameInstance<T> | undefined;
+  player: PlayerID;
+  // history: GameResult[];
+  // update this
+}
+
 export type CommandID = string;
 
 /**
@@ -225,8 +237,10 @@ export interface ClientToServerEvents {
   interactableCommand: (command: InteractableCommand & InteractableCommandBase) => void;
 }
 
-export interface StopMotionGameState extends GameState { // added gamestate extension
-    // Who is working the animation software?
+export type StopMotionStudioStatus = 'UPDATE_FRAME' | 'CREATE_FRAME' | 'DELETE_FRAME';
+
+export interface StopMotionGameState {
+  // Who is working the animation software?
     // The software is not co-op, so there is a unique animator.
     // That would require us to resolve race conditions etc.
     animator?: PlayerID;
@@ -240,8 +254,26 @@ export interface StopMotionGameState extends GameState { // added gamestate exte
     spectators: PlayerID[],
 
     // Satisfy interface
-    status: GameStatus
+    status: StopMotionStudioStatus
 }
+
+// export interface StopMotionGameState extends GameState { // added gamestate extension
+//     // Who is working the animation software?
+//     // The software is not co-op, so there is a unique animator.
+//     // That would require us to resolve race conditions etc.
+//     animator?: PlayerID;
+
+//     // The animation currently loaded, worked on by the animator.
+//     animation: Animation;
+
+//     // Who is viewing the created animations?
+//     // Multiple readers of data does not produce a race condition, so 
+//     // there can be many spectators.
+//     spectators: PlayerID[],
+
+//     // Satisfy interface
+//     status: GameStatus
+// }
 
 export interface Animation {
 
@@ -283,28 +315,4 @@ export interface FigureElement {
     // The rotation of the figure element in degrees.
     rotation_degrees: number
     children: FigureElement[]
-}
-
-export type StopMotionGameMoveType = 'UPDATE_FRAME' | 'CREATE_FRAME' | 'DELETE_FRAME'
-
-/**
- * It would be complex to have the backend parse the actual raw clicks given to the frontend.
- * As such, a StopMotionMove consists of an update to the animation state.
- */
-export interface StopMotionGameMove {
-
-  type: StopMotionGameMoveType
-
-  // If the type is UPDATE_FRAME: Which frame was updated?
-  // If the type is CREATE_FRAME: Insert the new frame at what index?
-  // If the type is DELETE_FRAME: Which frame should be deleted?
-  frame_index: int
-
-  // We do not use a delta-based encoding yet, since that's more complex.
-  // Just send over the whole new frame to apply.
-
-  // If the type is UPDATE_FRAME: What updated frame to apply?
-  // If the type is CREATE_FRAME: THe new frame to insert.
-  // If the type is DELETE_FRAME: undefined.
-  frame_update?: Frame
 }
