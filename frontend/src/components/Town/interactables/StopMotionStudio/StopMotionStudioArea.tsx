@@ -33,6 +33,8 @@ import { Stage, Layer, Star } from 'react-konva';
 // };
 
 function generateShapes() {
+  // ensure that the shapes are auto generated within the bounds of the canvas
+
   return [...Array(10)].map((_, i) => ({
     id: i.toString(),
     x: Math.random() * (window.innerWidth - 100),
@@ -40,6 +42,14 @@ function generateShapes() {
     rotation: Math.random() * 180,
     isDragging: false,
   }));
+
+  // return [...Array(10)].map((_, i) => ({
+  //   id: i.toString(),
+  //   x: Math.random() * (window.innerWidth - 100),
+  //   y: Math.random() * (window.innerHeight - 100),
+  //   rotation: Math.random() * 180,
+  //   isDragging: false,
+  // }));
 }
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
@@ -138,14 +148,44 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
   // Bottom controll panel for progressing through and viewing animation
   const ControlPanel = () => {
     return (
-      <Box width={'100%'} backgroundColor={'green'} padding={10}>
-        <Text>Controll Panel</Text>
+      <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
+        <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
+          <Box>
+            <Button size='md' height='48px' marginRight='5px'>
+              Play
+            </Button>
+            <Button size='md' height='48px'>
+              Pause
+            </Button>
+          </Box>
+
+          <Box>
+            <Button size='md' height='48px' marginRight='5px'>
+              {'<--'}
+            </Button>
+            <Button size='md' height='48px'>
+              {'-->'}
+            </Button>
+          </Box>
+
+          <Button size='md' height='48px'>
+            Add Latest Frame
+          </Button>
+
+          <Button size='md' height='48px'>
+            Navigate home
+          </Button>
+
+          <Button size='md' height='48px'>
+            Other Button
+          </Button>
+        </Flex>
       </Box>
     );
   };
 
   return (
-    <Box>
+    <Box backgroundColor={'white'}>
       {/* vertical flex */}
       <Flex direction='column'>
         {/* items in row one */}
