@@ -11,7 +11,7 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
@@ -31,26 +31,6 @@ import { Stage, Layer, Star } from 'react-konva';
 //     <Rect x={20} y={20} width={50} height={100} fill={color} shadowBlur={5} onClick={handleClick} />
 //   );
 // };
-
-function generateShapes() {
-  // ensure that the shapes are auto generated within the bounds of the canvas
-
-  return [...Array(10)].map((_, i) => ({
-    id: i.toString(),
-    x: Math.random() * (window.innerWidth - 100),
-    y: Math.random() * (window.innerHeight - 100),
-    rotation: Math.random() * 180,
-    isDragging: false,
-  }));
-
-  // return [...Array(10)].map((_, i) => ({
-  //   id: i.toString(),
-  //   x: Math.random() * (window.innerWidth - 100),
-  //   y: Math.random() * (window.innerHeight - 100),
-  //   rotation: Math.random() * 180,
-  //   isDragging: false,
-  // }));
-}
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   // const stopMotionAreaController =
@@ -72,15 +52,53 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
   // the interactable canvas to construct the stop motion scenes
   const Canvas = () => {
-    const [stars, setStars] = React.useState(generateShapes());
+    const [stars, setStars] = useState<StarShape[]>([]);
+    const canvasRef = useRef<HTMLDivElement | null>(null);
 
     const canvasWidth = 1300;
     const canvasHeight = 800;
+
+    // star shape interface
+    interface StarShape {
+      id: string;
+      x: number;
+      y: number;
+      rotation: number;
+      isDragging: boolean;
+    }
 
     // To implement animation of figures,
     // 1: Keep every FigureElement in a list here, map as necessary.
     // 2: If the FigureELement is not the root, do a polar motion.
     // 3: In any event, intercept the handleDrag{Start,End}.
+
+    function generateShapes() {
+      // ensure that the shapes are auto generated within the bounds of the canvas
+      const canvasElement = canvasRef.current;
+      const padding = 50;
+
+      function randomNumber(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+      }
+
+      if (canvasElement) {
+        const canvasRect = canvasElement.getBoundingClientRect();
+
+        return [...Array(10)].map((_, i) => ({
+          id: i.toString(),
+          // x: randomNumber(canvasRect.left + padding, canvasRect.right - padding),
+          // y: randomNumber(canvasRect.top + padding, canvasRect.bottom - padding),
+          // x: canvasRect.left + Math.random() * canvasRect.width,
+          // y: canvasRect.top + Math.random() * canvasRect.height,
+          x: canvasRect.left,
+          y: canvasRect.top,
+          rotation: Math.random() * 180,
+          isDragging: false,
+        }));
+      }
+
+      return [];
+    }
 
     const handleDragStart = (e: any) => {
       const id = e.target.id();
@@ -106,8 +124,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       );
     };
 
+    useEffect(() => {
+      setStars(generateShapes());
+    }, []);
+
     return (
       <Box
+        ref={canvasRef}
         style={{
           width: canvasWidth,
           height: canvasHeight,
@@ -121,7 +144,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
                 id={star.id}
                 x={star.x}
                 y={star.y}
-                numPoints={5}
+                numPoints={20}
                 innerRadius={20}
                 outerRadius={40}
                 fill='#89b717'
@@ -129,8 +152,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
                 draggable
                 rotation={star.rotation}
                 shadowColor='black'
-                shadowBlur={10}
-                shadowOpacity={0.6}
+                shadowBlur={0}
+                shadowOpacity={0.0}
                 shadowOffsetX={star.isDragging ? 10 : 5}
                 shadowOffsetY={star.isDragging ? 10 : 5}
                 scaleX={star.isDragging ? 1.2 : 1}
