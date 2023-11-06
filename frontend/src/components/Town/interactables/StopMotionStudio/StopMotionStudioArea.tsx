@@ -18,7 +18,10 @@ import { InteractableID } from '../../../../types/CoveyTownSocket';
 // import StopMotionArea from '../StopMotionArea';
 import StopMotionAreaInteractable from '../StopMotionArea';
 import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
-import { Stage, Layer, Star } from 'react-konva';
+import { Stage, Layer, Star, Group } from 'react-konva';
+import { blue } from '@material-ui/core/colors';
+import Konva from 'konva';
+import { KonvaEventObject } from 'konva/lib/Node';
 
 // const ColoredRect = () => {
 //   const [color, setColor] = useState('blue');
@@ -55,6 +58,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     const [stars, setStars] = useState<StarShape[]>([]);
     const canvasRef = useRef<HTMLDivElement | null>(null);
 
+    const [canvasDim, setCanvasDim] = useState<CanvasDim>({ top: 0, left: 0 });
+
     const canvasWidth = 1300;
     const canvasHeight = 800;
 
@@ -65,6 +70,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       y: number;
       rotation: number;
       isDragging: boolean;
+    }
+
+    interface CanvasDim {
+      top: number;
+      left: number;
     }
 
     // To implement animation of figures,
@@ -86,12 +96,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
         return [...Array(10)].map((_, i) => ({
           id: i.toString(),
-          // x: randomNumber(canvasRect.left + padding, canvasRect.right - padding),
-          // y: randomNumber(canvasRect.top + padding, canvasRect.bottom - padding),
-          // x: canvasRect.left + Math.random() * canvasRect.width,
-          // y: canvasRect.top + Math.random() * canvasRect.height,
-          x: canvasRect.left,
-          y: canvasRect.top,
+          x: canvasRect.left + canvasRect.width / 2,
+          y: canvasRect.top + canvasRect.height / 2,
+          // x: canvasRect.left,
+          // y: canvasRect.top,
           rotation: Math.random() * 180,
           isDragging: false,
         }));
@@ -100,20 +108,44 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       return [];
     }
 
-    const handleDragStart = (e: any) => {
-      const id = e.target.id();
+    const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
+      const dragId = e.target.attrs.id;
+
       setStars(
         stars.map(star => {
+          let newX = star.x;
+          let newY = star.y;
+
+          if (star.id === dragId) {
+            // newX = canvasDim.left;
+            // newY = canvasDim.top;
+            newX = Math.max(star.x, canvasDim.left + 20);
+            newY = Math.max(star.x, canvasDim.top + 20);
+          }
+
           return {
             ...star,
-            isDragging: star.id === id,
+            x: newX,
+            y: newY,
           };
         }),
       );
     };
 
-    const handleDragEnd = (e: any) => {
-      const id = e.target.id();
+    const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
+      const dragId = e.target.attrs.id;
+      setStars(
+        stars.map(star => {
+          return {
+            ...star,
+            isDragging: star.id === dragId,
+          };
+        }),
+      );
+    };
+
+    const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
+      const dragId = e.target.attrs.id;
       setStars(
         stars.map(star => {
           return {
@@ -125,6 +157,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     };
 
     useEffect(() => {
+      if (canvasRef.current) {
+        setCanvasDim({
+          top: canvasRef.current.getBoundingClientRect().top,
+          left: canvasRef.current.getBoundingClientRect().left,
+        });
+      }
       setStars(generateShapes());
     }, []);
 
@@ -136,7 +174,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           height: canvasHeight,
           backgroundColor: 'yellow',
         }}>
-        <Stage width={window.innerWidth} height={window.innerHeight}>
+        <Stage
+          offsetX={canvasDim.left}
+          offsetY={canvasDim.top}
+          width={canvasWidth}
+          height={canvasHeight}>
           <Layer>
             {stars.map(star => (
               <Star
@@ -160,6 +202,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
                 scaleY={star.isDragging ? 1.2 : 1}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                onDragMove={handleDragMove}
               />
             ))}
           </Layer>
