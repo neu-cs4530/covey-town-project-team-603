@@ -22,6 +22,7 @@ import { Stage, Layer, Star, Group, Rect, Circle } from 'react-konva';
 import { blue } from '@material-ui/core/colors';
 import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
+import { Vector2d } from 'konva/lib/types';
 
 // const ColoredRect = () => {
 //   const [color, setColor] = useState('blue');
@@ -119,8 +120,27 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     }
 
 
+
     function toKonvaElement(elem: FigureElement) {
       let absolutePosnVar = absolutePosn(elem);
+
+      // TODO: This function is a closure on a particular element's computed hierarchical position.
+      // The point is that, for figure elements that should rotate around a point, the Konva
+      // canvas part should NOT turn to its default behavior, which is to move the element rectilinearly.
+
+      // To accomplish this, we want to set a dragBoundFunc that closes on the element's absolute position,
+      // and always returns it, locking it in place.
+
+      // FIXME: But this seems to be broken. It almost looks like the coordinate systems do not match up.
+      function identityPos(pos: Vector2d) {
+        console.log(`Konva pos: ${pos.x} ${pos.y}`)
+        console.log(`Our pos: ${absolutePosnVar.absolute_x} ${absolutePosnVar.absolute_y}`)
+        return {
+          x: absolutePosnVar.absolute_x,
+          y: absolutePosnVar.absolute_y
+        }
+      }
+
       switch(elem.appearance.type) {
         case "rect":
           console.log("Give a rect");
@@ -134,6 +154,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable
+          // Capture the 
+          dragBoundFunc={identityPos}
           onDragStart={handleDragStartFigure}
           onDragEnd={handleDragEndFigure}
           onDragMove={handleDragMoveFigure}
@@ -149,6 +171,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           y={absolutePosnVar.absolute_y}
           rotation={absolutePosnVar.absolute_rotation}
           radius={elem.appearance.radius}
+          draggable
+          dragBoundFunc={identityPos}
           onDragStart={handleDragStartFigure}
           onDragEnd={handleDragEndFigure}
           onDragMove={handleDragMoveFigure}
@@ -327,16 +351,22 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           let newOffsetY = elem.offset_y;
           let newRot = elem.offset_rotation;
 
-
+          // If the current map member is the target...
           if (elem.id === dragId) {
+            /// ... and if it is a root element...
             if (elem.parent === undefined) {
+              // Update the linear position.
               newOffsetX = dragVectorX;
               newOffsetY = dragVectorY;
-            }          
+            } else { // if it is a child element...
+              newOffsetX = elem.offset_x;
+              newOffsetY = elem.offset_y;
+              newRot = dragVectorDegrees;
+            }
           }
 
-          // To prevent the children from referring to a stale parent,
-          // We must change any children that refer to this parent as well.
+          // If the current map member's parent is the target...
+          // This is necessary to avoid stale references.
           if (elem.parent !== undefined && elem.parent.id === dragId) {
             elem.parent = {
               ...elem.parent,
@@ -383,6 +413,7 @@ rotateAroundCenter(rect, 180);
     */
 
     const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
+      console.log("begin drag");
       const dragId = e.target.attrs.id;
       setFigureElements(
         figureElements.map(elem => {
