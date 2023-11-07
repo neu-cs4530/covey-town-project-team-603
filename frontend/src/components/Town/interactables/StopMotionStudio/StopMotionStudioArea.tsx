@@ -18,7 +18,7 @@ import { InteractableID } from '../../../../types/CoveyTownSocket';
 // import StopMotionArea from '../StopMotionArea';
 import StopMotionAreaInteractable from '../StopMotionArea';
 import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
-import { Stage, Layer, Star, Group } from 'react-konva';
+import { Stage, Layer, Star, Group, Rect, Circle } from 'react-konva';
 import { blue } from '@material-ui/core/colors';
 import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
@@ -56,6 +56,131 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
   // the interactable canvas to construct the stop motion scenes
   const Canvas = () => {
     const [stars, setStars] = useState<StarShape[]>([]);
+
+    interface KonvaRect {
+      type: "rect";
+      length: number;
+      width: number;
+    }
+
+    interface KonvaCircle {
+      type: "circle";
+      radius: number;
+    }
+
+    // Types of konva shape.
+    // Used in FigureElement to provide an appearance.
+    type KonvaShape = KonvaCircle | KonvaRect;
+
+    // TODO: Movement is hierarchical.
+    // 1. Moving a "parent" node should move all of the children nodes.
+    // 2. However, in order to judge how a node should be moved, we need to know which node is the root, i.e., has no parent.
+
+    // The proposal is to use offsets to take care of requirement 1.
+    // Then, requirement 2 is satified by tracking the (nullable) parent.
+    interface FigureElement {
+      appearance: KonvaShape
+
+      id: string;
+      parent?: FigureElement;
+
+      // If the parent is not null, these represent the offset from the parent.
+      // If the parent is null, these represent the absolute.
+      offset_x: number;
+      offset_y: number;
+      offset_rotation: number;
+
+      isDragging: boolean;
+    }
+
+    // Get the absolute position of a FigureElement by summing up the offsets.
+    function absolutePosn(elem: FigureElement) {
+      let absolute_x = 0;
+      let absolute_y = 0;
+      let absolute_rotation = 0;
+
+      let iter: FigureElement | undefined = elem;
+
+      // not undefined
+      while (iter) {
+        absolute_x += iter.offset_x;
+        absolute_y += iter.offset_y;
+        absolute_rotation += iter.offset_rotation;
+        iter = iter.parent;
+      }
+      let retval = {absolute_x, absolute_y, absolute_rotation};
+      console.log(retval)
+
+      return retval;
+    }
+
+
+    function toKonvaElement(elem: FigureElement) {
+      let absolutePosnVar = absolutePosn(elem);
+      switch(elem.appearance.type) {
+        case "rect":
+          console.log("Give a rect");
+          return (
+          <Rect
+          key={elem.id}
+          id={elem.id}
+          x={absolutePosnVar.absolute_x}
+          y={absolutePosnVar.absolute_y}
+          rotation={absolutePosnVar.absolute_rotation}
+          height={elem.appearance.length}
+          width={elem.appearance.width}
+          fill='#000000'
+             />)
+        case "circle":
+          console.log("Give a circle");
+          return (
+          <Circle
+          key={elem.id}
+          id={elem.id}
+          x={absolutePosnVar.absolute_x}
+          y={absolutePosnVar.absolute_y}
+          rotation={absolutePosnVar.absolute_rotation}
+          radius={elem.appearance.radius}
+          fill='#000000'
+             />)
+      }
+    }
+
+    const Figure1Torso: FigureElement = {
+      // a KonvaRect
+      appearance: {
+        type: "rect",
+        length: 50,
+        width: 20
+      },
+      id: "figure_1_torso",
+      // This is the root
+      parent: undefined,
+      // Because this is the root, these are absolute posns
+      offset_x: 773,
+      offset_y: 521,
+      offset_rotation: 0,
+      isDragging: false
+    };
+
+    const Figure1Head: FigureElement = {
+      // a KonvaCircle
+      appearance: {
+        type: "circle",
+        radius: 10
+      },
+      id: "figure_1_head",
+      parent: Figure1Torso,
+      offset_x: 10,
+      offset_y: -10,
+      offset_rotation: 0,
+      isDragging: false
+    };
+
+
+    // These are stored as a list, because that's what Konva wants.
+    // But the FigureElements implement a tree amongst themselves.
+    const [figureElements, setFigureElements] = useState<FigureElement[]>([]);
     const canvasRef = useRef<HTMLDivElement | null>(null);
 
     const [canvasDim, setCanvasDim] = useState<CanvasDim>({ top: 0, left: 0 });
@@ -71,6 +196,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       rotation: number;
       isDragging: boolean;
     }
+
+
 
     interface CanvasDim {
       top: number;
@@ -91,8 +218,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         return Math.random() * (max - min) + min;
       }
 
+
       if (canvasElement) {
         const canvasRect = canvasElement.getBoundingClientRect();
+        console.log(canvasRect.left + canvasRect.width / 2);
+        console.log(canvasRect.top + canvasRect.height / 2);
 
         return [...Array(10)].map((_, i) => ({
           id: i.toString(),
@@ -164,6 +294,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         });
       }
       setStars(generateShapes());
+      setFigureElements([Figure1Head, Figure1Torso]);
     }, []);
 
     return (
@@ -204,6 +335,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
                 onDragEnd={handleDragEnd}
                 onDragMove={handleDragMove}
               />
+            ))}
+            {figureElements.map(elem => (
+              toKonvaElement(elem)
             ))}
           </Layer>
         </Stage>
