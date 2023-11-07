@@ -241,17 +241,27 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
 
+      
+
       setStars(
         stars.map(star => {
           let newX = star.x;
           let newY = star.y;
 
+
+
+          console.log(newX);
+
           if (star.id === dragId) {
             // newX = canvasDim.left;
             // newY = canvasDim.top;
-            newX = Math.max(star.x, canvasDim.left + 20);
-            newY = Math.max(star.x, canvasDim.top + 20);
+            //newX = Math.max(star.x, canvasDim.left + 20);
+            //newY = Math.max(star.y, canvasDim.top + 20);
+            newX = e.evt.x;
+            newY = e.evt.y;
           }
+
+          console.log(newX);
 
           return {
             ...star,
@@ -285,6 +295,59 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         }),
       );
     };
+
+    const handleDragMoveFigure = (e: KonvaEventObject<DragEvent>) => {
+      const dragId = e.target.attrs.id;
+
+      setFigureElements(
+        figureElements.map(elem => {
+          let newX = elem.offset_x;
+          let newY = elem.offset_y;
+          let newRot = elem.offset_rotation;
+
+          if (elem.id === dragId) {
+            // newX = canvasDim.left;
+            // newY = canvasDim.top;
+            // newX = Math.max(star.x, canvasDim.left + 20);
+            // newY = Math.max(star.x, canvasDim.top + 20);
+            if (elem.parent === undefined) {
+              //newX = 
+            }
+          }
+
+          return {
+            ...star,
+            x: newX,
+            y: newY,
+          };
+        }),
+      );
+    };
+
+    const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
+      const dragId = e.target.attrs.id;
+      setStars(
+        stars.map(star => {
+          return {
+            ...star,
+            isDragging: star.id === dragId,
+          };
+        }),
+      );
+    };
+
+    const handleDragEndFigure = (e: KonvaEventObject<DragEvent>) => {
+      const dragId = e.target.attrs.id;
+      setFigureElements(
+        figureElements.map(elem => {
+          return {
+            ...elem,
+            isDragging: false,
+          };
+        }),
+      );
+    };
+
 
     useEffect(() => {
       if (canvasRef.current) {
