@@ -124,14 +124,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     function toKonvaElement(elem: FigureElement) {
       let absolutePosnVar = absolutePosn(elem);
 
-      // TODO: This function is a closure on a particular element's computed hierarchical position.
-      // The point is that, for figure elements that should rotate around a point, the Konva
-      // canvas part should NOT turn to its default behavior, which is to move the element rectilinearly.
-
-      // To accomplish this, we want to set a dragBoundFunc that closes on the element's absolute position,
-      // and always returns it, locking it in place.
-
-      // FIXME: But this seems to be broken. It almost looks like the coordinate systems do not match up.
       function identityPos(pos: Vector2d) {
         let absolutePosnVar = absolutePosn(elem);
         console.log(`CanvasDim: ${canvasDim.left} ${canvasDim.top}`)
