@@ -240,6 +240,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
     const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
+      console.log(e);
 
       
 
@@ -248,8 +249,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           let newX = star.x;
           let newY = star.y;
 
-
-
           console.log(newX);
 
           if (star.id === dragId) {
@@ -257,8 +256,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             // newY = canvasDim.top;
             //newX = Math.max(star.x, canvasDim.left + 20);
             //newY = Math.max(star.y, canvasDim.top + 20);
-            newX = e.evt.x;
-            newY = e.evt.y;
+            //newX = e.evt.clientX;
+            // newY = e.evt.clientY;
+            newX = e.target.position().x;
+            newY = e.target.position().y;
+            //newX = e.target.getStage()!.getPointerPosition()!.x;
+            // newY = e.target.getStage()!.getPointerPosition()!.y;
           }
 
           console.log(newX);
