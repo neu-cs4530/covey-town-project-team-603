@@ -95,6 +95,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
     // Get the absolute position of a FigureElement by summing up the offsets.
     function absolutePosn(elem: FigureElement) {
+      console.log("Enter absolute posn");
       let absolute_x = 0;
       let absolute_y = 0;
       let absolute_rotation = 0;
@@ -112,6 +113,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       }
       let retval = {absolute_x, absolute_y, absolute_rotation};
       console.log(retval)
+      console.log("Leave absolute posn");
 
       return retval;
     }
@@ -315,39 +317,42 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       const center_x = e.target.getAbsolutePosition().x;
       const center_y = e.target.getAbsolutePosition().y;
 
-
+      let dragVectorX = e.target.position().x;
+      let dragVectorY = e.target.position().y;
+      let dragVectorDegrees = (Math.atan(dragVectorX / dragVectorY) * (180/Math.PI) );
 
       setFigureElements(
         figureElements.map(elem => {
           let newOffsetX = elem.offset_x;
           let newOffsetY = elem.offset_y;
           let newRot = elem.offset_rotation;
-          let dragVectorX = e.target.position().x;
-          let dragVectorY = e.target.position().y;
+
 
           if (elem.id === dragId) {
-            // newX = canvasDim.left;
-            // newY = canvasDim.top;
-            // newX = Math.max(star.x, canvasDim.left + 20);
-            // newY = Math.max(star.x, canvasDim.top + 20);
             if (elem.parent === undefined) {
               newOffsetX = dragVectorX;
               newOffsetY = dragVectorY;
-            } else {
-              let dragVectorDegrees = (Math.atan(dragVectorX / dragVectorY) * (180/Math.PI) );
-              newRot = dragVectorDegrees;
+            }          
+          }
+
+          // To prevent the children from referring to a stale parent,
+          // We must change any children that refer to this parent as well.
+          if (elem.parent !== undefined && elem.parent.id === dragId) {
+            elem.parent = {
+              ...elem.parent,
+              offset_x: dragVectorX,
+              offset_y: dragVectorY,
+              offset_rotation: newRot
             }
           }
 
-          console.log(newRot);
-          console.log(newOffsetX);
-          console.log(newOffsetY);
           return {
             ...elem,
             offset_x: newOffsetX,
             offset_y: newOffsetY,
             offset_rotation: newRot
           };
+
         }),
       );
     };
@@ -452,6 +457,9 @@ rotateAroundCenter(rect, 180);
                 onDragMove={handleDragMove}
               />
             ))}
+            <Group>
+
+            </Group>
             {figureElements.map(elem => (
               toKonvaElement(elem)
             ))}
