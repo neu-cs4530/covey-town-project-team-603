@@ -133,11 +133,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       // FIXME: But this seems to be broken. It almost looks like the coordinate systems do not match up.
       function identityPos(pos: Vector2d) {
+        let absolutePosnVar = absolutePosn(elem);
+        console.log(`CanvasDim: ${canvasDim.left} ${canvasDim.top}`)
         console.log(`Konva pos: ${pos.x} ${pos.y}`)
         console.log(`Our pos: ${absolutePosnVar.absolute_x} ${absolutePosnVar.absolute_y}`)
         return {
-          x: absolutePosnVar.absolute_x,
-          y: absolutePosnVar.absolute_y
+          x: absolutePosnVar.absolute_x - canvasDim.left,
+          y: absolutePosnVar.absolute_y - canvasDim.top
         }
       }
 
@@ -341,7 +343,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       let dragVectorX = e.target.position().x;
       let dragVectorY = e.target.position().y;
-      let dragVectorDegrees = (Math.atan(dragVectorX / dragVectorY) * (180/Math.PI) );
+      let dragVectorDegrees = (Math.atan(dragVectorY / dragVectorX) * (180/Math.PI) );
 
       setFigureElements(
         figureElements.map(elem => {
@@ -446,6 +448,7 @@ rotateAroundCenter(rect, 180);
       setStars(generateShapes());
       setFigureElements([Figure1Head, Figure1Torso]);
     }, []);
+
 
     return (
       <Box
