@@ -154,8 +154,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable
-          // Capture the 
-          dragBoundFunc={identityPos}
           onDragStart={handleDragStartFigure}
           onDragEnd={handleDragEndFigure}
           onDragMove={handleDragMoveFigure}
@@ -277,7 +275,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       const dragId = e.target.attrs.id;
       console.log(e);
 
-      
+
 
       setStars(
         stars.map(star => {
