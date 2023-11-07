@@ -102,7 +102,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       let iter: FigureElement | undefined = elem;
 
       // not undefined
-      while (iter) {
+      while (iter !== undefined) {
+        console.log(`iterate with ${iter.appearance.type}`);
+        console.log(iter);
         absolute_x += iter.offset_x;
         absolute_y += iter.offset_y;
         absolute_rotation += iter.offset_rotation;
@@ -129,6 +131,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           rotation={absolutePosnVar.absolute_rotation}
           height={elem.appearance.length}
           width={elem.appearance.width}
+          draggable
+          onDragStart={handleDragStartFigure}
+          onDragEnd={handleDragEndFigure}
+          onDragMove={handleDragMoveFigure}
           fill='#000000'
              />)
         case "circle":
@@ -141,6 +147,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           y={absolutePosnVar.absolute_y}
           rotation={absolutePosnVar.absolute_rotation}
           radius={elem.appearance.radius}
+          onDragStart={handleDragStartFigure}
+          onDragEnd={handleDragEndFigure}
+          onDragMove={handleDragMoveFigure}
           fill='#000000'
              />)
       }
@@ -302,11 +311,19 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     const handleDragMoveFigure = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
 
+      // we need to get the absolute "attachment point" to rotate a limb properly.
+      const center_x = e.target.getAbsolutePosition().x;
+      const center_y = e.target.getAbsolutePosition().y;
+
+
+
       setFigureElements(
         figureElements.map(elem => {
-          let newX = elem.offset_x;
-          let newY = elem.offset_y;
+          let newOffsetX = elem.offset_x;
+          let newOffsetY = elem.offset_y;
           let newRot = elem.offset_rotation;
+          let dragVectorX = e.target.position().x;
+          let dragVectorY = e.target.position().y;
 
           if (elem.id === dragId) {
             // newX = canvasDim.left;
@@ -314,26 +331,59 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             // newX = Math.max(star.x, canvasDim.left + 20);
             // newY = Math.max(star.x, canvasDim.top + 20);
             if (elem.parent === undefined) {
-              //newX = 
+              newOffsetX = dragVectorX;
+              newOffsetY = dragVectorY;
+            } else {
+              let dragVectorDegrees = (Math.atan(dragVectorX / dragVectorY) * (180/Math.PI) );
+              newRot = dragVectorDegrees;
             }
           }
 
+          console.log(newRot);
+          console.log(newOffsetX);
+          console.log(newOffsetY);
           return {
-            ...star,
-            x: newX,
-            y: newY,
+            ...elem,
+            offset_x: newOffsetX,
+            offset_y: newOffsetY,
+            offset_rotation: newRot
           };
         }),
       );
     };
 
+    /*
+const rotatePoint = ({ x, y }, rad) => {
+  const rcos = Math.cos(rad);
+  const rsin = Math.sin(rad);
+  return { x: x * rcos - y * rsin, y: y * rcos + x * rsin };
+};
+
+// will work for shapes with top-left origin, like rectangle
+function rotateAroundCenter(node, rotation) {
+  //current rotation origin (0, 0) relative to desired origin - center (node.width()/2, node.height()/2)
+  const topLeft = { x: -node.width() / 2, y: -node.height() / 2 };
+  const current = rotatePoint(topLeft, Konva.getAngle(node.rotation()));
+  const rotated = rotatePoint(topLeft, Konva.getAngle(rotation));
+  const dx = rotated.x - current.x,
+    dy = rotated.y - current.y;
+
+  node.rotation(rotation);
+  node.x(node.x() + dx);
+  node.y(node.y() + dy);
+}
+
+// then use it
+rotateAroundCenter(rect, 180);
+    */
+
     const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
-      setStars(
-        stars.map(star => {
+      setFigureElements(
+        figureElements.map(elem => {
           return {
-            ...star,
-            isDragging: star.id === dragId,
+            ...elem,
+            isDragging: elem.id === dragId,
           };
         }),
       );
