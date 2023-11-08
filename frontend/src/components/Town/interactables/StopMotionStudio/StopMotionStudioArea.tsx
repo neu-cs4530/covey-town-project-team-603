@@ -90,6 +90,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_y: number;
       offset_rotation: number;
 
+      // Where does this visually attach? encoded as an offset from the center
+      offset_attach_x: number;
+      offset_attach_y: number;
+
       isDragging: boolean;
     }
 
@@ -190,6 +194,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_x: 10,
       offset_y: -10,
       offset_rotation: 0,
+      offset_attach_x: 0,
+      offset_attach_y: 10,
       isDragging: false
     };
 
@@ -320,6 +326,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       let cursorPosition = e.target.getStage()!.getPointerPosition()!;
 
+
       // What is the difference between the posn of the figure we are dragging and the cursor?
 
       // To get the expected vector, we also have to invert the y-axis.
@@ -338,6 +345,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         figureElements.map(elem => {
           let newOffsetX = elem.offset_x;
           let newOffsetY = elem.offset_y;
+          let newOffsetAttachX = elem.offset_attach_x;
+          let newOffsetAttachY = elem.offset_attach_y;
+
           let newRot = elem.offset_rotation;
 
           // If the current map member is the target...
@@ -349,7 +359,22 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetY = targetPositionY;
             } else { // if it is a child element...
               newOffsetX = elem.offset_x;
+
               newOffsetY = elem.offset_y;
+
+              let rotationOriginX = targetPositionX + elem.offset_attach_x;
+              let rotationOriginY = targetPositionY + elem.offset_attach_y;
+
+              // TODO: need to update the offset_attach
+
+              let rotatedOffset = rotatePointAround(0, 0, elem.offset_x, elem.offset_y, dragRotationRadians);
+              let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, dragRotationRadians);
+
+              newOffsetX = rotatedOffset.x;
+              newOffsetY = rotatedOffset.y;
+
+              newOffsetAttachX = rotatedAttachmentOffset.x;
+              newOffsetAttachY = rotatedAttachmentOffset.y;
 
               // konva wants degrees
               newRot = dragRotationDegrees;
@@ -358,6 +383,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
           // If the current map member's parent is the target...
           // This is necessary to avoid stale references.
+
+          // FIXME: This won't work if it happens to be in the wrong order.
+          // But it could also work if we make sure to lay it out in the 'right' way.
           if (elem.parent !== undefined && elem.parent.id === dragId) {
             elem.parent = {
               ...elem.parent,
@@ -371,17 +399,25 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             ...elem,
             offset_x: newOffsetX,
             offset_y: newOffsetY,
-            offset_rotation: newRot
+            offset_rotation: newRot,
+            offset_attach_x: newOffsetAttachX,
+            offset_attach_y: newOffsetAttachY
           };
 
         }),
       );
     };
 
-const rotatePoint = (x: number, y: number, rad: number) => {
+const rotatePointAround = (origin_x: number, origin_y: number, target_x: number, target_y: number, rad: number) => {
   const rcos = Math.cos(rad);
   const rsin = Math.sin(rad);
-  return { x: x * rcos - y * rsin, y: y * rcos + x * rsin };
+
+  return {
+    x: rcos * (target_x - origin_x) - rsin * (target_y - origin_y) + origin_x,
+    y: rsin * (target_x - origin_x) + rcos * (target_y - origin_y) + origin_y
+   }
+  
+  // return { x: x * rcos - y * rsin, y: y * rcos + x * rsin };
 };
 
 /*
