@@ -95,6 +95,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_attach_y: number;
 
       isDragging: boolean;
+
+      drag_init_offset_x: number;
+      drag_init_offset_y: number;
+
+      drag_init_offset_attach_y: number;
+      drag_init_offset_attach_x: number;
     }
 
     // Get the absolute position of a FigureElement by summing up the offsets.
@@ -180,7 +186,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_x: 773,
       offset_y: 521,
       offset_rotation: 0,
-      isDragging: false
+      isDragging: false,
+      drag_init_offset_x: 0,
+      drag_init_offset_y: 0,
+      drag_init_offset_attach_x: 0,
+      drag_init_offset_attach_y: 0,
     };
 
     const Figure1Head: FigureElement = {
@@ -196,7 +206,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_rotation: 0,
       offset_attach_x: 0,
       offset_attach_y: 10,
-      isDragging: false
+      isDragging: false,
+      drag_init_offset_x: 0,
+      drag_init_offset_y: 0,
+      drag_init_offset_attach_x: 0,
+      drag_init_offset_attach_y: 0,
     };
 
 
@@ -358,25 +372,24 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetX = targetPositionX;
               newOffsetY = targetPositionY;
             } else { // if it is a child element...
-              newOffsetX = elem.offset_x;
-
-              newOffsetY = elem.offset_y;
 
               let rotationOriginX = targetPositionX + elem.offset_attach_x;
               let rotationOriginY = targetPositionY + elem.offset_attach_y;
 
-              // TODO: need to update the offset_attach
-
-              let rotatedOffset = rotatePointAround(0, 0, elem.offset_x, elem.offset_y, dragRotationRadians);
               let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, dragRotationRadians);
 
-              newOffsetX = rotatedOffset.x;
-              newOffsetY = rotatedOffset.y;
+              let rotatedTargetPosn = rotatePointAround(rotationOriginX, rotationOriginY, targetPositionX, targetPositionY, dragRotationRadians);
+
+              // For a deep hierarchy we need to get absolute posn but this will do for now
+              let parentTargetPosnX = elem.parent.offset_x;
+              let parentTargetPosnY = elem.parent.offset_y;
+
+              newOffsetX = rotatedTargetPosn.x - parentTargetPosnX;
+              newOffsetY = rotatedTargetPosn.y - parentTargetPosnY;
 
               newOffsetAttachX = rotatedAttachmentOffset.x;
               newOffsetAttachY = rotatedAttachmentOffset.y;
 
-              // konva wants degrees
               newRot = dragRotationDegrees;
             }
           }
@@ -416,28 +429,7 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
     x: rcos * (target_x - origin_x) - rsin * (target_y - origin_y) + origin_x,
     y: rsin * (target_x - origin_x) + rcos * (target_y - origin_y) + origin_y
    }
-  
-  // return { x: x * rcos - y * rsin, y: y * rcos + x * rsin };
 };
-
-/*
-// will work for shapes with top-left origin, like rectangle
-function rotateAroundCenter(node, rotation) {
-  //current rotation origin (0, 0) relative to desired origin - center (node.width()/2, node.height()/2)
-  const topLeft = { x: -node.width() / 2, y: -node.height() / 2 };
-  const current = rotatePoint(topLeft, Konva.getAngle(node.rotation()));
-  const rotated = rotatePoint(topLeft, Konva.getAngle(rotation));
-  const dx = rotated.x - current.x,
-    dy = rotated.y - current.y;
-
-  node.rotation(rotation);
-  node.x(node.x() + dx);
-  node.y(node.y() + dy);
-}
-
-// then use it
-rotateAroundCenter(rect, 180);
-    */
 
     const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
@@ -446,6 +438,10 @@ rotateAroundCenter(rect, 180);
           return {
             ...elem,
             isDragging: elem.id === dragId,
+            drag_init_offset_x: elem.offset_x,
+            drag_init_offset_y: elem.offset_y,
+            drag_init_offset_attach_x: elem.offset_attach_x,
+            drag_init_offset_attach_y: elem.offset_attach_y,
           };
         }),
       );
