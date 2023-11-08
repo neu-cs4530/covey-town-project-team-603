@@ -42,7 +42,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
   // const townController = useTownController();
 
   useEffect(() => {
-    console.log('exists');
   }, []);
 
   // the left side panel which allows users to select and drag new items on to the canvas
@@ -96,7 +95,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
     // Get the absolute position of a FigureElement by summing up the offsets.
     function absolutePosn(elem: FigureElement) {
-      console.log("Enter absolute posn");
       let absolute_x = 0;
       let absolute_y = 0;
       let absolute_rotation = 0;
@@ -105,16 +103,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       // not undefined
       while (iter !== undefined) {
-        console.log(`iterate with ${iter.appearance.type}`);
-        console.log(iter);
         absolute_x += iter.offset_x;
         absolute_y += iter.offset_y;
         absolute_rotation += iter.offset_rotation;
         iter = iter.parent;
       }
       let retval = {absolute_x, absolute_y, absolute_rotation};
-      console.log(retval)
-      console.log("Leave absolute posn");
 
       return retval;
     }
@@ -126,9 +120,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       function identityPos(pos: Vector2d) {
         let absolutePosnVar = absolutePosn(elem);
-        console.log(`CanvasDim: ${canvasDim.left} ${canvasDim.top}`)
-        console.log(`Konva pos: ${pos.x} ${pos.y}`)
-        console.log(`Our pos: ${absolutePosnVar.absolute_x} ${absolutePosnVar.absolute_y}`)
         return {
           x: absolutePosnVar.absolute_x - canvasDim.left,
           y: absolutePosnVar.absolute_y - canvasDim.top
@@ -137,7 +128,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       switch(elem.appearance.type) {
         case "rect":
-          console.log("Give a rect");
           return (
           <Rect
           key={elem.id}
@@ -154,7 +144,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           fill='#000000'
              />)
         case "circle":
-          console.log("Give a circle");
           return (
           <Circle
           key={elem.id}
@@ -248,8 +237,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       if (canvasElement) {
         const canvasRect = canvasElement.getBoundingClientRect();
-        console.log(canvasRect.left + canvasRect.width / 2);
-        console.log(canvasRect.top + canvasRect.height / 2);
 
         return [...Array(10)].map((_, i) => ({
           id: i.toString(),
@@ -267,7 +254,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
     const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
-      console.log(e);
 
 
 
@@ -276,7 +262,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           let newX = star.x;
           let newY = star.y;
 
-          console.log(newX);
 
           if (star.id === dragId) {
             // newX = canvasDim.left;
@@ -291,7 +276,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             // newY = e.target.getStage()!.getPointerPosition()!.y;
           }
 
-          console.log(newX);
 
           return {
             ...star,
@@ -405,7 +389,6 @@ rotateAroundCenter(rect, 180);
     */
 
     const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
-      console.log("begin drag");
       const dragId = e.target.attrs.id;
       setFigureElements(
         figureElements.map(elem => {
