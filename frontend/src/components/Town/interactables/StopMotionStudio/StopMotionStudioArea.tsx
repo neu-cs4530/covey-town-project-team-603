@@ -101,6 +101,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
       drag_init_offset_attach_y: number;
       drag_init_offset_attach_x: number;
+
+      drag_init_position_x: number;
+      drag_init_position_y: number;
     }
 
     // Get the absolute position of a FigureElement by summing up the offsets.
@@ -191,6 +194,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       drag_init_offset_y: 0,
       drag_init_offset_attach_x: 0,
       drag_init_offset_attach_y: 0,
+      drag_init_position_x: 0,
+      drag_init_position_y: 0,
     };
 
     const Figure1Head: FigureElement = {
@@ -211,6 +216,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       drag_init_offset_y: 0,
       drag_init_offset_attach_x: 0,
       drag_init_offset_attach_y: 0,
+      drag_init_position_x: 0,
+      drag_init_position_y: 0,
     };
 
 
@@ -334,26 +341,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       const dragId = e.target.attrs.id;
 
       // we need to get the absolute "attachment point" to rotate a limb properly.
-
-      let targetPositionX = e.target.position().x;
-      let targetPositionY = e.target.position().y;
-
-      let cursorPosition = e.target.getStage()!.getPointerPosition()!;
-
-
-      // What is the difference between the posn of the figure we are dragging and the cursor?
-
-      // To get the expected vector, we also have to invert the y-axis.
-      // Due to the difference between standard math way, and computer graphics way.
-      let dragVectorX = cursorPosition.x - targetPositionX;
-      let dragVectorY = -cursorPosition.y + targetPositionY;
-
-      let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
-      let dragRotationDegrees = (dragRotationRadians * (180/Math.PI) );
-
-      console.log(`Cursor posn: ${cursorPosition.x} ${cursorPosition.y}`);
-      console.log(`Figure posn: ${targetPositionX} ${targetPositionY}`);
-      console.log(`Drag rotation degrees: ${dragRotationDegrees}`);
+          let targetPositionX = e.target.position().x;
+          let targetPositionY = e.target.position().y;
 
       setFigureElements(
         figureElements.map(elem => {
@@ -366,6 +355,29 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
           // If the current map member is the target...
           if (elem.id === dragId) {
+
+          let cursorPosition = e.target.getStage()!.getPointerPosition()!;
+              let rotationOriginX = targetPositionX + elem.offset_attach_x;
+              let rotationOriginY = targetPositionY + elem.offset_attach_y;
+
+
+
+          // What is the difference between the posn of the figure we are dragging and the cursor?
+
+          // To get the expected vector, we also have to invert the y-axis.
+          // Due to the difference between standard math way, and computer graphics way.
+          let dragVectorX = cursorPosition.x - rotationOriginX;
+          let dragVectorY = -cursorPosition.y + rotationOriginY;
+
+          // This is over the span of the drag.
+          let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
+          let dragRotationDegrees = (dragRotationRadians * (180/Math.PI) );
+
+          console.log(`Cursor posn: ${cursorPosition.x} ${cursorPosition.y}`);
+          console.log(`Figure posn: ${targetPositionX} ${targetPositionY}`);
+          console.log(`Drag rotation degrees: ${dragRotationDegrees}`);
+
+
             /// ... and if it is a root element...
             if (elem.parent === undefined) {
               // Update the linear position.
@@ -379,8 +391,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               // I think we need to keep track of the "rotation so far".
               // Additionally, we probably need to record a drag_init_rotation_degrees.
 
-              let rotationOriginX = targetPositionX + elem.offset_attach_x;
-              let rotationOriginY = targetPositionY + elem.offset_attach_y;
 
               let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, dragRotationRadians);
 
@@ -448,6 +458,8 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
             drag_init_offset_y: elem.offset_y,
             drag_init_offset_attach_x: elem.offset_attach_x,
             drag_init_offset_attach_y: elem.offset_attach_y,
+            drag_init_position_x: e.target.position().x,
+            drag_init_position_y: e.target.position().y,
           };
         }),
       );
