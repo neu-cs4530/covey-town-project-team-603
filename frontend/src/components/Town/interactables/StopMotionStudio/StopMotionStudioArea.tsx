@@ -314,12 +314,25 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       const dragId = e.target.attrs.id;
 
       // we need to get the absolute "attachment point" to rotate a limb properly.
-      const center_x = e.target.getAbsolutePosition().x;
-      const center_y = e.target.getAbsolutePosition().y;
 
-      let dragVectorX = e.target.position().x;
-      let dragVectorY = e.target.position().y;
-      let dragVectorDegrees = (Math.atan(dragVectorY / dragVectorX) * (180/Math.PI) );
+      let targetPositionX = e.target.position().x;
+      let targetPositionY = e.target.position().y;
+
+      let cursorPosition = e.target.getStage()!.getPointerPosition()!;
+
+      // What is the difference between the posn of the figure we are dragging and the cursor?
+
+      // To get the expected vector, we also have to invert the y-axis.
+      // Due to the difference between standard math way, and computer graphics way.
+      let dragVectorX = cursorPosition.x - targetPositionX;
+      let dragVectorY = -cursorPosition.y + targetPositionY;
+
+      let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
+      let dragRotationDegrees = (dragRotationRadians * (180/Math.PI) );
+
+      console.log(`Cursor posn: ${cursorPosition.x} ${cursorPosition.y}`);
+      console.log(`Figure posn: ${targetPositionX} ${targetPositionY}`);
+      console.log(`Drag rotation degrees: ${dragRotationDegrees}`);
 
       setFigureElements(
         figureElements.map(elem => {
@@ -332,12 +345,14 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             /// ... and if it is a root element...
             if (elem.parent === undefined) {
               // Update the linear position.
-              newOffsetX = dragVectorX;
-              newOffsetY = dragVectorY;
+              newOffsetX = targetPositionX;
+              newOffsetY = targetPositionY;
             } else { // if it is a child element...
               newOffsetX = elem.offset_x;
               newOffsetY = elem.offset_y;
-              newRot = dragVectorDegrees;
+
+              // konva wants degrees
+              newRot = dragRotationDegrees;
             }
           }
 
@@ -346,8 +361,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           if (elem.parent !== undefined && elem.parent.id === dragId) {
             elem.parent = {
               ...elem.parent,
-              offset_x: dragVectorX,
-              offset_y: dragVectorY,
+              offset_x: targetPositionX,
+              offset_y: targetPositionY,
               offset_rotation: newRot
             }
           }
@@ -363,13 +378,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       );
     };
 
-    /*
-const rotatePoint = ({ x, y }, rad) => {
+const rotatePoint = (x: number, y: number, rad: number) => {
   const rcos = Math.cos(rad);
   const rsin = Math.sin(rad);
   return { x: x * rcos - y * rsin, y: y * rcos + x * rsin };
 };
 
+/*
 // will work for shapes with top-left origin, like rectangle
 function rotateAroundCenter(node, rotation) {
   //current rotation origin (0, 0) relative to desired origin - center (node.width()/2, node.height()/2)
