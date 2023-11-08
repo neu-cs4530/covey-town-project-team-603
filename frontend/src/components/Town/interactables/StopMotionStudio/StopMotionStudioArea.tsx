@@ -121,8 +121,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       function identityPos(pos: Vector2d) {
         let absolutePosnVar = absolutePosn(elem);
         return {
-          x: absolutePosnVar.absolute_x - canvasDim.left,
-          y: absolutePosnVar.absolute_y - canvasDim.top
+          x: absolutePosnVar.absolute_x,
+          y: absolutePosnVar.absolute_y        
         }
       }
 
@@ -434,8 +434,6 @@ rotateAroundCenter(rect, 180);
           backgroundColor: 'yellow',
         }}>
         <Stage
-          offsetX={canvasDim.left}
-          offsetY={canvasDim.top}
           width={canvasWidth}
           height={canvasHeight}>
           <Layer>
