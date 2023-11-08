@@ -373,6 +373,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetY = targetPositionY;
             } else { // if it is a child element...
 
+              // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
+              // the same rotation is applied over and over again.
+
+              // I think we need to keep track of the "rotation so far".
+              // Additionally, we probably need to record a drag_init_rotation_degrees.
+
               let rotationOriginX = targetPositionX + elem.offset_attach_x;
               let rotationOriginY = targetPositionY + elem.offset_attach_y;
 
