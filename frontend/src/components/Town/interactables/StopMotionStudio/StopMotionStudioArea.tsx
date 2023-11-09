@@ -208,7 +208,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       parent: Figure1Torso,
       offset_x: 10,
       offset_y: -10,
-      offset_rotation: 0,
+      offset_rotation: Math.PI/2,
       offset_attach_x: 0,
       offset_attach_y: 10,
       isDragging: false,
@@ -376,6 +376,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           console.log(`Cursor posn: ${cursorPosition.x} ${cursorPosition.y}`);
           console.log(`Figure posn: ${targetPositionX} ${targetPositionY}`);
           console.log(`Drag rotation degrees: ${dragRotationDegrees}`);
+          console.log(`Drag rotation radians: ${dragRotationRadians}`);
 
 
             /// ... and if it is a root element...
@@ -391,10 +392,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               // I think we need to keep track of the "rotation so far".
               // Additionally, we probably need to record a drag_init_rotation_degrees.
 
+              let toRotate = -(dragRotationRadians - elem.offset_rotation);
+              console.log(`Amount to rotate by: ${toRotate}`);
 
-              let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, dragRotationRadians);
+              let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, toRotate);
 
-              let rotatedTargetPosn = rotatePointAround(rotationOriginX, rotationOriginY, targetPositionX, targetPositionY, dragRotationRadians);
+              let rotatedTargetPosn = rotatePointAround(rotationOriginX, rotationOriginY, targetPositionX, targetPositionY, toRotate);
 
               // For a deep hierarchy we need to get absolute posn but this will do for now
               let parentTargetPosnX = elem.parent.offset_x;
@@ -406,7 +409,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetAttachX = rotatedAttachmentOffset.x;
               newOffsetAttachY = rotatedAttachmentOffset.y;
 
-              newRot = dragRotationDegrees;
+              newRot = dragRotationRadians;
             }
           }
 
