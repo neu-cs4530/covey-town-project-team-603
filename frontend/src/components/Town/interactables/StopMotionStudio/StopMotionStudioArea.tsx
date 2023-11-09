@@ -24,22 +24,7 @@ import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Vector2d } from 'konva/lib/types';
 
-// const ColoredRect = () => {
-//   const [color, setColor] = useState('blue');
-
-//   const handleClick = () => {
-//     setColor(Konva.Util.getRandomColor());
-//   };
-
-//   return (
-//     <Rect x={20} y={20} width={50} height={100} fill={color} shadowBlur={5} onClick={handleClick} />
-//   );
-// };
-
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
-  // const stopMotionAreaController =
-  //   useInteractableAreaController<StopMotionAreaController>(interactableID);
-  // const townController = useTownController();
 
   useEffect(() => {
   }, []);
@@ -147,10 +132,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id={elem.id}
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation}
+          rotation={absolutePosnVar.absolute_rotation * (Math.PI / 180)}
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable
+          dragBoundFunc={elem.parent && identityPos}
           onDragStart={handleDragStartFigure}
           onDragEnd={handleDragEndFigure}
           onDragMove={handleDragMoveFigure}
@@ -163,10 +149,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id={elem.id}
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation}
+          rotation={absolutePosnVar.absolute_rotation * (Math.PI / 180)}
           radius={elem.appearance.radius}
           draggable
-          dragBoundFunc={identityPos}
+          dragBoundFunc={elem.parent && identityPos}
           onDragStart={handleDragStartFigure}
           onDragEnd={handleDragEndFigure}
           onDragMove={handleDragMoveFigure}
@@ -220,6 +206,29 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       drag_init_position_y: 0,
     };
 
+    const Figure1LeftLeg: FigureElement = {
+      appearance: {
+        type: "rect",
+        length: 25,
+        width: 5
+      },
+      id: "figure_1_left_leg",
+      parent: Figure1Torso,
+      offset_x: 0,
+      offset_y: 50,
+      // for now
+      offset_rotation: 0,
+      offset_attach_x: 0,
+      offset_attach_y: 0,
+      isDragging: false,
+      drag_init_offset_x: 0,
+      drag_init_offset_y: 0,
+      drag_init_offset_attach_x: 0,
+      drag_init_offset_attach_y: 0,
+      drag_init_position_x: 0,
+      drag_init_position_y: 0,
+    }
+
 
     // These are stored as a list, because that's what Konva wants.
     // But the FigureElements implement a tree amongst themselves.
@@ -239,8 +248,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       rotation: number;
       isDragging: boolean;
     }
-
-
 
     interface CanvasDim {
       top: number;
@@ -371,11 +378,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
           // This is over the span of the drag.
           let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
-          let dragRotationDegrees = (dragRotationRadians * (180/Math.PI) );
 
           console.log(`Cursor posn: ${cursorPosition.x} ${cursorPosition.y}`);
           console.log(`Figure posn: ${targetPositionX} ${targetPositionY}`);
-          console.log(`Drag rotation degrees: ${dragRotationDegrees}`);
           console.log(`Drag rotation radians: ${dragRotationRadians}`);
 
 
@@ -489,7 +494,7 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
         });
       }
       setStars(generateShapes());
-      setFigureElements([Figure1Head, Figure1Torso]);
+      setFigureElements([Figure1Head, Figure1LeftLeg, Figure1Torso]);
     }, []);
 
 
