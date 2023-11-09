@@ -79,6 +79,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_attach_x: number;
       offset_attach_y: number;
 
+      // How do we project out from the attachment point?
+      offset_attach_rotation: number;
+
       isDragging: boolean;
 
       drag_init_offset_x: number;
@@ -132,7 +135,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id={elem.id}
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (Math.PI / 180)}
+          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI)}
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable
@@ -149,7 +152,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id={elem.id}
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (Math.PI / 180)}
+          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI)}
           radius={elem.appearance.radius}
           draggable
           dragBoundFunc={elem.parent && identityPos}
@@ -175,6 +178,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_x: 773,
       offset_y: 521,
       offset_rotation: 0,
+      offset_attach_rotation: 0,
       isDragging: false,
       drag_init_offset_x: 0,
       drag_init_offset_y: 0,
@@ -195,6 +199,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_x: 10,
       offset_y: -10,
       offset_rotation: Math.PI/2,
+      offset_attach_rotation: Math.PI/2,
       offset_attach_x: 0,
       offset_attach_y: 10,
       isDragging: false,
@@ -218,6 +223,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_y: 50,
       // for now
       offset_rotation: 0,
+      offset_attach_rotation: (3 * Math.PI)/2,
       offset_attach_x: 0,
       offset_attach_y: 0,
       isDragging: false,
@@ -379,8 +385,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           // This is over the span of the drag.
           let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
 
-          console.log(`Cursor posn: ${cursorPosition.x} ${cursorPosition.y}`);
-          console.log(`Figure posn: ${targetPositionX} ${targetPositionY}`);
           console.log(`Drag rotation radians: ${dragRotationRadians}`);
 
 
@@ -415,6 +419,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetAttachY = rotatedAttachmentOffset.y;
 
               newRot = dragRotationRadians;
+
+              console.log(`The saved rotation: ${dragRotationRadians}`);
             }
           }
 
