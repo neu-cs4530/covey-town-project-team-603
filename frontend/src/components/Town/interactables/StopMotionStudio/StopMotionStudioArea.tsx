@@ -198,7 +198,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       parent: Figure1Torso,
       offset_x: 10,
       offset_y: -10,
-      offset_rotation: Math.PI/2,
+      offset_rotation: 0,
       offset_attach_rotation: Math.PI/2,
       offset_attach_x: 0,
       offset_attach_y: 10,
@@ -364,7 +364,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           let newOffsetAttachX = elem.offset_attach_x;
           let newOffsetAttachY = elem.offset_attach_y;
 
+          let newAttachRot = elem.offset_attach_rotation;
           let newRot = elem.offset_rotation;
+
+          let rotDiff = newRot - newAttachRot;
 
           // If the current map member is the target...
           if (elem.id === dragId) {
@@ -401,7 +404,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               // I think we need to keep track of the "rotation so far".
               // Additionally, we probably need to record a drag_init_rotation_degrees.
 
-              let toRotate = -(dragRotationRadians - elem.offset_rotation);
+              let toRotate = -(dragRotationRadians - elem.offset_attach_rotation);
               console.log(`Amount to rotate by: ${toRotate}`);
 
               let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, toRotate);
@@ -418,7 +421,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetAttachX = rotatedAttachmentOffset.x;
               newOffsetAttachY = rotatedAttachmentOffset.y;
 
-              newRot = dragRotationRadians;
+              newAttachRot = dragRotationRadians;
+              newRot = newAttachRot + rotDiff;
 
               console.log(`The saved rotation: ${dragRotationRadians}`);
             }
@@ -434,7 +438,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               ...elem.parent,
               offset_x: targetPositionX,
               offset_y: targetPositionY,
-              offset_rotation: newRot
             }
           }
 
@@ -444,7 +447,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             offset_y: newOffsetY,
             offset_rotation: newRot,
             offset_attach_x: newOffsetAttachX,
-            offset_attach_y: newOffsetAttachY
+            offset_attach_y: newOffsetAttachY,
+            offset_attach_rotation: newAttachRot
           };
 
         }),
