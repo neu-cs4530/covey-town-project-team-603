@@ -38,6 +38,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     );
   };
 
+  function radiansToDegrees(rads: number) {
+    return (rads * 180) / Math.PI
+  }
+
   // the interactable canvas to construct the stop motion scenes
   const Canvas = () => {
     const [stars, setStars] = useState<StarShape[]>([]);
@@ -83,16 +87,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_attach_rotation: number;
 
       isDragging: boolean;
-
-      drag_init_offset_x: number;
-      drag_init_offset_y: number;
-
-      drag_init_offset_attach_y: number;
-      drag_init_offset_attach_x: number;
-
-      drag_init_position_x: number;
-      drag_init_position_y: number;
-    }
+   }
 
     // Get the absolute position of a FigureElement by summing up the offsets.
     function absolutePosn(elem: FigureElement) {
@@ -180,13 +175,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_rotation: 0,
       offset_attach_rotation: 0,
       isDragging: false,
-      drag_init_offset_x: 0,
-      drag_init_offset_y: 0,
-      drag_init_offset_attach_x: 0,
-      drag_init_offset_attach_y: 0,
-      drag_init_position_x: 0,
-      drag_init_position_y: 0,
-    };
+   };
 
     const Figure1Head: FigureElement = {
       // a KonvaCircle
@@ -203,13 +192,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_attach_x: 0,
       offset_attach_y: 10,
       isDragging: false,
-      drag_init_offset_x: 0,
-      drag_init_offset_y: 0,
-      drag_init_offset_attach_x: 0,
-      drag_init_offset_attach_y: 0,
-      drag_init_position_x: 0,
-      drag_init_position_y: 0,
-    };
+   };
 
     const Figure1LeftLeg: FigureElement = {
       appearance: {
@@ -220,19 +203,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       id: "figure_1_left_leg",
       parent: Figure1Torso,
       offset_x: 0,
-      offset_y: 50,
+      offset_y: 45,
       // for now
       offset_rotation: 0,
-      offset_attach_rotation: (3 * Math.PI)/2,
+      offset_attach_rotation: -(Math.PI/2),
       offset_attach_x: 0,
       offset_attach_y: 0,
       isDragging: false,
-      drag_init_offset_x: 0,
-      drag_init_offset_y: 0,
-      drag_init_offset_attach_x: 0,
-      drag_init_offset_attach_y: 0,
-      drag_init_position_x: 0,
-      drag_init_position_y: 0,
     }
 
 
@@ -282,8 +259,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id: i.toString(),
           x: canvasRect.left + canvasRect.width / 2,
           y: canvasRect.top + canvasRect.height / 2,
-          // x: canvasRect.left,
-          // y: canvasRect.top,
           rotation: Math.random() * 180,
           isDragging: false,
         }));
@@ -302,20 +277,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           let newX = star.x;
           let newY = star.y;
 
-
           if (star.id === dragId) {
-            // newX = canvasDim.left;
-            // newY = canvasDim.top;
-            //newX = Math.max(star.x, canvasDim.left + 20);
-            //newY = Math.max(star.y, canvasDim.top + 20);
-            //newX = e.evt.clientX;
-            // newY = e.evt.clientY;
             newX = e.target.position().x;
             newY = e.target.position().y;
-            //newX = e.target.getStage()!.getPointerPosition()!.x;
-            // newY = e.target.getStage()!.getPointerPosition()!.y;
           }
-
 
           return {
             ...star,
@@ -388,7 +353,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           // This is over the span of the drag.
           let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
 
-          console.log(`Drag rotation radians: ${dragRotationRadians}`);
 
 
             /// ... and if it is a root element...
@@ -398,13 +362,15 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetY = targetPositionY;
             } else { // if it is a child element...
 
+
+
               // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
               // the same rotation is applied over and over again.
 
               // I think we need to keep track of the "rotation so far".
               // Additionally, we probably need to record a drag_init_rotation_degrees.
 
-              let toRotate = -(dragRotationRadians - elem.offset_attach_rotation);
+              let toRotate = (elem.offset_attach_rotation - dragRotationRadians);
               console.log(`Amount to rotate by: ${toRotate}`);
 
               let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, toRotate);
@@ -424,7 +390,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newAttachRot = dragRotationRadians;
               newRot = newAttachRot + rotDiff;
 
-              console.log(`The saved rotation: ${dragRotationRadians}`);
+              console.log(`Rotation difference: ${rotDiff}`)
+              console.log(`The saved rotation: ${newRot}`);
+              console.log(`The saved offset rotation: ${newAttachRot}`);
             }
           }
 
@@ -443,9 +411,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
           return {
             ...elem,
+
             offset_x: newOffsetX,
             offset_y: newOffsetY,
             offset_rotation: newRot,
+
             offset_attach_x: newOffsetAttachX,
             offset_attach_y: newOffsetAttachY,
             offset_attach_rotation: newAttachRot
@@ -472,12 +442,6 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
           return {
             ...elem,
             isDragging: elem.id === dragId,
-            drag_init_offset_x: elem.offset_x,
-            drag_init_offset_y: elem.offset_y,
-            drag_init_offset_attach_x: elem.offset_attach_x,
-            drag_init_offset_attach_y: elem.offset_attach_y,
-            drag_init_position_x: e.target.position().x,
-            drag_init_position_y: e.target.position().y,
           };
         }),
       );
