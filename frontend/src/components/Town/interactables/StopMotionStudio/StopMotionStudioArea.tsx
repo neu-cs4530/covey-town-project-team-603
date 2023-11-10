@@ -25,9 +25,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { Vector2d } from 'konva/lib/types';
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
-
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   // the left side panel which allows users to select and drag new items on to the canvas
   const FiguresSelectionPanel = () => {
@@ -39,7 +37,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
   };
 
   function radiansToDegrees(rads: number) {
-    return (rads * 180) / Math.PI
+    return (rads * 180) / Math.PI;
   }
 
   // the interactable canvas to construct the stop motion scenes
@@ -47,13 +45,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     const [stars, setStars] = useState<StarShape[]>([]);
 
     interface KonvaRect {
-      type: "rect";
+      type: 'rect';
       length: number;
       width: number;
     }
 
     interface KonvaCircle {
-      type: "circle";
+      type: 'circle';
       radius: number;
     }
 
@@ -68,7 +66,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     // The proposal is to use offsets to take care of requirement 1.
     // Then, requirement 2 is satified by tracking the (nullable) parent.
     interface FigureElement {
-      appearance: KonvaShape
+      appearance: KonvaShape;
 
       id: string;
       parent?: FigureElement;
@@ -87,7 +85,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_attach_rotation: number;
 
       isDragging: boolean;
-   }
+    }
 
     // Get the absolute position of a FigureElement by summing up the offsets.
     function absolutePosn(elem: FigureElement) {
@@ -104,69 +102,69 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         absolute_rotation += iter.offset_rotation;
         iter = iter.parent;
       }
-      let retval = {absolute_x, absolute_y, absolute_rotation};
+      const retval = { absolute_x, absolute_y, absolute_rotation };
 
       return retval;
     }
 
-
-
     function toKonvaElement(elem: FigureElement) {
-      let absolutePosnVar = absolutePosn(elem);
+      const absolutePosnVar = absolutePosn(elem);
 
       function identityPos(pos: Vector2d) {
-        let absolutePosnVar = absolutePosn(elem);
+        const absolutePosnVar = absolutePosn(elem);
         return {
           x: absolutePosnVar.absolute_x,
-          y: absolutePosnVar.absolute_y        
-        }
+          y: absolutePosnVar.absolute_y,
+        };
       }
 
-      switch(elem.appearance.type) {
-        case "rect":
+      switch (elem.appearance.type) {
+        case 'rect':
           return (
-          <Rect
-          key={elem.id}
-          id={elem.id}
-          x={absolutePosnVar.absolute_x}
-          y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
-          height={elem.appearance.length}
-          width={elem.appearance.width}
-          draggable
-          dragBoundFunc={elem.parent && identityPos}
-          onDragStart={handleDragStartFigure}
-          onDragEnd={handleDragEndFigure}
-          onDragMove={handleDragMoveFigure}
-          fill='#000000'
-             />)
-        case "circle":
+            <Rect
+              key={elem.id}
+              id={elem.id}
+              x={absolutePosnVar.absolute_x}
+              y={absolutePosnVar.absolute_y}
+              rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
+              height={elem.appearance.length}
+              width={elem.appearance.width}
+              draggable
+              dragBoundFunc={elem.parent && identityPos}
+              onDragStart={handleDragStartFigure}
+              onDragEnd={handleDragEndFigure}
+              onDragMove={handleDragMoveFigure}
+              fill='#000000'
+            />
+          );
+        case 'circle':
           return (
-          <Circle
-          key={elem.id}
-          id={elem.id}
-          x={absolutePosnVar.absolute_x}
-          y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
-          radius={elem.appearance.radius}
-          draggable
-          dragBoundFunc={elem.parent && identityPos}
-          onDragStart={handleDragStartFigure}
-          onDragEnd={handleDragEndFigure}
-          onDragMove={handleDragMoveFigure}
-          fill='#000000'
-             />)
+            <Circle
+              key={elem.id}
+              id={elem.id}
+              x={absolutePosnVar.absolute_x}
+              y={absolutePosnVar.absolute_y}
+              rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
+              radius={elem.appearance.radius}
+              draggable
+              dragBoundFunc={elem.parent && identityPos}
+              onDragStart={handleDragStartFigure}
+              onDragEnd={handleDragEndFigure}
+              onDragMove={handleDragMoveFigure}
+              fill='#000000'
+            />
+          );
       }
     }
 
     const Figure1Torso: FigureElement = {
       // a KonvaRect
       appearance: {
-        type: "rect",
+        type: 'rect',
         length: 50,
-        width: 20
+        width: 20,
       },
-      id: "figure_1_torso",
+      id: 'figure_1_torso',
       // This is the root
       parent: undefined,
       // Because this is the root, these are absolute posns
@@ -175,43 +173,42 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       offset_rotation: 0,
       offset_attach_rotation: 0,
       isDragging: false,
-   };
+    };
 
     const Figure1Head: FigureElement = {
       // a KonvaCircle
       appearance: {
-        type: "circle",
-        radius: 10
+        type: 'circle',
+        radius: 10,
       },
-      id: "figure_1_head",
+      id: 'figure_1_head',
       parent: Figure1Torso,
       offset_x: 10,
       offset_y: -10,
       offset_rotation: 0,
-      offset_attach_rotation: Math.PI/2,
+      offset_attach_rotation: Math.PI / 2,
       offset_attach_x: 0,
       offset_attach_y: 10,
       isDragging: false,
-   };
+    };
 
     const Figure1LeftLeg: FigureElement = {
       appearance: {
-        type: "rect",
+        type: 'rect',
         length: 25,
-        width: 5
+        width: 5,
       },
-      id: "figure_1_left_leg",
+      id: 'figure_1_left_leg',
       parent: Figure1Torso,
       offset_x: 0,
       offset_y: 45,
       // for now
       offset_rotation: 0,
-      offset_attach_rotation: -(Math.PI/2),
+      offset_attach_rotation: -(Math.PI / 2),
       offset_attach_x: 0,
       offset_attach_y: 0,
       isDragging: false,
-    }
-
+    };
 
     // These are stored as a list, because that's what Konva wants.
     // But the FigureElements implement a tree amongst themselves.
@@ -251,7 +248,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         return Math.random() * (max - min) + min;
       }
 
-
       if (canvasElement) {
         const canvasRect = canvasElement.getBoundingClientRect();
 
@@ -269,8 +265,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
     const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
-
-
 
       setStars(
         stars.map(star => {
@@ -319,8 +313,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       const dragId = e.target.attrs.id;
 
       // we need to get the absolute "attachment point" to rotate a limb properly.
-          let targetPositionX = e.target.position().x;
-          let targetPositionY = e.target.position().y;
+      const targetPositionX = e.target.position().x;
+      const targetPositionY = e.target.position().y;
 
       setFigureElements(
         figureElements.map(elem => {
@@ -332,39 +326,33 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           let newAttachRot = elem.offset_attach_rotation;
           let newRot = elem.offset_rotation;
 
-          let rotDiff = newRot - newAttachRot;
+          const rotDiff = newRot - newAttachRot;
 
           // If the current map member is the target...
           if (elem.id === dragId) {
+            const cursorPosition = e.target.getStage()!.getPointerPosition()!;
+            const rotationOriginX = targetPositionX + elem.offset_attach_x;
+            const rotationOriginY = targetPositionY + elem.offset_attach_y;
 
-          let cursorPosition = e.target.getStage()!.getPointerPosition()!;
-              let rotationOriginX = targetPositionX + elem.offset_attach_x;
-              let rotationOriginY = targetPositionY + elem.offset_attach_y;
+            // What is the difference between the posn of the figure we are dragging and the cursor?
 
+            // To get the expected vector, we also have to invert the y-axis.
+            // Due to the difference between standard math way, and computer graphics way.
+            const dragVectorX = cursorPosition.x - rotationOriginX;
+            const dragVectorY = -cursorPosition.y + rotationOriginY;
 
+            // This is over the span of the drag.
+            const dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
 
-          // What is the difference between the posn of the figure we are dragging and the cursor?
-
-          // To get the expected vector, we also have to invert the y-axis.
-          // Due to the difference between standard math way, and computer graphics way.
-          let dragVectorX = cursorPosition.x - rotationOriginX;
-          let dragVectorY = -cursorPosition.y + rotationOriginY;
-
-          // This is over the span of the drag.
-          let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
-
-          console.log(`Drag radians: ${dragRotationRadians}`)
-
-
+            console.log(`Drag radians: ${dragRotationRadians}`);
 
             /// ... and if it is a root element...
             if (elem.parent === undefined) {
               // Update the linear position.
               newOffsetX = targetPositionX;
               newOffsetY = targetPositionY;
-            } else { // if it is a child element...
-
-
+            } else {
+              // if it is a child element...
 
               // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
               // the same rotation is applied over and over again.
@@ -372,16 +360,28 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               // I think we need to keep track of the "rotation so far".
               // Additionally, we probably need to record a drag_init_rotation_degrees.
 
-              let toRotate = (elem.offset_attach_rotation - dragRotationRadians);
+              const toRotate = elem.offset_attach_rotation - dragRotationRadians;
               console.log(`Amount to rotate by: ${toRotate}`);
 
-              let rotatedAttachmentOffset = rotatePointAround(0, 0, elem.offset_attach_x, elem.offset_attach_y, toRotate);
+              const rotatedAttachmentOffset = rotatePointAround(
+                0,
+                0,
+                elem.offset_attach_x,
+                elem.offset_attach_y,
+                toRotate,
+              );
 
-              let rotatedTargetPosn = rotatePointAround(rotationOriginX, rotationOriginY, targetPositionX, targetPositionY, toRotate);
+              const rotatedTargetPosn = rotatePointAround(
+                rotationOriginX,
+                rotationOriginY,
+                targetPositionX,
+                targetPositionY,
+                toRotate,
+              );
 
               // For a deep hierarchy we need to get absolute posn but this will do for now
-              let parentTargetPosnX = elem.parent.offset_x;
-              let parentTargetPosnY = elem.parent.offset_y;
+              const parentTargetPosnX = elem.parent.offset_x;
+              const parentTargetPosnY = elem.parent.offset_y;
 
               newOffsetX = rotatedTargetPosn.x - parentTargetPosnX;
               newOffsetY = rotatedTargetPosn.y - parentTargetPosnY;
@@ -390,9 +390,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetAttachY = rotatedAttachmentOffset.y;
 
               newAttachRot = dragRotationRadians;
-              newRot = (newAttachRot + rotDiff);
+              newRot = newAttachRot + rotDiff;
 
-              console.log(`Rotation difference: ${rotDiff}`)
+              console.log(`Rotation difference: ${rotDiff}`);
               console.log(`The saved rotation: ${newRot}`);
               console.log(`The saved offset rotation: ${newAttachRot}`);
             }
@@ -408,7 +408,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               ...elem.parent,
               offset_x: targetPositionX,
               offset_y: targetPositionY,
-            }
+            };
           }
 
           return {
@@ -420,22 +420,27 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
             offset_attach_x: newOffsetAttachX,
             offset_attach_y: newOffsetAttachY,
-            offset_attach_rotation: newAttachRot
+            offset_attach_rotation: newAttachRot,
           };
-
         }),
       );
     };
 
-const rotatePointAround = (origin_x: number, origin_y: number, target_x: number, target_y: number, rad: number) => {
-  const rcos = Math.cos(rad);
-  const rsin = Math.sin(rad);
+    const rotatePointAround = (
+      origin_x: number,
+      origin_y: number,
+      target_x: number,
+      target_y: number,
+      rad: number,
+    ) => {
+      const rcos = Math.cos(rad);
+      const rsin = Math.sin(rad);
 
-  return {
-    x: rcos * (target_x - origin_x) - rsin * (target_y - origin_y) + origin_x,
-    y: rsin * (target_x - origin_x) + rcos * (target_y - origin_y) + origin_y
-   }
-};
+      return {
+        x: rcos * (target_x - origin_x) - rsin * (target_y - origin_y) + origin_x,
+        y: rsin * (target_x - origin_x) + rcos * (target_y - origin_y) + origin_y,
+      };
+    };
 
     const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
       const dragId = e.target.attrs.id;
@@ -461,7 +466,6 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
       );
     };
 
-
     useEffect(() => {
       if (canvasRef.current) {
         setCanvasDim({
@@ -473,7 +477,6 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
       setFigureElements([Figure1Head, Figure1LeftLeg, Figure1Torso]);
     }, []);
 
-
     return (
       <Box
         ref={canvasRef}
@@ -482,9 +485,7 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
           height: canvasHeight,
           backgroundColor: 'yellow',
         }}>
-        <Stage
-          width={canvasWidth}
-          height={canvasHeight}>
+        <Stage width={canvasWidth} height={canvasHeight}>
           <Layer>
             {stars.map(star => (
               <Star
@@ -511,12 +512,8 @@ const rotatePointAround = (origin_x: number, origin_y: number, target_x: number,
                 onDragMove={handleDragMove}
               />
             ))}
-            <Group>
-
-            </Group>
-            {figureElements.map(elem => (
-              toKonvaElement(elem)
-            ))}
+            <Group></Group>
+            {figureElements.map(elem => toKonvaElement(elem))}
           </Layer>
         </Stage>
       </Box>
