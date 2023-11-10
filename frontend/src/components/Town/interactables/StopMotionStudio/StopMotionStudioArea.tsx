@@ -130,7 +130,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id={elem.id}
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI)}
+          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable
@@ -147,7 +147,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           id={elem.id}
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI)}
+          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
           radius={elem.appearance.radius}
           draggable
           dragBoundFunc={elem.parent && identityPos}
@@ -353,6 +353,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           // This is over the span of the drag.
           let dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
 
+          console.log(`Drag radians: ${dragRotationRadians}`)
+
 
 
             /// ... and if it is a root element...
@@ -388,7 +390,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               newOffsetAttachY = rotatedAttachmentOffset.y;
 
               newAttachRot = dragRotationRadians;
-              newRot = newAttachRot + rotDiff;
+              newRot = (newAttachRot + rotDiff);
 
               console.log(`Rotation difference: ${rotDiff}`)
               console.log(`The saved rotation: ${newRot}`);
