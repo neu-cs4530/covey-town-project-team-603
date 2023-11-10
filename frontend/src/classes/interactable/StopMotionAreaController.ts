@@ -48,6 +48,11 @@ export default abstract class StopMotionAreaController extends InteractableAreaC
    */
   public async leaveGame() {
     const instanceID = this._instanceID;
-    // finish this
+    if (instanceID) {
+      await this._townController.sendInteractableCommand(this.id, {
+        type: 'LeaveGame',
+        gameID: instanceID,
+      });
+    }
   }
 }
