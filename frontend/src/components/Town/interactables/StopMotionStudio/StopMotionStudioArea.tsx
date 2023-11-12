@@ -39,12 +39,19 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     );
   };
 
-  // function radiansToDegrees(rads: number) {
-  //   return (rads * 180) / Math.PI;
-  // }
+  function addNewFrame() {}
 
   // the interactable canvas to construct the stop motion scenes
   const Canvas = () => {
+    // the canvas should always be displaying two screens
+    // 1. past frame which is not interactable
+    // 2. current editable frame with full opacity on top
+
+    const canvasRef = useRef<HTMLDivElement | null>(null);
+
+    const canvasWidth = 1300;
+    const canvasHeight = 800;
+
     const figure1Torso: FigureElement = {
       type: 'figure',
       // a KonvaRect
@@ -104,22 +111,75 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     };
 
     const frame1: Frame = {
-      frameID: 5,
+      frameID: 1,
       canvasElements: [figure1Head, figure1LeftLeg, figure1Torso],
-      interactable: true,
+    };
+
+    const figure2Torso: FigureElement = {
+      type: 'figure',
+      // a KonvaRect
+      appearance: {
+        type: 'rect',
+        length: 50,
+        width: 20,
+      },
+      id: 'figure_1_torso',
+      // This is the root
+      parent: undefined,
+      // Because this is the root, these are absolute posns
+      offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+      offset_y: 521,
+      offset_rotation: 0,
+      offset_attach_rotation: 0,
+      offset_attach_x: 0,
+      offset_attach_y: 0,
+      isDragging: false,
+    };
+
+    const figure2Head: FigureElement = {
+      type: 'figure',
+      // a KonvaCircle
+      appearance: {
+        type: 'circle',
+        radius: 10,
+      },
+      id: 'figure_1_head',
+      parent: figure2Torso,
+      offset_x: 10,
+      offset_y: -10,
+      offset_rotation: 0,
+      offset_attach_rotation: Math.PI / 2,
+      offset_attach_x: 0,
+      offset_attach_y: 10,
+      isDragging: false,
+    };
+
+    const figure2LeftLeg: FigureElement = {
+      type: 'figure',
+      appearance: {
+        type: 'rect',
+        length: 25,
+        width: 5,
+      },
+      id: 'figure_1_left_leg',
+      parent: figure2Torso,
+      offset_x: 0,
+      offset_y: 45,
+      // for now
+      offset_rotation: 0,
+      offset_attach_rotation: -(Math.PI / 2),
+      offset_attach_x: 0,
+      offset_attach_y: 0,
+      isDragging: false,
+    };
+
+    const frame2: Frame = {
+      frameID: 2,
+      canvasElements: [figure2Head, figure2LeftLeg, figure2Torso],
     };
 
     // stores the canvas frames
-    const [frames, setFrames] = useState<Frame[]>([frame1]);
-
-    // the canvas should always be displaying two screens
-    // 1. past frame which is not interactable
-    // 2. current editable frame with full opacity on top
-
-    const canvasRef = useRef<HTMLDivElement | null>(null);
-
-    const canvasWidth = 1300;
-    const canvasHeight = 800;
+    const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
     // this use effect currently manually sets one frame for testing
     useEffect(() => {}, []);
@@ -129,7 +189,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       setFrames(prevFrames => {
         // Make a shallow copy of the previous frames
         const updatedFrames = [...prevFrames];
-
         // Update the last frame (assuming there is at least one frame)
         const lastFrame = updatedFrames[updatedFrames.length - 1];
         lastFrame.canvasElements = elems;
@@ -148,13 +207,35 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         }}>
         <Stage width={canvasWidth} height={canvasHeight}>
           {/* previous layer (non interactable) */}
-          <Layer opacity={0.1}></Layer>
+          <Layer opacity={0.1}>
+            {frames[frames.length - 2]
+              ? frames[frames.length - 2].canvasElements.map(elem => {
+                  if (elem.type == 'figure') {
+                    const figureElem = elem as FigureElement; // case current element to figure element
+                    return toKonvaElement(
+                      figureElem,
+                      frames[frames.length - 1].canvasElements,
+                      updateFrameElements,
+                      false,
+                    );
+                  } else if (elem.type == 'simpleShape') {
+                    // return some other type here
+                    return {};
+                  }
+                })
+              : undefined}
+          </Layer>
           {/* interactable layer (interactable) */}
           <Layer>
-            {frames[0].canvasElements.map(elem => {
+            {frames[frames.length - 1].canvasElements.map(elem => {
               if (elem.type == 'figure') {
                 const figureElem = elem as FigureElement; // case current element to figure element
-                return toKonvaElement(figureElem, frames[0].canvasElements, updateFrameElements);
+                return toKonvaElement(
+                  figureElem,
+                  frames[frames.length - 1].canvasElements,
+                  updateFrameElements,
+                  true,
+                );
               } else if (elem.type == 'simpleShape') {
                 // return some other type here
                 return {};
@@ -189,7 +270,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             </Button>
           </Box>
 
-          <Button size='md' height='48px'>
+          <Button size='md' height='48px' onClick={addNewFrame}>
             Add Latest Frame
           </Button>
 

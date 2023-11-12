@@ -254,6 +254,7 @@ export const toKonvaElement = (
   elem: FigureElement,
   figureList: CanvasElement[],
   updateFrameElements: (newValue: CanvasElement[]) => void,
+  interactable: boolean,
 ) => {
   const absolutePosnVar = absolutePosn(elem);
 
@@ -276,7 +277,7 @@ export const toKonvaElement = (
           rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
           height={elem.appearance.length}
           width={elem.appearance.width}
-          draggable
+          draggable={interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
@@ -293,7 +294,7 @@ export const toKonvaElement = (
           y={absolutePosnVar.absolute_y}
           rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
           radius={elem.appearance.radius}
-          draggable
+          draggable={interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}

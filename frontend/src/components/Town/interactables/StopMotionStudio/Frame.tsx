@@ -6,5 +6,4 @@ import { CanvasElement } from './CanvasElements';
 export interface Frame {
   frameID: number;
   canvasElements: CanvasElement[];
-  interactable: boolean;
 }
