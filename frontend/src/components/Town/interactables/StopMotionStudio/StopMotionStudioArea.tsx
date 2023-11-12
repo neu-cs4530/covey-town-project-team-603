@@ -103,15 +103,9 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       isDragging: false,
     };
 
-    const [currentFrameElems, setCurrentFrameElems] = useState<CanvasElement[]>([
-      figure1Head,
-      figure1LeftLeg,
-      figure1Torso,
-    ]);
-
     const frame1: Frame = {
       frameID: 5,
-      canvasElements: currentFrameElems,
+      canvasElements: [figure1Head, figure1LeftLeg, figure1Torso],
       interactable: true,
     };
 
@@ -130,6 +124,20 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     // this use effect currently manually sets one frame for testing
     useEffect(() => {}, []);
 
+    // updater callback for current frame elements
+    function updateFrameElements(elems: CanvasElement[]) {
+      setFrames(prevFrames => {
+        // Make a shallow copy of the previous frames
+        const updatedFrames = [...prevFrames];
+
+        // Update the last frame (assuming there is at least one frame)
+        const lastFrame = updatedFrames[updatedFrames.length - 1];
+        lastFrame.canvasElements = elems;
+
+        return updatedFrames;
+      });
+    }
+
     return (
       <Box
         ref={canvasRef}
@@ -146,7 +154,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
             {frames[0].canvasElements.map(elem => {
               if (elem.type == 'figure') {
                 const figureElem = elem as FigureElement; // case current element to figure element
-                return toKonvaElement(figureElem, currentFrameElems, setCurrentFrameElems);
+                return toKonvaElement(figureElem, frames[0].canvasElements, updateFrameElements);
               } else if (elem.type == 'simpleShape') {
                 // return some other type here
                 return {};

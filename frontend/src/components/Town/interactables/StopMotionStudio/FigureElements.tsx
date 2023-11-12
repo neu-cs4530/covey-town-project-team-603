@@ -85,10 +85,10 @@ const rotatePointAround = (
 const handleDragStartFigure = (
   e: KonvaEventObject<DragEvent>,
   figureList: CanvasElement[],
-  setFigureList: (newValue: CanvasElement[]) => void,
+  updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const dragId = e.target.attrs.id;
-  setFigureList(
+  updateFrameElements(
     figureList.map(elem => {
       if (elem.type == 'figure') {
         const figureElem = elem as FigureElement;
@@ -106,10 +106,10 @@ const handleDragStartFigure = (
 const handleDragEndFigure = (
   e: KonvaEventObject<DragEvent>,
   figureList: CanvasElement[],
-  setFigureList: (newValue: CanvasElement[]) => void,
+  updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const dragId = e.target.attrs.id;
-  setFigureList(
+  updateFrameElements(
     figureList.map(elem => {
       if (elem.type == 'figure') {
         const figureElem = elem as FigureElement;
@@ -127,7 +127,7 @@ const handleDragEndFigure = (
 const handleDragMoveFigure = (
   e: KonvaEventObject<DragEvent>,
   figureList: CanvasElement[],
-  setFigureList: (newValue: CanvasElement[]) => void,
+  updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const dragId = e.target.attrs.id;
 
@@ -135,7 +135,7 @@ const handleDragMoveFigure = (
   const targetPositionX = e.target.position().x;
   const targetPositionY = e.target.position().y;
 
-  setFigureList(
+  updateFrameElements(
     figureList.map(elem => {
       if (elem.type == 'figure') {
         const figureElem = elem as FigureElement;
@@ -225,7 +225,6 @@ const handleDragMoveFigure = (
         // FIXME: This won't work if it happens to be in the wrong order.
         // But it could also work if we make sure to lay it out in the 'right' way.
         if (figureElem.parent !== undefined && figureElem.parent.id === dragId) {
-          console.log(figureElem.id);
           figureElem.parent = {
             ...figureElem.parent,
             offset_x: targetPositionX,
@@ -254,7 +253,7 @@ const handleDragMoveFigure = (
 export const toKonvaElement = (
   elem: FigureElement,
   figureList: CanvasElement[],
-  setFigureList: (newValue: CanvasElement[]) => void,
+  updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const absolutePosnVar = absolutePosn(elem);
 
@@ -279,9 +278,9 @@ export const toKonvaElement = (
           width={elem.appearance.width}
           draggable
           dragBoundFunc={elem.parent && identityPos}
-          onDragStart={e => handleDragStartFigure(e, figureList, setFigureList)}
-          onDragEnd={e => handleDragEndFigure(e, figureList, setFigureList)}
-          onDragMove={e => handleDragMoveFigure(e, figureList, setFigureList)}
+          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
+          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
+          onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
           fill='#000000'
         />
       );
@@ -296,9 +295,9 @@ export const toKonvaElement = (
           radius={elem.appearance.radius}
           draggable
           dragBoundFunc={elem.parent && identityPos}
-          onDragStart={e => handleDragStartFigure(e, figureList, setFigureList)}
-          onDragEnd={e => handleDragEndFigure(e, figureList, setFigureList)}
-          onDragMove={e => handleDragMoveFigure(e, figureList, setFigureList)}
+          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
+          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
+          onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
           fill='#000000'
         />
       );
