@@ -115,12 +115,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       length: 50,
       width: 20,
     },
-    id: 'figure_1_torso',
+    id: 'figure_2_torso',
     // This is the root
     parent: undefined,
     // Because this is the root, these are absolute posns
     offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-    offset_y: 521,
+    offset_y: 721,
     offset_rotation: 0,
     offset_attach_rotation: 0,
     offset_attach_x: 0,
@@ -135,7 +135,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       type: 'circle',
       radius: 10,
     },
-    id: 'figure_1_head',
+    id: 'figure_2_head',
     parent: figure2Torso,
     offset_x: 10,
     offset_y: -10,
@@ -153,7 +153,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       length: 25,
       width: 5,
     },
-    id: 'figure_1_left_leg',
+    id: 'figure_2_left_leg',
     parent: figure2Torso,
     offset_x: 0,
     offset_y: 45,
@@ -179,11 +179,15 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         return { ...elem }; // Shallow copy each element
       });
 
+
       // Create a new frame with current elements and new ID
       const newFrame = {
         frameID: prevFrames.length + 1,
         canvasElements: newFrameElements,
       };
+
+
+      console.log(newFrame)
 
       //const newFrameList = [...prevFrames, newFrame];
 
@@ -202,13 +206,15 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     const canvasWidth = 1300;
     const canvasHeight = 800;
     function updateFrameElements(elems: CanvasElement[]) {
-      update((prevFrames: Frame[]) => {
+      update((frames: Frame[]) => {
         // Make a shallow copy of the previous frames
-        const updatedFrames = [...prevFrames];
+        //const updatedFrames = [...prevFrames];
+        const updatedFrames = frames.slice(0,-1);
+        //console.log(updatedFrames);
         // Update the last frame (assuming there is at least one frame)
-        const lastFrame = updatedFrames[updatedFrames.length - 1];
+        const lastFrame = frames[frames.length - 1];
         lastFrame.canvasElements = elems;
-        console.log('updated frame elements');
+        updatedFrames.push(lastFrame)
         return updatedFrames;
       });
     }
@@ -239,7 +245,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
                   const figureElem = elem as FigureElement; // case current element to figure element
                   return toKonvaElement(
                     figureElem,
-                    canvasFrames[canvasFrames.length - 1].canvasElements,
+                    canvasFrames[canvasFrames.length - 2].canvasElements,
                     updateFrameElements,
                     false,
                   );
