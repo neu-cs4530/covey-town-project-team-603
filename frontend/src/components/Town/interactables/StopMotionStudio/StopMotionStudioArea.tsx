@@ -17,14 +17,14 @@ import useTownController from '../../../../hooks/useTownController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 // import StopMotionArea from '../StopMotionArea';
 import StopMotionAreaInteractable from '../StopMotionArea';
-import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
+//import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
 import { Stage, Layer, Star, Group } from 'react-konva';
-import { blue } from '@material-ui/core/colors';
-import Konva from 'konva';
-import { Vector2d } from 'konva/lib/types';
+//import { blue } from '@material-ui/core/colors';
+//import Konva from 'konva';
+//import { Vector2d } from 'konva/lib/types';
 import { toKonvaElement, FigureElement } from './FigureElements';
 import { CanvasElement, StarShape } from './CanvasElements';
-import { KonvaEventObject } from 'konva/lib/Node';
+//import { KonvaEventObject } from 'konva/lib/Node';
 import { Frame } from './Frame';
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
@@ -43,6 +43,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     frames: Frame[];
     setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
   };
+
   const figure1Torso: FigureElement = {
     type: 'figure',
     // a KonvaRect
@@ -191,7 +192,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
   }
 
   // the interactable canvas to construct the stop motion scenes
-  const Canvas: React.FC<CanvasProps> = ({ setFrames }) => {
+  const Canvas: React.FC<CanvasProps> = ({ setFrames: update, frames: canvasFrames }) => {
     // the canvas should always be displaying two screens
     // 1. past frame which is not interactable
     // 2. current editable frame with full opacity on top
@@ -200,9 +201,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
     const canvasWidth = 1300;
     const canvasHeight = 800;
-
     function updateFrameElements(elems: CanvasElement[]) {
-      setFrames((prevFrames: Frame[]) => {
+      update((prevFrames: Frame[]) => {
         // Make a shallow copy of the previous frames
         const updatedFrames = [...prevFrames];
         // Update the last frame (assuming there is at least one frame)
@@ -231,15 +231,15 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         <Stage width={canvasWidth} height={canvasHeight}>
           {/* previous layer (non interactable) */}
           {/* Render the second-to-last frame with lower opacity */}
-          {frames.length > 1 && (
+          {canvasFrames.length > 1 && (
             <Layer opacity={0.1}>
-              {frames[frames.length - 2].canvasElements.map(elem => {
+              {canvasFrames[canvasFrames.length - 2].canvasElements.map(elem => {
                 // Render each element of the second-to-last frame
                 if (elem.type == 'figure') {
                   const figureElem = elem as FigureElement; // case current element to figure element
                   return toKonvaElement(
                     figureElem,
-                    frames[frames.length - 1].canvasElements,
+                    canvasFrames[canvasFrames.length - 1].canvasElements,
                     updateFrameElements,
                     false,
                   );
@@ -253,13 +253,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
           {/* Render the last frame (current frame) */}
           <Layer>
-            {frames[frames.length - 1].canvasElements.map(elem => {
+            {canvasFrames[canvasFrames.length - 1].canvasElements.map(elem => {
               // Render each element of the last frame (current frame)
               if (elem.type == 'figure') {
                 const figureElem = elem as FigureElement; // case current element to figure element
                 return toKonvaElement(
                   figureElem,
-                  frames[frames.length - 1].canvasElements,
+                  canvasFrames[canvasFrames.length - 1].canvasElements,
                   updateFrameElements,
                   true,
                 );

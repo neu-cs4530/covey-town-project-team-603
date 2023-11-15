@@ -256,6 +256,7 @@ export const toKonvaElement = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) => {
+  console.log(interactable);
   const absolutePosnVar = absolutePosn(elem);
 
   function identityPos(pos: Vector2d) {
