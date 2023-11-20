@@ -14,9 +14,14 @@ interface KonvaCircle {
   radius: number;
 }
 
+interface KonvaTri {
+  type: 'tri';
+  radius: number;
+}
+
 // Types of konva shape.
 // Used in FigureElement to provide an appearance.
-type KonvaShape = KonvaCircle | KonvaRect;
+type KonvaShape = KonvaCircle | KonvaRect | KonvaTri;
 
 // TODO: Movement is hierarchical.
 // 1. Moving a "parent" node should move all of the children nodes.
@@ -44,6 +49,7 @@ export interface FigureElement extends CanvasElement {
   offset_attach_rotation: number;
 
   isDragging: boolean;
+  dragOverride: boolean;
 }
 
 // Get the absolute position of a FigureElement by summing up the offsets.
@@ -292,7 +298,7 @@ export const toKonvaElement = (
           rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
           height={elem.appearance.length}
           width={elem.appearance.width}
-          draggable={interactable}
+          draggable={!elem.dragOverride && interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
@@ -309,7 +315,7 @@ export const toKonvaElement = (
           y={absolutePosnVar.absolute_y}
           rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
           radius={elem.appearance.radius}
-          draggable={interactable}
+          draggable={!elem.dragOverride && interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
@@ -326,7 +332,7 @@ export const toKonvaElement = (
           x={absolutePosnVar.absolute_x}
           y={absolutePosnVar.absolute_y}
           rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
-          draggable={interactable}
+          draggable={!elem.dragOverride && interactable}
           radius={elem.appearance.radius}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}

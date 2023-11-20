@@ -335,9 +335,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     offset_y: -3,
     offset_rotation: -1 * Math.PI / 2,
     offset_attach_rotation: 0,
-    offset_attach_x: -3,
+    offset_attach_x: 0,
     offset_attach_y: 0,
     isDragging: false,
+    dragOverride: true
   };
 
   const figure4Wing2: FigureElement = {
@@ -355,17 +356,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     offset_y: 0,
     offset_rotation: Math.PI / 2,
     offset_attach_rotation: 0,
-    offset_attach_x: +3,
+    offset_attach_x: 0,
     offset_attach_y: 0,
     isDragging: false,
+    dragOverride: true
   };
-
-
-
-
-
-
-
 
 
  const frame1: Frame = {
