@@ -11,6 +11,7 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
+import { Text as KonvaText } from 'react-konva';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
@@ -170,15 +171,27 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     canvasElements: [figure2Head, figure2Torso],
   };
 
-  const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
+  // this is the first default frame, which allows users to go back and edit the
+  // first frame, without running out of bounds on the previous layer
+  const defaultFrame: Frame = {
+    frameID: 0,
+    canvasElements: [],
+  };
+
+  // const [frames, setFrames] = useState<Frame[]>([default]);
+
+  const [frames, setFrames] = useState<Frame[]>([defaultFrame, frame1, frame2]);
+
+  // initialize current frame
+  const [currentFrame, setCurrentFrame] = useState<number>(frames.length - 1);
 
   function addNewFrame() {
+    setCurrentFrame(frames.length);
     setFrames((prevFrames: Frame[]) => {
       // Clone the last frame's elements to create a new frame
       const newFrameElements = prevFrames[prevFrames.length - 1].canvasElements.map(elem => {
         return { ...elem }; // Shallow copy each element
       });
-
 
       // Create a new frame with current elements and new ID
       const newFrame = {
@@ -186,14 +199,23 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         canvasElements: newFrameElements,
       };
 
-
-      console.log(newFrame)
-
       //const newFrameList = [...prevFrames, newFrame];
 
       return [...prevFrames, newFrame]; //add new frame
     });
   }
+
+  const frameForward = () => {
+    if (currentFrame < frames.length - 1) {
+      setCurrentFrame(currentFrame + 1);
+    }
+  };
+
+  const frameBackward = () => {
+    if (currentFrame > 1) {
+      setCurrentFrame(currentFrame - 1);
+    }
+  };
 
   // the interactable canvas to construct the stop motion scenes
   const Canvas: React.FC<CanvasProps> = ({ setFrames: update, frames: canvasFrames }) => {
@@ -209,12 +231,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       update((frames: Frame[]) => {
         // Make a shallow copy of the previous frames
         //const updatedFrames = [...prevFrames];
-        const updatedFrames = frames.slice(0,-1);
+        const updatedFrames = frames.slice(0, -1);
         //console.log(updatedFrames);
         // Update the last frame (assuming there is at least one frame)
         const lastFrame = frames[frames.length - 1];
         lastFrame.canvasElements = elems;
-        updatedFrames.push(lastFrame)
+        updatedFrames.push(lastFrame);
         return updatedFrames;
       });
     }
@@ -239,13 +261,13 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           {/* Render the second-to-last frame with lower opacity */}
           {canvasFrames.length > 1 && (
             <Layer opacity={0.1}>
-              {canvasFrames[canvasFrames.length - 2].canvasElements.map(elem => {
+              {canvasFrames[currentFrame - 1].canvasElements.map(elem => {
                 // Render each element of the second-to-last frame
                 if (elem.type == 'figure') {
                   const figureElem = elem as FigureElement; // case current element to figure element
                   return toKonvaElement(
                     figureElem,
-                    canvasFrames[canvasFrames.length - 2].canvasElements,
+                    canvasFrames[currentFrame - 1].canvasElements,
                     updateFrameElements,
                     false,
                   );
@@ -259,21 +281,30 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
           {/* Render the last frame (current frame) */}
           <Layer>
-            {canvasFrames[canvasFrames.length - 1].canvasElements.map(elem => {
+            {canvasFrames[currentFrame].canvasElements.map(elem => {
               // Render each element of the last frame (current frame)
               if (elem.type == 'figure') {
                 const figureElem = elem as FigureElement; // case current element to figure element
                 return toKonvaElement(
                   figureElem,
-                  canvasFrames[canvasFrames.length - 1].canvasElements,
+                  canvasFrames[currentFrame].canvasElements,
                   updateFrameElements,
-                  true,
+                  currentFrame == frames.length - 1,
                 );
               } else if (elem.type == 'simpleShape') {
                 // return some other type here
                 return {};
               }
             })}
+          </Layer>
+          <Layer>
+            {/* layer displays current frame count */}
+            <KonvaText
+              offsetX={-10}
+              offsetY={-10}
+              fontSize={25}
+              text={'Current Frame: ' + currentFrame + ' / ' + (frames.length - 1)}
+            />
           </Layer>
         </Stage>
       </Box>
@@ -299,10 +330,10 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           </Box>
 
           <Box>
-            <Button size='md' height='48px' marginRight='5px'>
+            <Button size='md' height='48px' marginRight='5px' onClick={frameBackward}>
               {'<--'}
             </Button>
-            <Button size='md' height='48px'>
+            <Button size='md' height='48px' onClick={frameForward}>
               {'-->'}
             </Button>
           </Box>
