@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rect, Circle } from 'react-konva';
+import { Rect, Circle, RegularPolygon } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { CanvasElement, CanvasElementType } from './CanvasElements';
 
@@ -317,5 +317,23 @@ export const toKonvaElement = (
           fill='#000000'
         />
       );
+    case 'tri':
+      return (
+        <RegularPolygon
+          sides={3}
+          key={elem.id}
+          id={elem.id}
+          x={absolutePosnVar.absolute_x}
+          y={absolutePosnVar.absolute_y}
+          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
+          draggable={interactable}
+          radius={elem.appearance.radius}
+          dragBoundFunc={elem.parent && identityPos}
+          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
+          onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
+          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
+          fill='#000000'
+        />      
+        )
   }
 };

@@ -103,9 +103,185 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     isDragging: false,
   };
 
-  const frame1: Frame = {
+  const figure1RightLeg: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_1_right_leg',
+    parent: figure1Torso,
+    offset_x: 15,
+    offset_y: 45,
+    // for now
+    offset_rotation: 0,
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure1LeftArm: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_1_left_arm',
+    parent: figure1Torso,
+    offset_x: 0,
+    offset_y: 0,
+    // for now
+    offset_rotation: -(Math.PI / 4),
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure1RightArm: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_1_right_arm',
+    parent: figure1Torso,
+    offset_x: 20,
+    offset_y: 0,
+    // for now
+    offset_rotation: (Math.PI / 4),
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+
+
+
+  const figure3Torso: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'rect',
+      length: 50,
+      width: 20,
+    },
+    id: 'figure_3_torso',
+    // This is the root
+    parent: undefined,
+    // Because this is the root, these are absolute posns
+    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 521,
+    offset_rotation: Math.PI / 2,
+    offset_attach_rotation: 0,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure3Head: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'circle',
+      radius: 10,
+    },
+    id: 'figure_3_head',
+    parent: figure3Torso,
+    offset_x: 60,
+    offset_y: -20,
+    offset_rotation: 0,
+    offset_attach_rotation: 0,
+    offset_attach_x: -10,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure3Leg1: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_3_leg_1',
+    parent: figure3Torso,
+    offset_x: 0,
+    offset_y: 0,
+    offset_rotation: -1 * Math.PI / 2,
+    offset_attach_rotation: -1 * (Math.PI) / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure3Leg2: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_3_leg_2',
+    parent: figure3Torso,
+    offset_x: 15,
+    offset_y: 0,
+    offset_rotation: -1 * Math.PI / 2,
+    offset_attach_rotation: -1 * (Math.PI) / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+
+  const figure3Leg3: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_3_leg_3',
+    parent: figure3Torso,
+    offset_x: 30,
+    offset_y: 0,
+    offset_rotation: -1 * Math.PI / 2,
+    offset_attach_rotation: -1 * (Math.PI) / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure3Leg4: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_3_leg_4',
+    parent: figure3Torso,
+    offset_x: 45,
+    offset_y: 0,
+    offset_rotation: -1 * Math.PI / 2,
+    offset_attach_rotation: -1 * (Math.PI) / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+ const frame1: Frame = {
     frameID: 1,
-    canvasElements: [figure1Head, figure1LeftLeg, figure1Torso],
+    canvasElements: [figure1Head, figure1LeftLeg, figure1RightLeg, figure1LeftArm, figure1RightArm, figure1Torso],
   };
 
   const figure2Torso: FigureElement = {
@@ -168,7 +344,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
   const frame2: Frame = {
     frameID: 2,
-    canvasElements: [figure2Head, figure2Torso],
+    canvasElements: [figure2Head, figure2Torso, figure3Head, figure3Torso, figure3Leg1, figure3Leg2, figure3Leg3, figure3Leg4],
   };
 
   const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
