@@ -279,6 +279,95 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     isDragging: false,
   };
 
+  const figure4Torso: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'rect',
+      length: 10,
+      width: 3,
+    },
+    id: 'figure_4_torso',
+    // This is the root
+    parent: undefined,
+    // Because this is the root, these are absolute posns
+    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 521,
+    offset_rotation: Math.PI/2,
+    offset_attach_rotation: 0,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure4Head: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'circle',
+      radius: 3,
+    },
+    id: 'figure_4_head',
+    // This is the root
+    parent: figure4Torso,
+    // Because this is the root, these are absolute posns
+    offset_x: 13, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 0,
+    offset_rotation: 0,
+    offset_attach_rotation: 0,
+    offset_attach_x: -3,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure4Wing1: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'tri',
+      radius: 5,
+    },
+    id: 'figure_4_wing_1',
+    // This is the root
+    parent: figure4Torso,
+    // Because this is the root, these are absolute posns
+    offset_x: 5, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: -3,
+    offset_rotation: -1 * Math.PI / 2,
+    offset_attach_rotation: 0,
+    offset_attach_x: -3,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure4Wing2: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'tri',
+      radius: 5,
+    },
+    id: 'figure_4_wing_2',
+    // This is the root
+    parent: figure4Torso,
+    // Because this is the root, these are absolute posns
+    offset_x: 5, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 0,
+    offset_rotation: Math.PI / 2,
+    offset_attach_rotation: 0,
+    offset_attach_x: +3,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+
+
+
+
+
+
+
+
  const frame1: Frame = {
     frameID: 1,
     canvasElements: [figure1Head, figure1LeftLeg, figure1RightLeg, figure1LeftArm, figure1RightArm, figure1Torso],
@@ -344,7 +433,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
 
   const frame2: Frame = {
     frameID: 2,
-    canvasElements: [figure2Head, figure2Torso, figure3Head, figure3Torso, figure3Leg1, figure3Leg2, figure3Leg3, figure3Leg4],
+    canvasElements: [figure2Head, figure2Torso, figure3Head, figure3Torso, figure3Leg1, figure3Leg2, figure3Leg3, figure3Leg4, figure4Torso, figure4Head, figure4Wing1, figure4Wing2],
   };
 
   const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
