@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Container,
   Modal,
   ModalCloseButton,
   ModalContent,
@@ -11,20 +10,25 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
+import { Text as KonvaText } from 'react-konva';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
+import { useInteractable } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 // import StopMotionArea from '../StopMotionArea';
 import StopMotionAreaInteractable from '../StopMotionArea';
-import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
-import { Stage, Layer, Star, Group, Rect, Circle } from 'react-konva';
-import { blue } from '@material-ui/core/colors';
-import Konva from 'konva';
-import { KonvaEventObject } from 'konva/lib/Node';
-import { Vector2d } from 'konva/lib/types';
+//import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
+import { Stage, Layer } from 'react-konva';
+//import { blue } from '@material-ui/core/colors';
+//import Konva from 'konva';
+//import { Vector2d } from 'konva/lib/types';
+import { toKonvaElement, FigureElement } from './FigureElements';
+import { CanvasElement } from './CanvasElements';
+//import { KonvaEventObject } from 'konva/lib/Node';
+import { Frame } from './Frame';
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
+  const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
   // the left side panel which allows users to select and drag new items on to the canvas
@@ -36,446 +40,234 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     );
   };
 
-  function radiansToDegrees(rads: number) {
-    return (rads * 180) / Math.PI;
+  type CanvasProps = {
+    frames: Frame[];
+    setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
+  };
+
+  const figure1Torso: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'rect',
+      length: 50,
+      width: 20,
+    },
+    id: 'figure_1_torso',
+    // This is the root
+    parent: undefined,
+    // Because this is the root, these are absolute posns
+    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 521,
+    offset_rotation: 0,
+    offset_attach_rotation: 0,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure1Head: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'circle',
+      radius: 10,
+    },
+    id: 'figure_1_head',
+    parent: figure1Torso,
+    offset_x: 10,
+    offset_y: -10,
+    offset_rotation: 0,
+    offset_attach_rotation: Math.PI / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 10,
+    isDragging: false,
+  };
+
+  const figure1LeftLeg: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_1_left_leg',
+    parent: figure1Torso,
+    offset_x: 0,
+    offset_y: 45,
+    // for now
+    offset_rotation: 0,
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const frame1: Frame = {
+    frameID: 1,
+    canvasElements: [figure1Head, figure1LeftLeg, figure1Torso],
+  };
+
+  const figure2Torso: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'rect',
+      length: 50,
+      width: 20,
+    },
+    id: 'figure_2_torso',
+    // This is the root
+    parent: undefined,
+    // Because this is the root, these are absolute posns
+    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 721,
+    offset_rotation: 0,
+    offset_attach_rotation: 0,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure2Head: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'circle',
+      radius: 10,
+    },
+    id: 'figure_2_head',
+    parent: figure2Torso,
+    offset_x: 10,
+    offset_y: -10,
+    offset_rotation: 0,
+    offset_attach_rotation: Math.PI / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 10,
+    isDragging: false,
+  };
+
+  const figure2LeftLeg: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_2_left_leg',
+    parent: figure2Torso,
+    offset_x: 0,
+    offset_y: 45,
+    // for now
+    offset_rotation: 0,
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const frame2: Frame = {
+    frameID: 2,
+    canvasElements: [figure2Head, figure2Torso],
+  };
+
+  // this is the first default frame, which allows users to go back and edit the
+  // first frame, without running out of bounds on the previous layer
+  const defaultFrame: Frame = {
+    frameID: 0,
+    canvasElements: [],
+  };
+
+  // const [frames, setFrames] = useState<Frame[]>([default]);
+
+  const [frames, setFrames] = useState<Frame[]>([defaultFrame, frame1, frame2]);
+
+  // initialize current frame
+  const [currentFrame, setCurrentFrame] = useState<number>(frames.length - 1);
+
+  function addNewFrame() {
+    setCurrentFrame(frames.length);
+    setFrames((prevFrames: Frame[]) => {
+      // Clone the last frame's elements to create a new frame
+      const newFrameElements = prevFrames[prevFrames.length - 1].canvasElements.map(elem => {
+        return { ...elem }; // Shallow copy each element
+      });
+
+      // Create a new frame with current elements and new ID
+      const newFrame = {
+        frameID: prevFrames.length + 1,
+        canvasElements: newFrameElements,
+      };
+
+      //const newFrameList = [...prevFrames, newFrame];
+
+      return [...prevFrames, newFrame]; //add new frame
+    });
   }
 
+  // increments the frame forward
+  const frameForward = () => {
+    if (currentFrame < frames.length - 1) {
+      setCurrentFrame(currentFrame + 1);
+    }
+  };
+
+  // increments the frame backwards
+  const frameBackward = () => {
+    if (currentFrame > 1) {
+      setCurrentFrame(currentFrame - 1);
+    }
+  };
+
+  // plays back the stop motion animation so far
+  const playback = async () => {
+    const delay = 150; // 150 ms
+    setPlaybackMode(true);
+    setCurrentFrame(1); // set the first frame to be first
+
+    const playNextFrame = async (count: number) => {
+      if (count < frames.length - 1) {
+        setTimeout(() => {
+          setCurrentFrame(count + 1);
+          playNextFrame(count + 1);
+        }, delay); // Adjust the delay time as needed
+      } else {
+        setPlaybackMode(false);
+      }
+    };
+
+    await playNextFrame(1);
+  };
+
   // the interactable canvas to construct the stop motion scenes
-  const Canvas = () => {
-    const [stars, setStars] = useState<StarShape[]>([]);
+  const Canvas: React.FC<CanvasProps> = ({ setFrames: update, frames: canvasFrames }) => {
+    // the canvas should always be displaying two screens
+    // 1. past frame which is not interactable
+    // 2. current editable frame with full opacity on top
 
-    interface KonvaRect {
-      type: 'rect';
-      length: number;
-      width: number;
-    }
-
-    interface KonvaCircle {
-      type: 'circle';
-      radius: number;
-    }
-
-    // Types of konva shape.
-    // Used in FigureElement to provide an appearance.
-    type KonvaShape = KonvaCircle | KonvaRect;
-
-    // TODO: Movement is hierarchical.
-    // 1. Moving a "parent" node should move all of the children nodes.
-    // 2. However, in order to judge how a node should be moved, we need to know which node is the root, i.e., has no parent.
-
-    // The proposal is to use offsets to take care of requirement 1.
-    // Then, requirement 2 is satified by tracking the (nullable) parent.
-    interface FigureElement {
-      appearance: KonvaShape;
-
-      id: string;
-      parent?: FigureElement;
-
-      // If the parent is not null, these represent the offset from the parent.
-      // If the parent is null, these represent the absolute.
-      offset_x: number;
-      offset_y: number;
-      offset_rotation: number;
-
-      // Where does this visually attach? encoded as an offset from the center
-      offset_attach_x: number;
-      offset_attach_y: number;
-
-      // How do we project out from the attachment point?
-      offset_attach_rotation: number;
-
-      isDragging: boolean;
-    }
-
-    // Get the absolute position of a FigureElement by summing up the offsets.
-    function absolutePosn(elem: FigureElement) {
-      let absolute_x = 0;
-      let absolute_y = 0;
-      let absolute_rotation = 0;
-
-      let iter: FigureElement | undefined = elem;
-
-      // not undefined
-      while (iter !== undefined) {
-        absolute_x += iter.offset_x;
-        absolute_y += iter.offset_y;
-        absolute_rotation += iter.offset_rotation;
-        iter = iter.parent;
-      }
-      const retval = { absolute_x, absolute_y, absolute_rotation };
-
-      return retval;
-    }
-
-    function toKonvaElement(elem: FigureElement) {
-      const absolutePosnVar = absolutePosn(elem);
-
-      function identityPos(pos: Vector2d) {
-        const absolutePosnVar = absolutePosn(elem);
-        return {
-          x: absolutePosnVar.absolute_x,
-          y: absolutePosnVar.absolute_y,
-        };
-      }
-
-      switch (elem.appearance.type) {
-        case 'rect':
-          return (
-            <Rect
-              key={elem.id}
-              id={elem.id}
-              x={absolutePosnVar.absolute_x}
-              y={absolutePosnVar.absolute_y}
-              rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
-              height={elem.appearance.length}
-              width={elem.appearance.width}
-              draggable
-              dragBoundFunc={elem.parent && identityPos}
-              onDragStart={handleDragStartFigure}
-              onDragEnd={handleDragEndFigure}
-              onDragMove={handleDragMoveFigure}
-              fill='#000000'
-            />
-          );
-        case 'circle':
-          return (
-            <Circle
-              key={elem.id}
-              id={elem.id}
-              x={absolutePosnVar.absolute_x}
-              y={absolutePosnVar.absolute_y}
-              rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
-              radius={elem.appearance.radius}
-              draggable
-              dragBoundFunc={elem.parent && identityPos}
-              onDragStart={handleDragStartFigure}
-              onDragEnd={handleDragEndFigure}
-              onDragMove={handleDragMoveFigure}
-              fill='#000000'
-            />
-          );
-      }
-    }
-
-    const Figure1Torso: FigureElement = {
-      // a KonvaRect
-      appearance: {
-        type: 'rect',
-        length: 50,
-        width: 20,
-      },
-      id: 'figure_1_torso',
-      // This is the root
-      parent: undefined,
-      // Because this is the root, these are absolute posns
-      offset_x: 773,
-      offset_y: 521,
-      offset_rotation: 0,
-      offset_attach_rotation: 0,
-      isDragging: false,
-    };
-
-    const Figure1Head: FigureElement = {
-      // a KonvaCircle
-      appearance: {
-        type: 'circle',
-        radius: 10,
-      },
-      id: 'figure_1_head',
-      parent: Figure1Torso,
-      offset_x: 10,
-      offset_y: -10,
-      offset_rotation: 0,
-      offset_attach_rotation: Math.PI / 2,
-      offset_attach_x: 0,
-      offset_attach_y: 10,
-      isDragging: false,
-    };
-
-    const Figure1LeftLeg: FigureElement = {
-      appearance: {
-        type: 'rect',
-        length: 25,
-        width: 5,
-      },
-      id: 'figure_1_left_leg',
-      parent: Figure1Torso,
-      offset_x: 0,
-      offset_y: 45,
-      // for now
-      offset_rotation: 0,
-      offset_attach_rotation: -(Math.PI / 2),
-      offset_attach_x: 0,
-      offset_attach_y: 0,
-      isDragging: false,
-    };
-
-    // These are stored as a list, because that's what Konva wants.
-    // But the FigureElements implement a tree amongst themselves.
-    const [figureElements, setFigureElements] = useState<FigureElement[]>([]);
     const canvasRef = useRef<HTMLDivElement | null>(null);
-
-    const [canvasDim, setCanvasDim] = useState<CanvasDim>({ top: 0, left: 0 });
 
     const canvasWidth = 1300;
     const canvasHeight = 800;
-
-    // star shape interface
-    interface StarShape {
-      id: string;
-      x: number;
-      y: number;
-      rotation: number;
-      isDragging: boolean;
+    function updateFrameElements(elems: CanvasElement[]) {
+      update((previousFrames: Frame[]) => {
+        // Make a shallow copy of the previous frames
+        //const updatedFrames = [...prevFrames];
+        const updatedFrames = previousFrames.slice(0, -1);
+        // Update the last frame (assuming there is at least one frame)
+        const lastFrame = previousFrames[previousFrames.length - 1];
+        lastFrame.canvasElements = elems;
+        updatedFrames.push(lastFrame);
+        return updatedFrames;
+      });
     }
+    // stores the canvas frames
+    //const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
-    interface CanvasDim {
-      top: number;
-      left: number;
-    }
+    // this use effect currently manually sets one frame for testing
+    useEffect(() => {}, []);
 
-    // To implement animation of figures,
-    // 1: Keep every FigureElement in a list here, map as necessary.
-    // 2: If the FigureELement is not the root, do a polar motion.
-    // 3: In any event, intercept the handleDrag{Start,End}.
-
-    function generateShapes() {
-      // ensure that the shapes are auto generated within the bounds of the canvas
-      const canvasElement = canvasRef.current;
-      const padding = 50;
-
-      function randomNumber(min: number, max: number) {
-        return Math.random() * (max - min) + min;
-      }
-
-      if (canvasElement) {
-        const canvasRect = canvasElement.getBoundingClientRect();
-
-        return [...Array(10)].map((_, i) => ({
-          id: i.toString(),
-          x: canvasRect.left + canvasRect.width / 2,
-          y: canvasRect.top + canvasRect.height / 2,
-          rotation: Math.random() * 180,
-          isDragging: false,
-        }));
-      }
-
-      return [];
-    }
-
-    const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
-      const dragId = e.target.attrs.id;
-
-      setStars(
-        stars.map(star => {
-          let newX = star.x;
-          let newY = star.y;
-
-          if (star.id === dragId) {
-            newX = e.target.position().x;
-            newY = e.target.position().y;
-          }
-
-          return {
-            ...star,
-            x: newX,
-            y: newY,
-          };
-        }),
-      );
-    };
-
-    const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
-      const dragId = e.target.attrs.id;
-      setStars(
-        stars.map(star => {
-          return {
-            ...star,
-            isDragging: star.id === dragId,
-          };
-        }),
-      );
-    };
-
-    const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
-      const dragId = e.target.attrs.id;
-      setStars(
-        stars.map(star => {
-          return {
-            ...star,
-            isDragging: false,
-          };
-        }),
-      );
-    };
-
-    const handleDragMoveFigure = (e: KonvaEventObject<DragEvent>) => {
-      const dragId = e.target.attrs.id;
-
-      // we need to get the absolute "attachment point" to rotate a limb properly.
-      const targetPositionX = e.target.position().x;
-      const targetPositionY = e.target.position().y;
-
-      setFigureElements(
-        figureElements.map(elem => {
-          let newOffsetX = elem.offset_x;
-          let newOffsetY = elem.offset_y;
-          let newOffsetAttachX = elem.offset_attach_x;
-          let newOffsetAttachY = elem.offset_attach_y;
-
-          let newAttachRot = elem.offset_attach_rotation;
-          let newRot = elem.offset_rotation;
-
-          const rotDiff = newRot - newAttachRot;
-
-          // If the current map member is the target...
-          if (elem.id === dragId) {
-            const cursorPosition = e.target.getStage()!.getPointerPosition()!;
-            const rotationOriginX = targetPositionX + elem.offset_attach_x;
-            const rotationOriginY = targetPositionY + elem.offset_attach_y;
-
-            // What is the difference between the posn of the figure we are dragging and the cursor?
-
-            // To get the expected vector, we also have to invert the y-axis.
-            // Due to the difference between standard math way, and computer graphics way.
-            const dragVectorX = cursorPosition.x - rotationOriginX;
-            const dragVectorY = -cursorPosition.y + rotationOriginY;
-
-            // This is over the span of the drag.
-            const dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
-
-            console.log(`Drag radians: ${dragRotationRadians}`);
-
-            /// ... and if it is a root element...
-            if (elem.parent === undefined) {
-              // Update the linear position.
-              newOffsetX = targetPositionX;
-              newOffsetY = targetPositionY;
-            } else {
-              // if it is a child element...
-
-              // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
-              // the same rotation is applied over and over again.
-
-              // I think we need to keep track of the "rotation so far".
-              // Additionally, we probably need to record a drag_init_rotation_degrees.
-
-              const toRotate = elem.offset_attach_rotation - dragRotationRadians;
-              console.log(`Amount to rotate by: ${toRotate}`);
-
-              const rotatedAttachmentOffset = rotatePointAround(
-                0,
-                0,
-                elem.offset_attach_x,
-                elem.offset_attach_y,
-                toRotate,
-              );
-
-              const rotatedTargetPosn = rotatePointAround(
-                rotationOriginX,
-                rotationOriginY,
-                targetPositionX,
-                targetPositionY,
-                toRotate,
-              );
-
-              // For a deep hierarchy we need to get absolute posn but this will do for now
-              const parentTargetPosnX = elem.parent.offset_x;
-              const parentTargetPosnY = elem.parent.offset_y;
-
-              newOffsetX = rotatedTargetPosn.x - parentTargetPosnX;
-              newOffsetY = rotatedTargetPosn.y - parentTargetPosnY;
-
-              newOffsetAttachX = rotatedAttachmentOffset.x;
-              newOffsetAttachY = rotatedAttachmentOffset.y;
-
-              newAttachRot = dragRotationRadians;
-              newRot = newAttachRot + rotDiff;
-
-              console.log(`Rotation difference: ${rotDiff}`);
-              console.log(`The saved rotation: ${newRot}`);
-              console.log(`The saved offset rotation: ${newAttachRot}`);
-            }
-          }
-
-          // If the current map member's parent is the target...
-          // This is necessary to avoid stale references.
-
-          // FIXME: This won't work if it happens to be in the wrong order.
-          // But it could also work if we make sure to lay it out in the 'right' way.
-          if (elem.parent !== undefined && elem.parent.id === dragId) {
-            elem.parent = {
-              ...elem.parent,
-              offset_x: targetPositionX,
-              offset_y: targetPositionY,
-            };
-          }
-
-          return {
-            ...elem,
-
-            offset_x: newOffsetX,
-            offset_y: newOffsetY,
-            offset_rotation: newRot,
-
-            offset_attach_x: newOffsetAttachX,
-            offset_attach_y: newOffsetAttachY,
-            offset_attach_rotation: newAttachRot,
-          };
-        }),
-      );
-    };
-
-    const rotatePointAround = (
-      origin_x: number,
-      origin_y: number,
-      target_x: number,
-      target_y: number,
-      rad: number,
-    ) => {
-      const rcos = Math.cos(rad);
-      const rsin = Math.sin(rad);
-
-      return {
-        x: rcos * (target_x - origin_x) - rsin * (target_y - origin_y) + origin_x,
-        y: rsin * (target_x - origin_x) + rcos * (target_y - origin_y) + origin_y,
-      };
-    };
-
-    const handleDragStartFigure = (e: KonvaEventObject<DragEvent>) => {
-      const dragId = e.target.attrs.id;
-      setFigureElements(
-        figureElements.map(elem => {
-          return {
-            ...elem,
-            isDragging: elem.id === dragId,
-          };
-        }),
-      );
-    };
-
-    const handleDragEndFigure = (e: KonvaEventObject<DragEvent>) => {
-      const dragId = e.target.attrs.id;
-      setFigureElements(
-        figureElements.map(elem => {
-          return {
-            ...elem,
-            isDragging: false,
-          };
-        }),
-      );
-    };
-
-    useEffect(() => {
-      if (canvasRef.current) {
-        setCanvasDim({
-          top: canvasRef.current.getBoundingClientRect().top,
-          left: canvasRef.current.getBoundingClientRect().left,
-        });
-      }
-      setStars(generateShapes());
-      setFigureElements([Figure1Head, Figure1LeftLeg, Figure1Torso]);
-    }, []);
+    // updater callback for current frame elements
 
     return (
       <Box
@@ -483,67 +275,89 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         style={{
           width: canvasWidth,
           height: canvasHeight,
-          backgroundColor: 'yellow',
+          backgroundColor: '#e5e5ea',
         }}>
         <Stage width={canvasWidth} height={canvasHeight}>
+          {/* previous layer (non interactable) */}
+          {/* Render the second-to-last frame with lower opacity */}
+          {/* only render if playback mode is not activated */}
+          {canvasFrames.length > 1 && !playbackMode && (
+            <Layer opacity={0.1}>
+              {canvasFrames[currentFrame - 1].canvasElements.map(elem => {
+                // Render each element of the second-to-last frame
+                if (elem.type == 'figure') {
+                  const figureElem = elem as FigureElement; // case current element to figure element
+                  return toKonvaElement(
+                    figureElem,
+                    canvasFrames[currentFrame - 1].canvasElements,
+                    updateFrameElements,
+                    false,
+                  );
+                } else if (elem.type == 'simpleShape') {
+                  // return some other type here
+                  return {};
+                }
+              })}
+            </Layer>
+          )}
+
+          {/* Render the last frame (current frame) */}
           <Layer>
-            {stars.map(star => (
-              <Star
-                key={star.id}
-                id={star.id}
-                x={star.x}
-                y={star.y}
-                numPoints={20}
-                innerRadius={20}
-                outerRadius={40}
-                fill='#89b717'
-                opacity={0.8}
-                draggable
-                rotation={star.rotation}
-                shadowColor='black'
-                shadowBlur={0}
-                shadowOpacity={0.0}
-                shadowOffsetX={star.isDragging ? 10 : 5}
-                shadowOffsetY={star.isDragging ? 10 : 5}
-                scaleX={star.isDragging ? 1.2 : 1}
-                scaleY={star.isDragging ? 1.2 : 1}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onDragMove={handleDragMove}
-              />
-            ))}
-            <Group></Group>
-            {figureElements.map(elem => toKonvaElement(elem))}
+            {canvasFrames[currentFrame].canvasElements.map(elem => {
+              // Render each element of the last frame (current frame)
+              if (elem.type == 'figure') {
+                const figureElem = elem as FigureElement; // case current element to figure element
+                return toKonvaElement(
+                  figureElem,
+                  canvasFrames[currentFrame].canvasElements,
+                  updateFrameElements,
+                  currentFrame == frames.length - 1,
+                );
+              } else if (elem.type == 'simpleShape') {
+                // return some other type here
+                return {};
+              }
+            })}
+          </Layer>
+          <Layer>
+            {/* layer displays current frame count */}
+            <KonvaText
+              offsetX={-10}
+              offsetY={-10}
+              fontSize={25}
+              text={currentFrame + ' / ' + (frames.length - 1)}
+            />
           </Layer>
         </Stage>
       </Box>
     );
   };
 
+  type ControlPanelProps = {
+    addNewFrame: () => void;
+  };
+
   // Bottom controll panel for progressing through and viewing animation
-  const ControlPanel = () => {
+  const ControlPanel: React.FC<ControlPanelProps> = ({ addNewFrame: addFrame }) => {
     return (
       <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
         <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
           <Box>
-            <Button size='md' height='48px' marginRight='5px'>
+            <Button size='md' height='48px' marginRight='5px' onClick={playback}>
               Play
-            </Button>
-            <Button size='md' height='48px'>
-              Pause
             </Button>
           </Box>
 
           <Box>
-            <Button size='md' height='48px' marginRight='5px'>
+            <Button size='md' height='48px' marginRight='5px' onClick={frameBackward}>
               {'<--'}
             </Button>
-            <Button size='md' height='48px'>
+            <Button size='md' height='48px' onClick={frameForward}>
               {'-->'}
             </Button>
           </Box>
 
-          <Button size='md' height='48px'>
+          <Button size='md' height='48px' onClick={addFrame}>
             Add Latest Frame
           </Button>
 
@@ -570,11 +384,11 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
-          <Canvas />
+          <Canvas frames={frames} setFrames={setFrames} />
         </Flex>
 
         {/* items in row two */}
-        <ControlPanel />
+        <ControlPanel addNewFrame={addNewFrame} />
       </Flex>
     </Box>
   );
