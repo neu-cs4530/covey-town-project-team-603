@@ -183,6 +183,7 @@ const handleDragMoveFigure = (
             newOffsetX = targetPositionX;
             newOffsetY = targetPositionY;
           } else {
+            console.log('rotate child');
             // if it is a child element...
 
             // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
@@ -268,12 +269,14 @@ export const toKonvaElement = (
   interactable: boolean,
 ) => {
   console.log(interactable);
-  const absolutePosnVar = absolutePosn(elem);
+  let absolutePosnVar = absolutePosn(elem);
 
   function identityPos() {
+    console.log('identity');
+    absolutePosnVar = absolutePosn(elem);
     return {
-      x: absolutePosnVar.absolute_x,
-      y: absolutePosnVar.absolute_y,
+      x: absolutePosnVar.absoluteX,
+      y: absolutePosnVar.absoluteY,
     };
   }
 
@@ -283,9 +286,9 @@ export const toKonvaElement = (
         <Rect
           key={elem.id}
           id={elem.id}
-          x={absolutePosnVar.absolute_x}
-          y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
+          x={absolutePosnVar.absoluteX}
+          y={absolutePosnVar.absoluteY}
+          rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable={interactable}
@@ -301,9 +304,9 @@ export const toKonvaElement = (
         <Circle
           key={elem.id}
           id={elem.id}
-          x={absolutePosnVar.absolute_x}
-          y={absolutePosnVar.absolute_y}
-          rotation={absolutePosnVar.absolute_rotation * (180 / Math.PI) * -1}
+          x={absolutePosnVar.absoluteX}
+          y={absolutePosnVar.absoluteY}
+          rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
           radius={elem.appearance.radius}
           draggable={interactable}
           dragBoundFunc={elem.parent && identityPos}
