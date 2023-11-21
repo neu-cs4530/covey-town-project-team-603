@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Container,
   Modal,
   ModalCloseButton,
   ModalContent,
@@ -13,18 +12,18 @@ import {
 } from '@chakra-ui/react';
 import { Text as KonvaText } from 'react-konva';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
+import { useInteractable } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 // import StopMotionArea from '../StopMotionArea';
 import StopMotionAreaInteractable from '../StopMotionArea';
 //import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
-import { Stage, Layer, Star, Group } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 //import { blue } from '@material-ui/core/colors';
 //import Konva from 'konva';
 //import { Vector2d } from 'konva/lib/types';
 import { toKonvaElement, FigureElement } from './FigureElements';
-import { CanvasElement, StarShape } from './CanvasElements';
+import { CanvasElement } from './CanvasElements';
 //import { KonvaEventObject } from 'konva/lib/Node';
 import { Frame } from './Frame';
 
@@ -251,13 +250,12 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     const canvasWidth = 1300;
     const canvasHeight = 800;
     function updateFrameElements(elems: CanvasElement[]) {
-      update((frames: Frame[]) => {
+      update((previousFrames: Frame[]) => {
         // Make a shallow copy of the previous frames
         //const updatedFrames = [...prevFrames];
-        const updatedFrames = frames.slice(0, -1);
-        //console.log(updatedFrames);
+        const updatedFrames = previousFrames.slice(0, -1);
         // Update the last frame (assuming there is at least one frame)
-        const lastFrame = frames[frames.length - 1];
+        const lastFrame = previousFrames[previousFrames.length - 1];
         lastFrame.canvasElements = elems;
         updatedFrames.push(lastFrame);
         return updatedFrames;

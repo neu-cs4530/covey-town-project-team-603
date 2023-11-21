@@ -1,7 +1,7 @@
 import React from 'react';
 import { Rect, Circle } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { CanvasElement, CanvasElementType } from './CanvasElements';
+import { CanvasElement } from './CanvasElements';
 
 interface KonvaRect {
   type: 'rect';
@@ -48,20 +48,20 @@ export interface FigureElement extends CanvasElement {
 
 // Get the absolute position of a FigureElement by summing up the offsets.
 function absolutePosn(elem: FigureElement) {
-  let absolute_x = 0;
-  let absolute_y = 0;
-  let absolute_rotation = 0;
+  let absoluteX = 0;
+  let absoluteY = 0;
+  let absoluteRotation = 0;
 
   let iter: FigureElement | undefined = elem;
 
   // not undefined
   while (iter !== undefined) {
-    absolute_x += iter.offset_x;
-    absolute_y += iter.offset_y;
-    absolute_rotation += iter.offset_rotation;
+    absoluteX += iter.offset_x;
+    absoluteY += iter.offset_y;
+    absoluteRotation += iter.offset_rotation;
     iter = iter.parent;
   }
-  const retval = { absolute_x, absolute_y, absolute_rotation };
+  const retval = { absoluteX, absoluteY, absoluteRotation };
 
   return retval;
 }
@@ -130,7 +130,6 @@ const handleDragEndFigure = (
     }),
   );
   */
-
 };
 
 const handleDragMoveFigure = (
@@ -139,8 +138,8 @@ const handleDragMoveFigure = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const dragId = e.target.attrs.id;
-  console.log('dragmove')
-  console.log(`dragging the ${dragId}`)
+  console.log('dragmove');
+  console.log(`dragging the ${dragId}`);
 
   // we need to get the absolute "attachment point" to rotate a limb properly.
   const targetPositionX = e.target.position().x;
@@ -184,7 +183,6 @@ const handleDragMoveFigure = (
             newOffsetX = targetPositionX;
             newOffsetY = targetPositionY;
           } else {
-            console.log('rotate child')
             // if it is a child element...
 
             // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
@@ -237,7 +235,7 @@ const handleDragMoveFigure = (
         // FIXME: This won't work if it happens to be in the wrong order.
         // But it could also work if we make sure to lay it out in the 'right' way.
         if (figureElem.parent !== undefined && figureElem.parent.id === dragId) {
-          console.log('Reference fix!')
+          console.log('Reference fix!');
           figureElem.parent = {
             ...figureElem.parent,
             offset_x: targetPositionX,
@@ -272,9 +270,7 @@ export const toKonvaElement = (
   console.log(interactable);
   const absolutePosnVar = absolutePosn(elem);
 
-  function identityPos(pos: Vector2d) {
-    console.log('identity')
-    const absolutePosnVar = absolutePosn(elem);
+  function identityPos() {
     return {
       x: absolutePosnVar.absolute_x,
       y: absolutePosnVar.absolute_y,
