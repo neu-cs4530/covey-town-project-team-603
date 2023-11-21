@@ -29,6 +29,7 @@ import { CanvasElement, StarShape } from './CanvasElements';
 import { Frame } from './Frame';
 
 function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
+  const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
   // the left side panel which allows users to select and drag new items on to the canvas
@@ -205,16 +206,38 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
     });
   }
 
+  // increments the frame forward
   const frameForward = () => {
     if (currentFrame < frames.length - 1) {
       setCurrentFrame(currentFrame + 1);
     }
   };
 
+  // increments the frame backwards
   const frameBackward = () => {
     if (currentFrame > 1) {
       setCurrentFrame(currentFrame - 1);
     }
+  };
+
+  // plays back the stop motion animation so far
+  const playback = async () => {
+    const delay = 150; // 150 ms
+    setPlaybackMode(true);
+    setCurrentFrame(1); // set the first frame to be first
+
+    const playNextFrame = async (count: number) => {
+      if (count < frames.length - 1) {
+        setTimeout(() => {
+          setCurrentFrame(count + 1);
+          playNextFrame(count + 1);
+        }, delay); // Adjust the delay time as needed
+      } else {
+        setPlaybackMode(false);
+      }
+    };
+
+    await playNextFrame(1);
   };
 
   // the interactable canvas to construct the stop motion scenes
@@ -259,7 +282,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
         <Stage width={canvasWidth} height={canvasHeight}>
           {/* previous layer (non interactable) */}
           {/* Render the second-to-last frame with lower opacity */}
-          {canvasFrames.length > 1 && (
+          {/* only render if playback mode is not activated */}
+          {canvasFrames.length > 1 && !playbackMode && (
             <Layer opacity={0.1}>
               {canvasFrames[currentFrame - 1].canvasElements.map(elem => {
                 // Render each element of the second-to-last frame
@@ -303,7 +327,7 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
               offsetX={-10}
               offsetY={-10}
               fontSize={25}
-              text={'Current Frame: ' + currentFrame + ' / ' + (frames.length - 1)}
+              text={currentFrame + ' / ' + (frames.length - 1)}
             />
           </Layer>
         </Stage>
@@ -321,11 +345,8 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
       <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
         <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
           <Box>
-            <Button size='md' height='48px' marginRight='5px'>
+            <Button size='md' height='48px' marginRight='5px' onClick={playback}>
               Play
-            </Button>
-            <Button size='md' height='48px'>
-              Pause
             </Button>
           </Box>
 
