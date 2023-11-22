@@ -218,31 +218,6 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(1);
   };
 
-    /**
-   * Turns the state into JSON, and downloads it.
-   */
-  function saveAnimState() {
-    let stranim = JSON.stringify(frames);
-    let mimetype = "application/json";
-    let blob = new Blob([stranim], {type: mimetype});
-    let bloburl = URL.createObjectURL(blob);
-
-
-    const a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = bloburl;
-
-    a.download = "animation.json"
-    a.click();
-
-    URL.revokeObjectURL(bloburl);
-
-
-    document.body.removeChild(a);
-
-  }
-
   /**
    * 
    */
@@ -255,7 +230,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
     const a = document.createElement("a");
     document.body.appendChild(a);
-    a.style = "display: none";
+    a.style.cssText = "display: none";
     a.href = bloburl;
 
     a.download = "animation.json"
@@ -263,30 +238,27 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
     URL.revokeObjectURL(bloburl);
 
-
     document.body.removeChild(a);
-
   }
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event: { target: { files: any[]; }; }) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const content = e.target.result;
-        console.log('setting frames!');
+        const content = e.target!.result as string;
+        if (content !== null) {
         setFrames((prevFrames: Frame[]) => {
           return JSON.parse(content);
         });
+        }
       }
       reader.readAsText(file);
     }
   }
 
-
-
   const triggerFileInput = () => {
-    document.getElementById('fileInput').click();
+    document.getElementById('fileInput')!.click();
   }
 
   // the interactable canvas to construct the stop motion scenes
