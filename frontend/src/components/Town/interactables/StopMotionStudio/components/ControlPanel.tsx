@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Flex, Button, Box } from '@chakra-ui/react';
+import { Flex, Button, Box, Input } from '@chakra-ui/react';
 
 type ControlPanelProps = {
   addNewFrame: () => void;
@@ -51,9 +51,17 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           Navigate home
         </Button>
 
-        <Button size='md' height='48px'>
-          Other Button
-        </Button>
+          <Button size='md' height='48px' onClick={saveAnim}>
+            Save project
+          </Button>
+
+          <Input type='file' style={{ display: 'none' }} onChange={handleChange
+} id='fileInput'/>
+
+          <Button size='md' height='48px' onClick={fileInp}>
+            Load project
+          </Button>
+
       </Flex>
     </Box>
   );

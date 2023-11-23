@@ -152,7 +152,51 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(1);
   };
 
+    const handleFileChange = (event: { target:
+{ files: any[]; }; }) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target!.result as string;
+        if (content !== null) {
+          let savedFrames = JSON.parse(content);
+          if (savedFrames.length !== 0) {
+            setCurrentFrame(1);
+            setFrames((prevFrames: Frame[]) => {
+              return savedFrames;
+            });
+          }
+        }
+      }
+      reader.readAsText(file);
+    }
+  }
 
+ function saveAnimState() {
+    let stranim = JSON.stringify(frames);
+    let mimetype = "application/json";
+    let blob = new Blob([stranim], {type: mimetype});
+    let bloburl = URL.createObjectURL(blob);
+
+
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style.cssText = "display: none";
+    a.href = bloburl;
+
+    a.download = "animation.json"
+    a.click();
+
+    URL.revokeObjectURL(bloburl);
+
+    document.body.removeChild(a);
+  }
+
+   const triggerFileInput = () => {
+    document.getElementById('fileInput')!.click();
+  }
+   
   return (
     <Box backgroundColor={'white'}>
       {/* vertical flex */}
@@ -179,6 +223,9 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           frameBackward={frameBackward}
           frameForward={frameForward}
           backHome={backHome}
+          fileInput={triggerFileInput}
+          saveAnimState={saveAnimState}
+          handleChange={handleFileChange}
         />
       </Flex>
     </Box>
