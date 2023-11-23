@@ -105,7 +105,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             offsetX={-10}
             offsetY={-10}
             fontSize={25}
-            text={currentFrame + ' / ' + (frames.length - 1)}
+            text={currentFrame + ' / ' + (canvasFrames.length - 1)}
           />
         </Layer>
       </Stage>
