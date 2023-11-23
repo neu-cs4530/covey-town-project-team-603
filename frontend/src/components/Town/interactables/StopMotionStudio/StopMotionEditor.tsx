@@ -232,13 +232,36 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     function updateFrameElements(elems: CanvasElement[]) {
       update((previousFrames: Frame[]) => {
         // Make a shallow copy of the previous frames
-        //const updatedFrames = [...prevFrames];
-        const updatedFrames = previousFrames.slice(0, -1);
-        // Update the last frame (assuming there is at least one frame)
-        const lastFrame = previousFrames[previousFrames.length - 1];
-        lastFrame.canvasElements = elems;
-        updatedFrames.push(lastFrame);
+
+        let lastFrame = previousFrames[previousFrames.length - 1];
+        //previousFrames[previousFrames.length -1 ] = {frameID: lastFrame.frameID, canvasElements: elems}
+        let updatedFrames = previousFrames.slice(0,-1);
+        updatedFrames.push({frameID: lastFrame.frameID, canvasElements: elems})
         return updatedFrames;
+
+        /*
+        Smooth body (does not cause react update, probably)
+        let lastFrame = previousFrames[previousFrames.length - 1];
+        previousFrames[previousFrames.length -1 ] = {frameID: lastFrame.frameID, canvasElements: elems}
+        return previousFrames;
+        */
+
+        /*
+        Smooth body, but head does not follow or rotate
+        previousFrames[previousFrames.length - 1].canvasElements = elems;
+        return previousFrames;
+        */
+
+        /*
+        Correct, stuttery movement
+        const updatedFrames = [...previousFrames];
+        updatedFrames[previousFrames.length - 1].canvasElements = elems;
+        return updatedFrames;
+        */
+
+        // By copying the old frames, a full react-side update is forced, which
+        // causes all elements to be in the right place relative to their parents but copying the old
+        // frames seems to confuse konva?
       });
     }
     // stores the canvas frames

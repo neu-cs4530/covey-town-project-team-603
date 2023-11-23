@@ -237,6 +237,7 @@ const handleDragMoveFigure = (
         // But it could also work if we make sure to lay it out in the 'right' way.
         if (figureElem.parent !== undefined && figureElem.parent.id === dragId) {
           console.log('Reference fix!');
+          // THIS is impeartive
           figureElem.parent = {
             ...figureElem.parent,
             offset_x: targetPositionX,
@@ -244,6 +245,7 @@ const handleDragMoveFigure = (
           };
         }
 
+        // this is functional
         return {
           ...figureElem,
 
