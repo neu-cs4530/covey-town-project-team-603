@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Spacer, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, Text, Input } from '@chakra-ui/react';
 import { Text as KonvaText } from 'react-konva';
 import React, { useEffect, useState, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
@@ -218,6 +218,51 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(1);
   };
 
+  /**
+   * 
+   */
+  function saveAnimState() {
+    let stranim = JSON.stringify(frames);
+    let mimetype = "application/json";
+    let blob = new Blob([stranim], {type: mimetype});
+    let bloburl = URL.createObjectURL(blob);
+
+
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style.cssText = "display: none";
+    a.href = bloburl;
+
+    a.download = "animation.json"
+    a.click();
+
+    URL.revokeObjectURL(bloburl);
+
+    document.body.removeChild(a);
+  }
+
+  const handleFileChange = (event: { target: { files: any[]; }; }) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target!.result as string;
+        if (content !== null) {
+          let savedFrames = JSON.parse(content);
+          setCurrentFrame(savedFrames.length - 1);
+          setFrames((prevFrames: Frame[]) => {
+          return savedFrames;
+        });
+        }
+      }
+      reader.readAsText(file);
+    }
+  }
+
+  const triggerFileInput = () => {
+    document.getElementById('fileInput')!.click();
+  }
+
   // the interactable canvas to construct the stop motion scenes
   const Canvas: React.FC<CanvasProps> = ({ setFrames: update, frames: canvasFrames }) => {
     // the canvas should always be displaying two screens
@@ -315,10 +360,14 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   type ControlPanelProps = {
     addNewFrame: () => void;
+    saveAnimState: () => void;
+    loadAnimState: () => void;
+    fileInput: () => void;
+    handleChange: (event) => void;
   };
 
   // Bottom controll panel for progressing through and viewing animation
-  const ControlPanel: React.FC<ControlPanelProps> = ({ addNewFrame: addFrame }) => {
+  const ControlPanel: React.FC<ControlPanelProps> = ({ addNewFrame: addFrame, saveAnimState: saveState, fileInput: triggerFileInput, handleChange: handleFileChange }) => {
     return (
       <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
         <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
@@ -345,9 +394,16 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
             Navigate home
           </Button>
 
-          <Button size='md' height='48px'>
-            Other Button
+          <Button size='md' height='48px' onClick={saveState}>
+            Save project 
           </Button>
+
+          <Input type='file' style={{ display: 'none' }} onChange={handleFileChange} id='fileInput'/>
+
+          <Button size='md' height='48px' onClick={triggerFileInput}>
+            Load project 
+          </Button>
+
         </Flex>
       </Box>
     );
@@ -368,7 +424,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         </Flex>
 
         {/* items in row two */}
-        <ControlPanel addNewFrame={addNewFrame} />
+        <ControlPanel addNewFrame={addNewFrame} saveAnimState={saveAnimState} handleChange={handleFileChange} fileInput={triggerFileInput} />
       </Flex>
     </Box>
   );
