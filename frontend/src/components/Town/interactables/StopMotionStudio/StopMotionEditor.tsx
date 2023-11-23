@@ -211,7 +211,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           const savedFrames = JSON.parse(content);
           if (savedFrames.length !== 0) {
             setCurrentFrameIndex(0);
-            setFrames(() => {
+            setFrames((/*prevFrames: Frame[]*/) => {
               return savedFrames;
             });
           }

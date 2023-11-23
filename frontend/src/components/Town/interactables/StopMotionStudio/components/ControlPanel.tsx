@@ -13,7 +13,7 @@ type ControlPanelProps = {
   playback: () => void;
 };
 
-// Bottom controll panel for progressing through and viewing animation
+// Bottom control panel for progressing through and viewing animation
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   addNewFrame: addFrame,
   saveAnimState: saveAnim,
