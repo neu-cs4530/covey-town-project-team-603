@@ -6,8 +6,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Flex,
-  Spacer,
   Text,
   VStack,
 } from '@chakra-ui/react';
