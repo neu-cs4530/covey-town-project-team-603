@@ -5,6 +5,8 @@ import { Stage, Layer } from 'react-konva';
 import { toKonvaElement, FigureElement } from './FigureElements';
 import { CanvasElement } from './CanvasElements';
 import { Frame } from './Frame';
+import { ControlPanel } from './components/ControlPanel';
+import { Canvas } from './components/Canvas';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
@@ -19,12 +21,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     );
   };
 
-  type CanvasProps = {
-    frames: Frame[];
-    setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
-  };
-
-  const figure1Torso: FigureElement = {
+const figure1Torso: FigureElement = {
     type: 'figure',
     // a KonvaRect
     appearance: {
@@ -150,22 +147,15 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     canvasElements: [figure2Head, figure2Torso],
   };
 
-  // this is the first default frame, which allows users to go back and edit the
-  // first frame, without running out of bounds on the previous layer
-  const defaultFrame: Frame = {
-    frameID: 0,
-    canvasElements: [],
-  };
-
   // const [frames, setFrames] = useState<Frame[]>([default]);
 
-  const [frames, setFrames] = useState<Frame[]>([defaultFrame, frame1, frame2]);
+  const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
   // initialize current frame
-  const [currentFrame, setCurrentFrame] = useState<number>(frames.length - 1);
+  const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
 
   function addNewFrame() {
-    setCurrentFrame(frames.length);
+    setCurrentFrameIndex(frames.length);
     setFrames((prevFrames: Frame[]) => {
       // Clone the last frame's elements to create a new frame
       const newFrameElements = prevFrames[prevFrames.length - 1].canvasElements.map(elem => {
@@ -186,15 +176,15 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   // increments the frame forward
   const frameForward = () => {
-    if (currentFrame < frames.length - 1) {
-      setCurrentFrame(currentFrame + 1);
+    if (currentFrameIndex < frames.length - 1) {
+      setCurrentFrameIndex(currentFrameIndex + 1);
     }
   };
 
   // increments the frame backwards
   const frameBackward = () => {
-    if (currentFrame > 1) {
-      setCurrentFrame(currentFrame - 1);
+    if (currentFrameIndex > 0) {
+      setCurrentFrameIndex(currentFrameIndex - 1);
     }
   };
 
@@ -202,12 +192,12 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   const playback = async () => {
     const delay = 150; // 150 ms
     setPlaybackMode(true);
-    setCurrentFrame(1); // set the first frame to be first
+    setCurrentFrameIndex(0); // set the first frame to be first
 
     const playNextFrame = async (count: number) => {
       if (count < frames.length - 1) {
         setTimeout(() => {
-          setCurrentFrame(count + 1);
+          setCurrentFrameIndex(count + 1);
           playNextFrame(count + 1);
         }, delay); // Adjust the delay time as needed
       } else {
@@ -215,13 +205,31 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       }
     };
 
-    await playNextFrame(1);
+    await playNextFrame(0);
   };
 
-  /**
-   * 
-   */
-  function saveAnimState() {
+    const handleFileChange = (event: { target:
+{ files: any[]; }; }) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target!.result as string;
+        if (content !== null) {
+          let savedFrames = JSON.parse(content);
+          if (savedFrames.length !== 0) {
+            setCurrentFrameIndex(0);
+            setFrames((prevFrames: Frame[]) => {
+              return savedFrames;
+            });
+          }
+        }
+      }
+      reader.readAsText(file);
+    }
+  }
+
+ function saveAnimState() {
     let stranim = JSON.stringify(frames);
     let mimetype = "application/json";
     let blob = new Blob([stranim], {type: mimetype});
@@ -241,174 +249,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     document.body.removeChild(a);
   }
 
-  const handleFileChange = (event: { target: { files: any[]; }; }) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target!.result as string;
-        if (content !== null) {
-          let savedFrames = JSON.parse(content);
-          setCurrentFrame(savedFrames.length - 1);
-          setFrames((prevFrames: Frame[]) => {
-          return savedFrames;
-        });
-        }
-      }
-      reader.readAsText(file);
-    }
-  }
-
-  const triggerFileInput = () => {
+   const triggerFileInput = () => {
     document.getElementById('fileInput')!.click();
   }
-
-  // the interactable canvas to construct the stop motion scenes
-  const Canvas: React.FC<CanvasProps> = ({ setFrames: update, frames: canvasFrames }) => {
-    // the canvas should always be displaying two screens
-    // 1. past frame which is not interactable
-    // 2. current editable frame with full opacity on top
-
-    const canvasRef = useRef<HTMLDivElement | null>(null);
-
-    const canvasWidth = 1300;
-    const canvasHeight = 800;
-
-    function updateFrameElements(elems: CanvasElement[]) {
-      update((previousFrames: Frame[]) => {
-        // Make a shallow copy of the previous frames
-        //const updatedFrames = [...prevFrames];
-        const updatedFrames = previousFrames.slice(0, -1);
-        // Update the last frame (assuming there is at least one frame)
-        const lastFrame = previousFrames[previousFrames.length - 1];
-        lastFrame.canvasElements = elems;
-        updatedFrames.push(lastFrame);
-        return updatedFrames;
-      });
-    }
-    // stores the canvas frames
-    //const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
-
-    // this use effect currently manually sets one frame for testing
-    useEffect(() => {}, []);
-
-    // updater callback for current frame elements
-
-    return (
-      <Box
-        ref={canvasRef}
-        style={{
-          width: canvasWidth,
-          height: canvasHeight,
-          backgroundColor: '#e5e5ea',
-        }}>
-        <Stage width={canvasWidth} height={canvasHeight}>
-          {/* previous layer (non interactable) */}
-          {/* Render the second-to-last frame with lower opacity */}
-          {/* only render if playback mode is not activated */}
-          {canvasFrames.length > 1 && !playbackMode && (
-            <Layer opacity={0.1}>
-              {canvasFrames[currentFrame - 1].canvasElements.map(elem => {
-                // Render each element of the second-to-last frame
-                if (elem.type == 'figure') {
-                  const figureElem = elem as FigureElement; // case current element to figure element
-                  return toKonvaElement(
-                    figureElem,
-                    canvasFrames[currentFrame - 1].canvasElements,
-                    updateFrameElements,
-                    false,
-                  );
-                } else if (elem.type == 'simpleShape') {
-                  // return some other type here
-                  return {};
-                }
-              })}
-            </Layer>
-          )}
-
-          {/* Render the last frame (current frame) */}
-          <Layer>
-            {canvasFrames[currentFrame].canvasElements.map(elem => {
-              // Render each element of the last frame (current frame)
-              if (elem.type == 'figure') {
-                const figureElem = elem as FigureElement; // case current element to figure element
-                return toKonvaElement(
-                  figureElem,
-                  canvasFrames[currentFrame].canvasElements,
-                  updateFrameElements,
-                  currentFrame == frames.length - 1,
-                );
-              } else if (elem.type == 'simpleShape') {
-                // return some other type here
-                return {};
-              }
-            })}
-          </Layer>
-          <Layer>
-            {/* layer displays current frame count */}
-            <KonvaText
-              offsetX={-10}
-              offsetY={-10}
-              fontSize={25}
-              text={currentFrame + ' / ' + (frames.length - 1)}
-            />
-          </Layer>
-        </Stage>
-      </Box>
-    );
-  };
-
-  type ControlPanelProps = {
-    addNewFrame: () => void;
-    saveAnimState: () => void;
-    loadAnimState: () => void;
-    fileInput: () => void;
-    handleChange: (event) => void;
-  };
-
-  // Bottom controll panel for progressing through and viewing animation
-  const ControlPanel: React.FC<ControlPanelProps> = ({ addNewFrame: addFrame, saveAnimState: saveState, fileInput: triggerFileInput, handleChange: handleFileChange }) => {
-    return (
-      <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
-        <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
-          <Box>
-            <Button size='md' height='48px' marginRight='5px' onClick={playback}>
-              Play
-            </Button>
-          </Box>
-
-          <Box>
-            <Button size='md' height='48px' marginRight='5px' onClick={frameBackward}>
-              {'<--'}
-            </Button>
-            <Button size='md' height='48px' onClick={frameForward}>
-              {'-->'}
-            </Button>
-          </Box>
-
-          <Button size='md' height='48px' onClick={addFrame}>
-            Add Latest Frame
-          </Button>
-
-          <Button size='md' height='48px' onClick={backHome}>
-            Navigate home
-          </Button>
-
-          <Button size='md' height='48px' onClick={saveState}>
-            Save project 
-          </Button>
-
-          <Input type='file' style={{ display: 'none' }} onChange={handleFileChange} id='fileInput'/>
-
-          <Button size='md' height='48px' onClick={triggerFileInput}>
-            Load project 
-          </Button>
-
-        </Flex>
-      </Box>
-    );
-  };
-
+   
   return (
     <Box backgroundColor={'white'}>
       {/* vertical flex */}
@@ -420,11 +264,25 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
-          <Canvas frames={frames} setFrames={setFrames} />
+          <Canvas
+            frames={frames}
+            setFrames={setFrames}
+            playbackMode={playbackMode}
+            currentFrame={currentFrameIndex}
+          />
         </Flex>
 
         {/* items in row two */}
-        <ControlPanel addNewFrame={addNewFrame} saveAnimState={saveAnimState} handleChange={handleFileChange} fileInput={triggerFileInput} />
+        <ControlPanel
+          addNewFrame={addNewFrame}
+          playback={playback}
+          frameBackward={frameBackward}
+          frameForward={frameForward}
+          backHome={backHome}
+          fileInput={triggerFileInput}
+          saveAnimState={saveAnimState}
+          handleChange={handleFileChange}
+        />
       </Flex>
     </Box>
   );

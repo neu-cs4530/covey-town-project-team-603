@@ -87,6 +87,8 @@ const handleDragStartFigure = (
   figureList: CanvasElement[],
   updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
+  console.log('drag start');
+
   const dragId = e.target.attrs.id;
   /*
   updateFrameElements(
@@ -292,6 +294,7 @@ export const toKonvaElement = (
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable={interactable}
+          // draggable={true}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
@@ -309,6 +312,7 @@ export const toKonvaElement = (
           rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
           radius={elem.appearance.radius}
           draggable={interactable}
+          // draggable={true}
           dragBoundFunc={elem.parent && identityPos}
           onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
