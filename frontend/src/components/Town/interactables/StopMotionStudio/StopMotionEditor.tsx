@@ -1,9 +1,6 @@
-import { Box, Button, Flex, Spacer, Text, Input } from '@chakra-ui/react';
-import { Text as KonvaText } from 'react-konva';
-import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer } from 'react-konva';
-import { toKonvaElement, FigureElement } from './FigureElements';
-import { CanvasElement } from './CanvasElements';
+import { Box, Flex, Spacer, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { FigureElement } from './FigureElements';
 import { Frame } from './Frame';
 import { ControlPanel } from './components/ControlPanel';
 import { Canvas } from './components/Canvas';
@@ -21,7 +18,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     );
   };
 
-const figure1Torso: FigureElement = {
+  const figure1Torso: FigureElement = {
     type: 'figure',
     // a KonvaRect
     appearance: {
@@ -147,8 +144,6 @@ const figure1Torso: FigureElement = {
     canvasElements: [figure2Head, figure2Torso],
   };
 
-  // const [frames, setFrames] = useState<Frame[]>([default]);
-
   const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
   // initialize current frame
@@ -167,8 +162,6 @@ const figure1Torso: FigureElement = {
         frameID: prevFrames.length + 1,
         canvasElements: newFrameElements,
       };
-
-      //const newFrameList = [...prevFrames, newFrame];
 
       return [...prevFrames, newFrame]; //add new frame
     });
@@ -208,40 +201,38 @@ const figure1Torso: FigureElement = {
     await playNextFrame(0);
   };
 
-    const handleFileChange = (event: { target:
-{ files: any[]; }; }) => {
+  const handleFileChange = (event: { target: { files: any[] } }) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target!.result as string;
+      reader.onload = e => {
+        const content = e.target?.result as string;
         if (content !== null) {
-          let savedFrames = JSON.parse(content);
+          const savedFrames = JSON.parse(content);
           if (savedFrames.length !== 0) {
             setCurrentFrameIndex(0);
-            setFrames((prevFrames: Frame[]) => {
+            setFrames(() => {
               return savedFrames;
             });
           }
         }
-      }
+      };
       reader.readAsText(file);
     }
-  }
+  };
 
- function saveAnimState() {
-    let stranim = JSON.stringify(frames);
-    let mimetype = "application/json";
-    let blob = new Blob([stranim], {type: mimetype});
-    let bloburl = URL.createObjectURL(blob);
+  function saveAnimState() {
+    const stranim = JSON.stringify(frames);
+    const mimetype = 'application/json';
+    const blob = new Blob([stranim], { type: mimetype });
+    const bloburl = URL.createObjectURL(blob);
 
-
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     document.body.appendChild(a);
-    a.style.cssText = "display: none";
+    a.style.cssText = 'display: none';
     a.href = bloburl;
 
-    a.download = "animation.json"
+    a.download = 'animation.json';
     a.click();
 
     URL.revokeObjectURL(bloburl);
@@ -249,17 +240,17 @@ const figure1Torso: FigureElement = {
     document.body.removeChild(a);
   }
 
-   const triggerFileInput = () => {
-    document.getElementById('fileInput')!.click();
-  }
-   
+  const triggerFileInput = () => {
+    document.getElementById('fileInput')?.click();
+  };
+
   return (
     <Box backgroundColor={'white'}>
       {/* vertical flex */}
       <Flex direction='column'>
         {/* items in row one */}
         <Flex>
-          {/* panel for selecting new characters to drag onto the canvs */}
+          {/* panel for selecting new characters to drag onto the canvas */}
           <FiguresSelectionPanel />
           <Spacer />
 
