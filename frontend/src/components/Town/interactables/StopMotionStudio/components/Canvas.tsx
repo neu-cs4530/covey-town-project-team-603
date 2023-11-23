@@ -61,7 +61,7 @@ export const Canvas: React.FC<CanvasProps> = ({
         {/* previous layer (non interactable) */}
         {/* Render the second-to-last frame with lower opacity */}
         {/* only render if playback mode is not activated */}
-        {canvasFrames.length > 1 && !playbackMode && (
+        {canvasFrames.length > 1 && currentFrameIndex > 0 && !playbackMode && (
           <Layer opacity={0.1}>
             {canvasFrames[currentFrameIndex - 1].canvasElements.map(elem => {
               // Render each element of the second-to-last frame
