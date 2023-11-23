@@ -205,7 +205,7 @@ const figure1Torso: FigureElement = {
       }
     };
 
-    await playNextFrame(1);
+    await playNextFrame(0);
   };
 
     const handleFileChange = (event: { target:
