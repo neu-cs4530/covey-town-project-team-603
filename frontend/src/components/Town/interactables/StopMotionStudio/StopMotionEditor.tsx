@@ -248,8 +248,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       reader.onload = (e) => {
         const content = e.target!.result as string;
         if (content !== null) {
-        setFrames((prevFrames: Frame[]) => {
-          return JSON.parse(content);
+          let savedFrames = JSON.parse(content);
+          setCurrentFrame(savedFrames.length - 1);
+          setFrames((prevFrames: Frame[]) => {
+          return savedFrames;
         });
         }
       }
