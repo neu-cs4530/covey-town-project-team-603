@@ -313,12 +313,8 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     );
   };
 
-  type ControlPanelProps = {
-    addNewFrame: () => void;
-  };
-
   // Bottom controll panel for progressing through and viewing animation
-  const ControlPanel: React.FC<ControlPanelProps> = ({ addNewFrame: addFrame }) => {
+  const ControlPanel = () => {
     return (
       <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
         <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
@@ -337,7 +333,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
             </Button>
           </Box>
 
-          <Button size='md' height='48px' onClick={addFrame}>
+          <Button size='md' height='48px' onClick={addNewFrame}>
             Add Latest Frame
           </Button>
 

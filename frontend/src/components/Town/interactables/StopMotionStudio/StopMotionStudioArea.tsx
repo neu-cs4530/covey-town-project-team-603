@@ -63,7 +63,6 @@ function StopMotionStudioArea({ interactableID }: { interactableID: Interactable
  * A wrapper component for the TicTacToeArea component.
  * Determines if the player is currently in a tic tac toe area on the map, and if so,
  * renders the TicTacToeArea component in a modal.
- *
  */
 export default function StopMotionStudioAreaWrapper(): JSX.Element {
   const stopMotionArea = useInteractable<StopMotionAreaInteractable>('stopMotionArea');
