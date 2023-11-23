@@ -1,4 +1,5 @@
-import { Box, Button, Flex, Spacer, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, Text, Input } from '@chakra-ui/react';
+import { Text as KonvaText } from 'react-konva';
 import React, { useEffect, useState, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { toKonvaElement, FigureElement } from './FigureElements';
@@ -150,6 +151,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
     await playNextFrame(1);
   };
+
 
   return (
     <Box backgroundColor={'white'}>
