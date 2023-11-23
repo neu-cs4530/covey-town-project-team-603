@@ -17,7 +17,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   setFrames: update,
   frames: canvasFrames,
   playbackMode: playbackMode,
-  currentFrame: currentFrame,
+  currentFrame: currentFrameIndex,
 }) => {
   // the canvas should always be displaying two screens
   // 1. past frame which is not interactable
@@ -63,13 +63,13 @@ export const Canvas: React.FC<CanvasProps> = ({
         {/* only render if playback mode is not activated */}
         {canvasFrames.length > 1 && !playbackMode && (
           <Layer opacity={0.1}>
-            {canvasFrames[currentFrame - 1].canvasElements.map(elem => {
+            {canvasFrames[currentFrameIndex - 1].canvasElements.map(elem => {
               // Render each element of the second-to-last frame
               if (elem.type == 'figure') {
                 const figureElem = elem as FigureElement; // case current element to figure element
                 return toKonvaElement(
                   figureElem,
-                  canvasFrames[currentFrame - 1].canvasElements,
+                  canvasFrames[currentFrameIndex - 1].canvasElements,
                   updateFrameElements,
                   false,
                 );
@@ -83,15 +83,15 @@ export const Canvas: React.FC<CanvasProps> = ({
 
         {/* Render the last frame (current frame) */}
         <Layer>
-          {canvasFrames[currentFrame].canvasElements.map(elem => {
+          {canvasFrames[currentFrameIndex].canvasElements.map(elem => {
             // Render each element of the last frame (current frame)
             if (elem.type == 'figure') {
               const figureElem = elem as FigureElement; // case current element to figure element
               return toKonvaElement(
                 figureElem,
-                canvasFrames[currentFrame].canvasElements,
+                canvasFrames[currentFrameIndex].canvasElements,
                 updateFrameElements,
-                currentFrame == frames.length - 1,
+                currentFrameIndex == canvasFrames.length - 1,
               );
             } else if (elem.type == 'simpleShape') {
               // return some other type here
@@ -105,7 +105,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             offsetX={-10}
             offsetY={-10}
             fontSize={25}
-            text={currentFrame + ' / ' + (canvasFrames.length - 1)}
+            text={(currentFrameIndex + 1) + ' / ' + (canvasFrames.length)}
           />
         </Layer>
       </Stage>

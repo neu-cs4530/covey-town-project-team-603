@@ -21,6 +21,69 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     );
   };
 
+const figure1Torso: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'rect',
+      length: 50,
+      width: 20,
+    },
+    id: 'figure_1_torso',
+    // This is the root
+    parent: undefined,
+    // Because this is the root, these are absolute posns
+    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 521,
+    offset_rotation: 0,
+    offset_attach_rotation: 0,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const figure1Head: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'circle',
+      radius: 10,
+    },
+    id: 'figure_1_head',
+    parent: figure1Torso,
+    offset_x: 10,
+    offset_y: -10,
+    offset_rotation: 0,
+    offset_attach_rotation: Math.PI / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 10,
+    isDragging: false,
+  };
+
+  const figure1LeftLeg: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_1_left_leg',
+    parent: figure1Torso,
+    offset_x: 0,
+    offset_y: 45,
+    // for now
+    offset_rotation: 0,
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+  const frame1: Frame = {
+    frameID: 1,
+    canvasElements: [figure1Head, figure1LeftLeg, figure1Torso],
+  };
+
   const figure2Torso: FigureElement = {
     type: 'figure',
     // a KonvaRect
@@ -84,22 +147,15 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     canvasElements: [figure2Head, figure2Torso],
   };
 
-  // this is the first default frame, which allows users to go back and edit the
-  // first frame, without running out of bounds on the previous layer
-  const defaultFrame: Frame = {
-    frameID: 0,
-    canvasElements: [],
-  };
-
   // const [frames, setFrames] = useState<Frame[]>([default]);
 
-  const [frames, setFrames] = useState<Frame[]>([defaultFrame, frame2]);
+  const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
   // initialize current frame
-  const [currentFrame, setCurrentFrame] = useState<number>(frames.length - 1);
+  const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
 
   function addNewFrame() {
-    setCurrentFrame(frames.length);
+    setCurrentFrameIndex(frames.length);
     setFrames((prevFrames: Frame[]) => {
       // Clone the last frame's elements to create a new frame
       const newFrameElements = prevFrames[prevFrames.length - 1].canvasElements.map(elem => {
@@ -120,15 +176,15 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   // increments the frame forward
   const frameForward = () => {
-    if (currentFrame < frames.length - 1) {
-      setCurrentFrame(currentFrame + 1);
+    if (currentFrameIndex < frames.length - 1) {
+      setCurrentFrameIndex(currentFrameIndex + 1);
     }
   };
 
   // increments the frame backwards
   const frameBackward = () => {
-    if (currentFrame > 1) {
-      setCurrentFrame(currentFrame - 1);
+    if (currentFrameIndex > 0) {
+      setCurrentFrameIndex(currentFrameIndex - 1);
     }
   };
 
@@ -136,12 +192,12 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   const playback = async () => {
     const delay = 150; // 150 ms
     setPlaybackMode(true);
-    setCurrentFrame(1); // set the first frame to be first
+    setCurrentFrameIndex(0); // set the first frame to be first
 
     const playNextFrame = async (count: number) => {
       if (count < frames.length - 1) {
         setTimeout(() => {
-          setCurrentFrame(count + 1);
+          setCurrentFrameIndex(count + 1);
           playNextFrame(count + 1);
         }, delay); // Adjust the delay time as needed
       } else {
@@ -162,7 +218,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         if (content !== null) {
           let savedFrames = JSON.parse(content);
           if (savedFrames.length !== 0) {
-            setCurrentFrame(1);
+            setCurrentFrameIndex(0);
             setFrames((prevFrames: Frame[]) => {
               return savedFrames;
             });
@@ -212,7 +268,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
             frames={frames}
             setFrames={setFrames}
             playbackMode={playbackMode}
-            currentFrame={currentFrame}
+            currentFrame={currentFrameIndex}
           />
         </Flex>
 
