@@ -106,10 +106,10 @@ const personFigureRightArm: FigureElement = {
   id: 'figure_1_right_arm',
   parent: personFigureTorso,
   offset_x: 20,
-  offset_y: 0,
+  offset_y: 5,
   // for now
-  offset_rotation: Math.PI / 4,
-  offset_attach_rotation: -(Math.PI / 2),
+  offset_rotation: -Math.PI / 4,
+  offset_attach_rotation: (Math.PI / 4),
   offset_attach_x: 0,
   offset_attach_y: 0,
   isDragging: false,
