@@ -153,7 +153,7 @@ const figure1Torso: FigureElement = {
     offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
     offset_y: 721,
     offset_rotation: 0,
-    offset_attach_ratation: 0,
+    offset_attach_rotation: 0,
     offset_attach_x: 0,
     offset_attach_y: 0,
     isDragging: false,
@@ -208,18 +208,23 @@ const figure1Torso: FigureElement = {
   // initialize current frame
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
 
-  // increments the frame backwards
-  const addPerson = () => {
+  const addFigure = (newElems: FigureElement[]) => {
     setCurrentFrameIndex(frames.length - 1);
     setFrames((prevFrames: Frame[]) => {
       const updatedFrames = prevFrames.slice(0, -1);
       const lastFrame = prevFrames[prevFrames.length - 1];
-      let personConst = generateFigure(FigureType.PERSON, 773, 500);
-      console.log(personConst);
-      lastFrame.canvasElements.push.apply(lastFrame.canvasElements, personConst); 
+      lastFrame.canvasElements.push.apply(lastFrame.canvasElements, newElems); 
       updatedFrames.push(lastFrame);
       return updatedFrames;
     })
+  }
+
+  const addPerson = () => {
+    addFigure(generateFigure(FigureType.PERSON, 773, 500));
+  };
+
+  const addAnimal = () => {
+    addFigure(generateFigure(FigureType.ANIMAL, 773, 500));
   };
 
   function addNewFrame() {
@@ -329,7 +334,7 @@ const figure1Torso: FigureElement = {
         {/* items in row one */}
         <Flex>
           {/* panel for selecting new characters to drag onto the canvs */}
-          <FiguresSelectionPanel addPerson={addPerson}/>
+          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal}/>
           <Spacer />
 
           {/* canvas for creating stop motion scene */}

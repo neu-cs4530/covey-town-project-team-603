@@ -2,7 +2,7 @@ import React from 'react';
 import { Rect, Circle } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { CanvasElement } from './CanvasElements';
-import { PERSON_FIGURE_PROTO } from './FigureElementPrototypes'; 
+import { ANIMAL_FIGURE_PROTO, PERSON_FIGURE_PROTO } from './FigureElementPrototypes'; 
 import { randomUUID } from 'crypto';
 
 interface KonvaRect {
@@ -27,22 +27,23 @@ export enum FigureType {
 }
 
 export function generateFigure(figure_type: FigureType, root_starting_x: number, root_starting_y: number) {
+  let proto_copy;
   if (figure_type === FigureType.PERSON) {
-    let proto_copy = structuredClone(PERSON_FIGURE_PROTO);
-
-    // By convention, the last member of a PERSON_FIGURE_PROTO array shall be the root.
-    let root = proto_copy[proto_copy.length - 1];
-    root.offset_x = root_starting_x;
-    root.offset_y = root_starting_y;
-
-    for (let i = 0; i < proto_copy.length; i++) {
-      proto_copy[i].id = crypto.randomUUID();
-    }
-
-    return proto_copy
+    proto_copy = structuredClone(PERSON_FIGURE_PROTO);
   } else if (figure_type === FigureType.ANIMAL) {
-
+    proto_copy = structuredClone(ANIMAL_FIGURE_PROTO);
+  } else {
+    throw new Error();
   }
+  // By convention, the last member of a PERSON_FIGURE_PROTO array shall be the root.
+  let root = proto_copy[proto_copy.length - 1];
+  root.offset_x = root_starting_x;
+  root.offset_y = root_starting_y;
+
+  for (let i = 0; i < proto_copy.length; i++) {
+    proto_copy[i].id = crypto.randomUUID();
+  }
+  return proto_copy
 }
 
 // TODO: Movement is hierarchical.
