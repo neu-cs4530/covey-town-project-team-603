@@ -1,24 +1,80 @@
-import { Box, Flex, Spacer, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { FigureElement } from './FigureElements';
+import { Box, Button, Flex, Spacer, Text, Input } from '@chakra-ui/react';
+import { Text as KonvaText } from 'react-konva';
+import React, { useEffect, useState, useRef } from 'react';
+import { Stage, Layer } from 'react-konva';
+import { toKonvaElement, FigureElement } from './FigureElements';
+import { CanvasElement } from './CanvasElements';
 import { Frame } from './Frame';
 import { ControlPanel } from './components/ControlPanel';
+import { FiguresSelectionPanel }  from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
-  // the left side panel which allows users to select and drag new items on to the canvas
-  const FiguresSelectionPanel = () => {
-    return (
-      <Box width={'100%'} backgroundColor={'orange'} padding={10}>
-        <Text>Figure Selection Window</Text>
-      </Box>
-    );
+const figureAddTorso: FigureElement = {
+    type: 'figure',
+    // a KonvaRect
+    appearance: {
+      type: 'rect',
+      length: 50,
+      width: 20,
+    },
+    id: 'figure_add_torso',
+    // This is the root
+    parent: undefined,
+    // Because this is the root, these are absolute posns
+    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+    offset_y: 521,
+    offset_rotation: 0,
+    offset_attach_rotation: 0,
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
   };
 
-  const figure1Torso: FigureElement = {
+  const figureAddHead: FigureElement = {
+    type: 'figure',
+    // a KonvaCircle
+    appearance: {
+      type: 'circle',
+      radius: 10,
+    },
+    id: 'figure_add_head',
+    parent: figureAddTorso,
+    offset_x: 10,
+    offset_y: -10,
+    offset_rotation: 0,
+    offset_attach_rotation: Math.PI / 2,
+    offset_attach_x: 0,
+    offset_attach_y: 10,
+    isDragging: false,
+  };
+
+  const figureAddLeftLeg: FigureElement = {
+    type: 'figure',
+    appearance: {
+      type: 'rect',
+      length: 25,
+      width: 5,
+    },
+    id: 'figure_add_left_leg',
+    parent: figureAddTorso,
+    offset_x: 0,
+    offset_y: 45,
+    // for now
+    offset_rotation: 0,
+    offset_attach_rotation: -(Math.PI / 2),
+    offset_attach_x: 0,
+    offset_attach_y: 0,
+    isDragging: false,
+  };
+
+
+
+
+const figure1Torso: FigureElement = {
     type: 'figure',
     // a KonvaRect
     appearance: {
@@ -141,13 +197,28 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   const frame2: Frame = {
     frameID: 2,
-    canvasElements: [figure2Head, figure2Torso, figure2LeftLeg],
+    canvasElements: [figure2Head, figure2Torso],
   };
+
+  // const [frames, setFrames] = useState<Frame[]>([default]);
 
   const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
   // initialize current frame
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
+
+  // increments the frame backwards
+  const addPerson = () => {
+    setCurrentFrameIndex(frames.length - 1);
+    setFrames((prevFrames: Frame[]) => {
+      const updatedFrames = prevFrames.slice(0, -1);
+      const lastFrame = prevFrames[prevFrames.length - 1];
+      let personConst = [figureAddHead, figureAddTorso, figureAddLeftLeg] as CanvasElement[];
+      lastFrame.canvasElements.push.apply(lastFrame.canvasElements, personConst); 
+      updatedFrames.push(lastFrame);
+      return updatedFrames;
+    })
+  };
 
   function addNewFrame() {
     setCurrentFrameIndex(frames.length);
@@ -163,6 +234,8 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         canvasElements: newFrameElements,
       };
 
+      //const newFrameList = [...prevFrames, newFrame];
+
       return [...prevFrames, newFrame]; //add new frame
     });
   }
@@ -173,6 +246,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       setCurrentFrameIndex(currentFrameIndex + 1);
     }
   };
+
 
   // increments the frame backwards
   const frameBackward = () => {
@@ -201,42 +275,40 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(0);
   };
 
-  const handleFileChange = (event: { target: { files: unknown[] } }) => {
+    const handleFileChange = (event: { target:
+{ files: any[]; }; }) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = e => {
-        const content = e.target?.result as string;
+      reader.onload = (e) => {
+        const content = e.target!.result as string;
         if (content !== null) {
-          const savedFrames = JSON.parse(content);
+          let savedFrames = JSON.parse(content);
           if (savedFrames.length !== 0) {
             setCurrentFrameIndex(0);
-            setFrames((/*prevFrames: Frame[]*/) => {
+            setFrames((prevFrames: Frame[]) => {
               return savedFrames;
             });
           }
         }
-      };
-      if (file instanceof Blob) {
-        reader.readAsText(file);
-      } else {
-        //null
       }
+      reader.readAsText(file);
     }
-  };
+  }
 
-  function saveAnimState() {
-    const stranim = JSON.stringify(frames);
-    const mimetype = 'application/json';
-    const blob = new Blob([stranim], { type: mimetype });
-    const bloburl = URL.createObjectURL(blob);
+ function saveAnimState() {
+    let stranim = JSON.stringify(frames);
+    let mimetype = "application/json";
+    let blob = new Blob([stranim], {type: mimetype});
+    let bloburl = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
+
+    const a = document.createElement("a");
     document.body.appendChild(a);
-    a.style.cssText = 'display: none';
+    a.style.cssText = "display: none";
     a.href = bloburl;
 
-    a.download = 'animation.json';
+    a.download = "animation.json"
     a.click();
 
     URL.revokeObjectURL(bloburl);
@@ -244,18 +316,18 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     document.body.removeChild(a);
   }
 
-  const triggerFileInput = () => {
-    document.getElementById('fileInput')?.click();
-  };
-
+   const triggerFileInput = () => {
+    document.getElementById('fileInput')!.click();
+  }
+   
   return (
     <Box backgroundColor={'white'}>
       {/* vertical flex */}
       <Flex direction='column'>
         {/* items in row one */}
         <Flex>
-          {/* panel for selecting new characters to drag onto the canvas */}
-          <FiguresSelectionPanel />
+          {/* panel for selecting new characters to drag onto the canvs */}
+          <FiguresSelectionPanel addPerson={addPerson}/>
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
