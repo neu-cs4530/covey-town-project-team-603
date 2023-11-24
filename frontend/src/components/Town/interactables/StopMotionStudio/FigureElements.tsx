@@ -28,20 +28,17 @@ export enum FigureType {
 
 export function generateFigure(figure_type: FigureType, root_starting_x: number, root_starting_y: number) {
   if (figure_type === FigureType.PERSON) {
-    let proto_copy = JSON.parse(JSON.stringify(PERSON_FIGURE_PROTO));
-    let idMap = new Map<string, string>();
-    for (let i = 0; i < proto_copy.length; i++) {
-      idMap.set(proto_copy[i].id, crypto.randomUUID());
-    }
+    let proto_copy = structuredClone(PERSON_FIGURE_PROTO);
+
+    // By convention, the last member of a PERSON_FIGURE_PROTO array shall be the root.
     let root = proto_copy[proto_copy.length - 1];
     root.offset_x = root_starting_x;
     root.offset_y = root_starting_y;
+
     for (let i = 0; i < proto_copy.length; i++) {
-      proto_copy[i].id = idMap.get(proto_copy[i].id);
-      if (proto_copy[i].parent !== undefined) {
-        proto_copy[i].parent.id = idMap.get(proto_copy[i].parent.id);
-      }
+      proto_copy[i].id = crypto.randomUUID();
     }
+
     return proto_copy
   } else if (figure_type === FigureType.ANIMAL) {
 
@@ -92,6 +89,7 @@ function absolutePosn(elem: FigureElement) {
     iter = iter.parent;
   }
   const retval = { absoluteX, absoluteY, absoluteRotation };
+  console.log(retval)
 
   return retval;
 }
