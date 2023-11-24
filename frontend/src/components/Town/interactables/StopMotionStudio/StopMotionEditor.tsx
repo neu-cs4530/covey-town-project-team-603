@@ -141,7 +141,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   const frame2: Frame = {
     frameID: 2,
-    canvasElements: [figure2Head, figure2Torso],
+    canvasElements: [figure2Head, figure2Torso, figure2LeftLeg],
   };
 
   const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
@@ -201,7 +201,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(0);
   };
 
-  const handleFileChange = (event: { target: { files: any[] } }) => {
+  const handleFileChange = (event: { target: { files: unknown[] } }) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -217,7 +217,11 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           }
         }
       };
-      reader.readAsText(file);
+      if (file instanceof Blob) {
+        reader.readAsText(file);
+      } else {
+        //null
+      }
     }
   };
 

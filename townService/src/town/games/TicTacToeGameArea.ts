@@ -6,12 +6,10 @@ import InvalidParametersError, {
 import Player from '../../lib/Player';
 import {
   GameInstance,
-  GameMove,
   InteractableCommand,
   InteractableCommandReturnType,
   InteractableType,
   TicTacToeGameState,
-  TicTacToeMove,
 } from '../../types/CoveyTownSocket';
 import GameArea from './GameArea';
 import TicTacToeGame from './TicTacToeGame';

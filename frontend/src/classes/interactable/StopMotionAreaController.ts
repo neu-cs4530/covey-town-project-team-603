@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { GameInstanceID, InteractableID, StopMotionArea } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
@@ -35,7 +34,7 @@ export default abstract class StopMotionAreaController extends InteractableAreaC
     this._player = this._townController.getPlayer(stopMotionArea.player);
   }
 
-  protected _updateFrom(newModel: StopMotionArea): void {
+  protected _updateFrom(/*newModel: StopMotionArea*/): void {
     console.log('placeholder');
   }
 

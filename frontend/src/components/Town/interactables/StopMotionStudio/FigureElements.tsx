@@ -89,7 +89,7 @@ const handleDragStartFigure = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   console.log('drag start');
-  const dragId = e.target.attrs.id;
+  //const dragId = e.target.attrs.id;
 };
 
 const handleDragEndFigure = (
@@ -97,7 +97,7 @@ const handleDragEndFigure = (
   figureList: CanvasElement[],
   updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
-  const dragId = e.target.attrs.id;
+  //const dragId = e.target.attrs.id;
   console.log(figureList);
 };
 
