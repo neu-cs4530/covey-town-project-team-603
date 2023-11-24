@@ -82,25 +82,6 @@ const rotatePointAround = (
   };
 };
 
-//lines in DragStart and End are never read but still cannot be deleted, reevaluate later
-const handleDragStartFigure = (
-  e: KonvaEventObject<DragEvent>,
-  figureList: CanvasElement[],
-  updateFrameElements: (newValue: CanvasElement[]) => void,
-) => {
-  console.log('drag start');
-  //const dragId = e.target.attrs.id;
-};
-
-const handleDragEndFigure = (
-  e: KonvaEventObject<DragEvent>,
-  figureList: CanvasElement[],
-  updateFrameElements: (newValue: CanvasElement[]) => void,
-) => {
-  //const dragId = e.target.attrs.id;
-  console.log(figureList);
-};
-
 const handleDragMoveFigure = (
   e: KonvaEventObject<DragEvent>,
   figureList: CanvasElement[],
@@ -255,8 +236,6 @@ export const toKonvaElement = (
           width={elem.appearance.width}
           draggable={interactable}
           dragBoundFunc={elem.parent && identityPos}
-          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
-          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
           fill='#000000'
         />
@@ -273,9 +252,7 @@ export const toKonvaElement = (
           draggable={interactable}
           // draggable={true}
           dragBoundFunc={elem.parent && identityPos}
-          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
-          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
           fill='#000000'
         />
       );
