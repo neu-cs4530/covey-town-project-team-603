@@ -2,6 +2,8 @@ import React from 'react';
 import { Rect, Circle } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { CanvasElement } from './CanvasElements';
+import { PERSON_FIGURE_PROTO } from './FigureElementPrototypes'; 
+import { randomUUID } from 'crypto';
 
 interface KonvaRect {
   type: 'rect';
@@ -17,6 +19,34 @@ interface KonvaCircle {
 // Types of konva shape.
 // Used in FigureElement to provide an appearance.
 type KonvaShape = KonvaCircle | KonvaRect;
+
+// Type of 
+export enum FigureType {
+  PERSON,
+  ANIMAL
+}
+
+export function generateFigure(figure_type: FigureType, root_starting_x: number, root_starting_y: number) {
+  if (figure_type === FigureType.PERSON) {
+    let proto_copy = JSON.parse(JSON.stringify(PERSON_FIGURE_PROTO));
+    let idMap = new Map<string, string>();
+    for (let i = 0; i < proto_copy.length; i++) {
+      idMap.set(proto_copy[i].id, crypto.randomUUID());
+    }
+    let root = proto_copy[proto_copy.length - 1];
+    root.offset_x = root_starting_x;
+    root.offset_y = root_starting_y;
+    for (let i = 0; i < proto_copy.length; i++) {
+      proto_copy[i].id = idMap.get(proto_copy[i].id);
+      if (proto_copy[i].parent !== undefined) {
+        proto_copy[i].parent.id = idMap.get(proto_copy[i].parent.id);
+      }
+    }
+    return proto_copy
+  } else if (figure_type === FigureType.ANIMAL) {
+
+  }
+}
 
 // TODO: Movement is hierarchical.
 // 1. Moving a "parent" node should move all of the children nodes.

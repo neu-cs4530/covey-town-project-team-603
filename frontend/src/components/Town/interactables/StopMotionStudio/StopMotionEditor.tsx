@@ -8,6 +8,7 @@ import { Frame } from './Frame';
 import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel }  from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
+import { generateFigure, FigureType } from './FigureElements'; 
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
@@ -152,7 +153,7 @@ const figure1Torso: FigureElement = {
     offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
     offset_y: 721,
     offset_rotation: 0,
-    offset_attach_rotation: 0,
+    offset_attach_ratation: 0,
     offset_attach_x: 0,
     offset_attach_y: 0,
     isDragging: false,
@@ -213,7 +214,8 @@ const figure1Torso: FigureElement = {
     setFrames((prevFrames: Frame[]) => {
       const updatedFrames = prevFrames.slice(0, -1);
       const lastFrame = prevFrames[prevFrames.length - 1];
-      let personConst = [figureAddHead, figureAddTorso, figureAddLeftLeg] as CanvasElement[];
+      let personConst = generateFigure(FigureType.PERSON, 773, 500);
+      console.log(personConst);
       lastFrame.canvasElements.push.apply(lastFrame.canvasElements, personConst); 
       updatedFrames.push(lastFrame);
       return updatedFrames;
