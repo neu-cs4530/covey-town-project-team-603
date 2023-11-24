@@ -82,58 +82,6 @@ const rotatePointAround = (
   };
 };
 
-const handleDragStartFigure = (
-  e: KonvaEventObject<DragEvent>,
-  figureList: CanvasElement[],
-  updateFrameElements: (newValue: CanvasElement[]) => void,
-) => {
-  console.log('drag start');
-
-  const dragId = e.target.attrs.id;
-  /*
-  updateFrameElements(
-    figureList.map(elem => {
-      console.log('elem')
-      if (elem.type === 'figure') {
-        console.log('figure');
-        const figureElem = elem as FigureElement;
-        return {
-          ...figureElem,
-          isDragging: figureElem.id === dragId,
-        };
-      } else {
-        return elem;
-      }
-    }),
-  );
-  */
-};
-
-const handleDragEndFigure = (
-  e: KonvaEventObject<DragEvent>,
-  figureList: CanvasElement[],
-  updateFrameElements: (newValue: CanvasElement[]) => void,
-) => {
-  const dragId = e.target.attrs.id;
-  console.log(figureList);
-
-  /*
-  updateFrameElements(
-    figureList.map(elem => {
-      if (elem.type == 'figure') {
-        const figureElem = elem as FigureElement;
-        return {
-          ...figureElem,
-          isDragging: false,
-        };
-      } else {
-        return elem;
-      }
-    }),
-  );
-  */
-};
-
 const handleDragMoveFigure = (
   e: KonvaEventObject<DragEvent>,
   figureList: CanvasElement[],
@@ -177,8 +125,6 @@ const handleDragMoveFigure = (
           // This is over the span of the drag.
           const dragRotationRadians = Math.atan2(dragVectorY, dragVectorX);
 
-          // console.log(`Drag radians: ${dragRotationRadians}`);
-
           /// ... and if it is a root element...
           if (figureElem.parent === undefined) {
             // Update the linear position.
@@ -195,7 +141,6 @@ const handleDragMoveFigure = (
             // Additionally, we probably need to record a drag_init_rotation_degrees.
 
             const toRotate = figureElem.offset_attach_rotation - dragRotationRadians;
-            // console.log(`Amount to rotate by: ${toRotate}`);
 
             const rotatedAttachmentOffset = rotatePointAround(
               0,
@@ -225,10 +170,6 @@ const handleDragMoveFigure = (
 
             newAttachRot = dragRotationRadians;
             newRot = newAttachRot + rotDiff;
-
-            // console.log(`Rotation difference: ${rotDiff}`);
-            // console.log(`The saved rotation: ${newRot}`);
-            // console.log(`The saved offset rotation: ${newAttachRot}`);
           }
         }
 
@@ -294,10 +235,7 @@ export const toKonvaElement = (
           height={elem.appearance.length}
           width={elem.appearance.width}
           draggable={interactable}
-          // draggable={true}
           dragBoundFunc={elem.parent && identityPos}
-          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
-          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
           fill='#000000'
         />
@@ -314,9 +252,7 @@ export const toKonvaElement = (
           draggable={interactable}
           // draggable={true}
           dragBoundFunc={elem.parent && identityPos}
-          onDragStart={e => handleDragStartFigure(e, figureList, updateFrameElements)}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
-          onDragEnd={e => handleDragEndFigure(e, figureList, updateFrameElements)}
           fill='#000000'
         />
       );

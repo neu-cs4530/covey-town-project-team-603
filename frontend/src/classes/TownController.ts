@@ -23,6 +23,7 @@ import {
   InteractableID,
   PlayerID,
   PlayerLocation,
+  StopMotionArea,
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
 } from '../types/CoveyTownSocket';
@@ -36,7 +37,6 @@ import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
 import StopMotionAreaController from './interactable/StopMotionAreaController';
-import StopMotionArea from '../components/Town/interactables/StopMotionArea';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -650,9 +650,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     }
   }
 
-  public getStopMotionAreaController<StopMotionGameState, StopMotionStudioEventTypes>(
-    stopMotionArea: StopMotionArea,
-  ): StopMotionAreaController {
+  public getStopMotionAreaController(stopMotionArea: StopMotionArea): StopMotionAreaController {
     const existingController = this._interactableControllers.find(
       eachExistingArea => eachExistingArea.id === stopMotionArea.name,
     );

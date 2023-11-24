@@ -9,25 +9,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Text as KonvaText } from 'react-konva';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useInteractable } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
-import { InteractableID } from '../../../../types/CoveyTownSocket';
-// import StopMotionArea from '../StopMotionArea';
 import StopMotionAreaInteractable from '../StopMotionArea';
-//import StopMotionAreaController from '../../../../classes/interactable/StopMotionAreaController';
-import { Stage, Layer } from 'react-konva';
-//import { blue } from '@material-ui/core/colors';
-//import Konva from 'konva';
-//import { Vector2d } from 'konva/lib/types';
-import { toKonvaElement, FigureElement } from './FigureElements';
-import { CanvasElement } from './CanvasElements';
-//import { KonvaEventObject } from 'konva/lib/Node';
-import { Frame } from './Frame';
 import { StopMotionEditor } from './StopMotionEditor';
 
-function StopMotionStudioArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
+function StopMotionStudioArea(): JSX.Element {
   type Screen = 'home' | 'studio' | 'view screen';
   const [screen, setScreen] = useState<Screen>('home');
 
@@ -81,7 +69,7 @@ export default function StopMotionStudioAreaWrapper(): JSX.Element {
         <ModalContent height='900px' maxW='1600px' maxH='900px'>
           <ModalHeader>Stop Motion Studio</ModalHeader>
           <ModalCloseButton />
-          <StopMotionStudioArea interactableID={stopMotionArea.name}></StopMotionStudioArea>
+          <StopMotionStudioArea />
         </ModalContent>
       </Modal>
     );

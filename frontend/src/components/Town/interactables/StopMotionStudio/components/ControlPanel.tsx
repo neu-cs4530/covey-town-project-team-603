@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import { Flex, Button, Box, Input } from '@chakra-ui/react';
 
 type ControlPanelProps = {
@@ -6,18 +6,17 @@ type ControlPanelProps = {
   saveAnimState: () => void;
   loadAnimState: () => void;
   fileInput: () => void;
-  handleChange: (event: any) => void;
+  handleChange: (event: unknown) => void;
   backHome: () => void;
   frameForward: () => void;
   frameBackward: () => void;
   playback: () => void;
 };
 
-// Bottom controll panel for progressing through and viewing animation
+// Bottom control panel for progressing through and viewing animation
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   addNewFrame: addFrame,
   saveAnimState: saveAnim,
-  loadAnimState: loadState,
   fileInput: fileInp,
   handleChange: handleChange,
   backHome: home,
@@ -51,17 +50,15 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           Navigate home
         </Button>
 
-          <Button size='md' height='48px' onClick={saveAnim}>
-            Save project
-          </Button>
+        <Button size='md' height='48px' onClick={saveAnim}>
+          Save project
+        </Button>
 
-          <Input type='file' style={{ display: 'none' }} onChange={handleChange
-} id='fileInput'/>
+        <Input type='file' style={{ display: 'none' }} onChange={handleChange} id='fileInput' />
 
-          <Button size='md' height='48px' onClick={fileInp}>
-            Load project
-          </Button>
-
+        <Button size='md' height='48px' onClick={fileInp}>
+          Load project
+        </Button>
       </Flex>
     </Box>
   );

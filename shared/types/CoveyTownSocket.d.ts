@@ -155,11 +155,13 @@ export interface GameArea<T extends GameState> extends Interactable {
 
 /**
  * Base type for an area that can host a game
+ * is name necessary?
  * @see GameInstance
  */
 export interface StopMotionArea extends Interactable {
   game: GameInstance<T> | undefined;
   player: PlayerID;
+  name: string;
   // history: GameResult[];
   // update this
 }
