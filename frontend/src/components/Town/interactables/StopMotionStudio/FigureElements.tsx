@@ -2,8 +2,7 @@ import React from 'react';
 import { Rect, Circle } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { CanvasElement } from './CanvasElements';
-import { ANIMAL_FIGURE_PROTO, PERSON_FIGURE_PROTO } from './FigureElementPrototypes'; 
-import { randomUUID } from 'crypto';
+import { ANIMAL_FIGURE_PROTO, PERSON_FIGURE_PROTO } from './FigureElementPrototypes';
 
 interface KonvaRect {
   type: 'rect';
@@ -20,30 +19,34 @@ interface KonvaCircle {
 // Used in FigureElement to provide an appearance.
 type KonvaShape = KonvaCircle | KonvaRect;
 
-// Type of 
+// Type of
 export enum FigureType {
   PERSON,
-  ANIMAL
+  ANIMAL,
 }
 
-export function generateFigure(figure_type: FigureType, root_starting_x: number, root_starting_y: number) {
-  let proto_copy;
+export function generateFigure(
+  figure_type: FigureType,
+  root_starting_x: number,
+  root_starting_y: number,
+) {
+  let protoCopy;
   if (figure_type === FigureType.PERSON) {
-    proto_copy = structuredClone(PERSON_FIGURE_PROTO);
+    protoCopy = structuredClone(PERSON_FIGURE_PROTO);
   } else if (figure_type === FigureType.ANIMAL) {
-    proto_copy = structuredClone(ANIMAL_FIGURE_PROTO);
+    protoCopy = structuredClone(ANIMAL_FIGURE_PROTO);
   } else {
     throw new Error();
   }
   // By convention, the last member of a PERSON_FIGURE_PROTO array shall be the root.
-  let root = proto_copy[proto_copy.length - 1];
+  const root = protoCopy[protoCopy.length - 1];
   root.offset_x = root_starting_x;
   root.offset_y = root_starting_y;
 
-  for (let i = 0; i < proto_copy.length; i++) {
-    proto_copy[i].id = crypto.randomUUID();
+  for (let i = 0; i < protoCopy.length; i++) {
+    protoCopy[i].id = crypto.randomUUID();
   }
-  return proto_copy
+  return protoCopy;
 }
 
 // TODO: Movement is hierarchical.
@@ -90,7 +93,7 @@ function absolutePosn(elem: FigureElement) {
     iter = iter.parent;
   }
   const retval = { absoluteX, absoluteY, absoluteRotation };
-  console.log(retval)
+  console.log(retval);
 
   return retval;
 }

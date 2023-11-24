@@ -1,209 +1,22 @@
-import { Box, Button, Flex, Spacer, Text, Input } from '@chakra-ui/react';
-import { Text as KonvaText } from 'react-konva';
-import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer } from 'react-konva';
-import { toKonvaElement, FigureElement } from './FigureElements';
-import { CanvasElement } from './CanvasElements';
+import { Box, Flex, Spacer } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { FigureElement } from './FigureElements';
 import { Frame } from './Frame';
 import { ControlPanel } from './components/ControlPanel';
-import { FiguresSelectionPanel }  from './components/FiguresSelectionPanel';
+import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
-import { generateFigure, FigureType } from './FigureElements'; 
+import { generateFigure, FigureType } from './FigureElements';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
-const figureAddTorso: FigureElement = {
-    type: 'figure',
-    // a KonvaRect
-    appearance: {
-      type: 'rect',
-      length: 50,
-      width: 20,
-    },
-    id: 'figure_add_torso',
-    // This is the root
-    parent: undefined,
-    // Because this is the root, these are absolute posns
-    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-    offset_y: 521,
-    offset_rotation: 0,
-    offset_attach_rotation: 0,
-    offset_attach_x: 0,
-    offset_attach_y: 0,
-    isDragging: false,
-  };
-
-  const figureAddHead: FigureElement = {
-    type: 'figure',
-    // a KonvaCircle
-    appearance: {
-      type: 'circle',
-      radius: 10,
-    },
-    id: 'figure_add_head',
-    parent: figureAddTorso,
-    offset_x: 10,
-    offset_y: -10,
-    offset_rotation: 0,
-    offset_attach_rotation: Math.PI / 2,
-    offset_attach_x: 0,
-    offset_attach_y: 10,
-    isDragging: false,
-  };
-
-  const figureAddLeftLeg: FigureElement = {
-    type: 'figure',
-    appearance: {
-      type: 'rect',
-      length: 25,
-      width: 5,
-    },
-    id: 'figure_add_left_leg',
-    parent: figureAddTorso,
-    offset_x: 0,
-    offset_y: 45,
-    // for now
-    offset_rotation: 0,
-    offset_attach_rotation: -(Math.PI / 2),
-    offset_attach_x: 0,
-    offset_attach_y: 0,
-    isDragging: false,
-  };
-
-
-
-
-const figure1Torso: FigureElement = {
-    type: 'figure',
-    // a KonvaRect
-    appearance: {
-      type: 'rect',
-      length: 50,
-      width: 20,
-    },
-    id: 'figure_1_torso',
-    // This is the root
-    parent: undefined,
-    // Because this is the root, these are absolute posns
-    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-    offset_y: 521,
-    offset_rotation: 0,
-    offset_attach_rotation: 0,
-    offset_attach_x: 0,
-    offset_attach_y: 0,
-    isDragging: false,
-  };
-
-  const figure1Head: FigureElement = {
-    type: 'figure',
-    // a KonvaCircle
-    appearance: {
-      type: 'circle',
-      radius: 10,
-    },
-    id: 'figure_1_head',
-    parent: figure1Torso,
-    offset_x: 10,
-    offset_y: -10,
-    offset_rotation: 0,
-    offset_attach_rotation: Math.PI / 2,
-    offset_attach_x: 0,
-    offset_attach_y: 10,
-    isDragging: false,
-  };
-
-  const figure1LeftLeg: FigureElement = {
-    type: 'figure',
-    appearance: {
-      type: 'rect',
-      length: 25,
-      width: 5,
-    },
-    id: 'figure_1_left_leg',
-    parent: figure1Torso,
-    offset_x: 0,
-    offset_y: 45,
-    // for now
-    offset_rotation: 0,
-    offset_attach_rotation: -(Math.PI / 2),
-    offset_attach_x: 0,
-    offset_attach_y: 0,
-    isDragging: false,
-  };
-
   const frame1: Frame = {
     frameID: 1,
-    canvasElements: [figure1Head, figure1LeftLeg, figure1Torso],
+    canvasElements: [],
   };
 
-  const figure2Torso: FigureElement = {
-    type: 'figure',
-    // a KonvaRect
-    appearance: {
-      type: 'rect',
-      length: 50,
-      width: 20,
-    },
-    id: 'figure_2_torso',
-    // This is the root
-    parent: undefined,
-    // Because this is the root, these are absolute posns
-    offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-    offset_y: 721,
-    offset_rotation: 0,
-    offset_attach_rotation: 0,
-    offset_attach_x: 0,
-    offset_attach_y: 0,
-    isDragging: false,
-  };
-
-  const figure2Head: FigureElement = {
-    type: 'figure',
-    // a KonvaCircle
-    appearance: {
-      type: 'circle',
-      radius: 10,
-    },
-    id: 'figure_2_head',
-    parent: figure2Torso,
-    offset_x: 10,
-    offset_y: -10,
-    offset_rotation: 0,
-    offset_attach_rotation: Math.PI / 2,
-    offset_attach_x: 0,
-    offset_attach_y: 10,
-    isDragging: false,
-  };
-
-  const figure2LeftLeg: FigureElement = {
-    type: 'figure',
-    appearance: {
-      type: 'rect',
-      length: 25,
-      width: 5,
-    },
-    id: 'figure_2_left_leg',
-    parent: figure2Torso,
-    offset_x: 0,
-    offset_y: 45,
-    // for now
-    offset_rotation: 0,
-    offset_attach_rotation: -(Math.PI / 2),
-    offset_attach_x: 0,
-    offset_attach_y: 0,
-    isDragging: false,
-  };
-
-  const frame2: Frame = {
-    frameID: 2,
-    canvasElements: [figure2Head, figure2Torso],
-  };
-
-  // const [frames, setFrames] = useState<Frame[]>([default]);
-
-  const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
+  const [frames, setFrames] = useState<Frame[]>([frame1]);
 
   // initialize current frame
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
@@ -213,11 +26,11 @@ const figure1Torso: FigureElement = {
     setFrames((prevFrames: Frame[]) => {
       const updatedFrames = prevFrames.slice(0, -1);
       const lastFrame = prevFrames[prevFrames.length - 1];
-      lastFrame.canvasElements.push.apply(lastFrame.canvasElements, newElems); 
+      lastFrame.canvasElements = [...lastFrame.canvasElements, ...newElems];
       updatedFrames.push(lastFrame);
       return updatedFrames;
-    })
-  }
+    });
+  };
 
   const addPerson = () => {
     addFigure(generateFigure(FigureType.PERSON, 773, 500));
@@ -254,7 +67,6 @@ const figure1Torso: FigureElement = {
     }
   };
 
-
   // increments the frame backwards
   const frameBackward = () => {
     if (currentFrameIndex > 0) {
@@ -282,40 +94,37 @@ const figure1Torso: FigureElement = {
     await playNextFrame(0);
   };
 
-    const handleFileChange = (event: { target:
-{ files: any[]; }; }) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target!.result as string;
-        if (content !== null) {
-          let savedFrames = JSON.parse(content);
+      reader.onload = e => {
+        if (e.target !== null && e.target.result !== null) {
+          const content = e.target.result as string;
+          const savedFrames = JSON.parse(content);
           if (savedFrames.length !== 0) {
             setCurrentFrameIndex(0);
-            setFrames((prevFrames: Frame[]) => {
-              return savedFrames;
-            });
+            setFrames(savedFrames);
           }
         }
-      }
+      };
       reader.readAsText(file);
     }
-  }
+  };
 
- function saveAnimState() {
-    let stranim = JSON.stringify(frames);
-    let mimetype = "application/json";
-    let blob = new Blob([stranim], {type: mimetype});
-    let bloburl = URL.createObjectURL(blob);
+  function saveAnimState() {
+    const stranim = JSON.stringify(frames);
+    const mimetype = 'application/json';
+    const blob = new Blob([stranim], { type: mimetype });
+    const bloburl = URL.createObjectURL(blob);
 
-
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     document.body.appendChild(a);
-    a.style.cssText = "display: none";
+    a.style.cssText = 'display: none';
     a.href = bloburl;
 
-    a.download = "animation.json"
+    a.download = 'animation.json';
     a.click();
 
     URL.revokeObjectURL(bloburl);
@@ -323,10 +132,13 @@ const figure1Torso: FigureElement = {
     document.body.removeChild(a);
   }
 
-   const triggerFileInput = () => {
-    document.getElementById('fileInput')!.click();
-  }
-   
+  const triggerFileInput = () => {
+    const element = document.getElementById('fileInput');
+    if (element !== null) {
+      element.click();
+    }
+  };
+
   return (
     <Box backgroundColor={'white'}>
       {/* vertical flex */}
@@ -334,7 +146,7 @@ const figure1Torso: FigureElement = {
         {/* items in row one */}
         <Flex>
           {/* panel for selecting new characters to drag onto the canvs */}
-          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal}/>
+          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal} />
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
