@@ -50,7 +50,6 @@ const personFigureLeftLeg: FigureElement = {
   parent: personFigureTorso,
   offset_x: 0,
   offset_y: 45,
-  // for now
   offset_rotation: 0,
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
@@ -69,7 +68,6 @@ const personFigureRightLeg: FigureElement = {
   parent: personFigureTorso,
   offset_x: 15,
   offset_y: 45,
-  // for now
   offset_rotation: 0,
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
@@ -88,7 +86,6 @@ const personFigureLeftArm: FigureElement = {
   parent: personFigureTorso,
   offset_x: 0,
   offset_y: 0,
-  // for now
   offset_rotation: -(Math.PI / 4),
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
@@ -107,7 +104,6 @@ const personFigureRightArm: FigureElement = {
   parent: personFigureTorso,
   offset_x: 20,
   offset_y: 5,
-  // for now
   offset_rotation: -Math.PI / 4,
   offset_attach_rotation: (Math.PI / 4),
   offset_attach_x: 0,
