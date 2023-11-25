@@ -6,7 +6,7 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
-import { SimpleShape, SimpleShapeType } from './components/SimpleShape';
+import { SimpleShape } from './components/SimpleShape';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);

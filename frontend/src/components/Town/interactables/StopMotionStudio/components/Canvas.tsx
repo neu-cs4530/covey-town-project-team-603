@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Stage, Layer, Text } from 'react-konva';
 import { CanvasElement } from '../CanvasElements';
 import { FigureElement, toKonvaElement } from '../FigureElements';
