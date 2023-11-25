@@ -7,7 +7,8 @@ import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
 import GIF from 'gif.js';
-import { WORKER_BLOB } from './WorkerSetup';
+import { workerBlob } from './WorkerSetup';
+import { saveBlob } from './Util';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
@@ -107,12 +108,13 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     const delay = 150; // 150 ms
     setPlaybackMode(true);
     setCurrentFrameIndex(0); // set the first frame to be first
+    const canvas = activeLayerRef.current.canvas;
     const gif = new GIF({
       workers: 1,
-      workerScript: URL.createObjectURL(WORKER_BLOB),
+      workerScript: URL.createObjectURL(workerBlob),
       quality: 10,
-      height: 1200,
-      width: 1950,
+      height: canvas.height,
+      width: canvas.width,
     });
     gif.on('finished', function (blob) {
       saveBlob(blob);
@@ -156,22 +158,6 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       reader.readAsText(file);
     }
   };
-
-  function saveBlob(blob) {
-    const bloburl = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.style.cssText = 'display: none';
-    a.href = bloburl;
-
-    a.download = 'animation.json';
-    a.click();
-
-    URL.revokeObjectURL(bloburl);
-
-    document.body.removeChild(a);
-  }
 
   function saveAnimState() {
     const stranim = JSON.stringify(frames);

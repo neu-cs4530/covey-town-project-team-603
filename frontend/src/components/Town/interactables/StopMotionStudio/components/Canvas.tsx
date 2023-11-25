@@ -10,7 +10,7 @@ type CanvasProps = {
   setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
   playbackMode: boolean;
   currentFrame: number;
-  activeLayerRef: any;
+  activeLayerRef: React.RefObject<HTMLCanvasElement>;
 };
 
 // the interactable canvas to construct the stop motion scenes
