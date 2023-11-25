@@ -4,7 +4,7 @@ import { CanvasElement } from '../CanvasElements';
 import { FigureElement, toKonvaElement } from '../FigureElements';
 import { Frame } from '../Frame';
 import { Box } from '@chakra-ui/react';
-import { SimpleShape, simpleShapeToKonvaElement } from './simpleShape';
+import { SimpleShape, simpleShapeToKonvaElement } from './SimpleShape';
 
 type CanvasProps = {
   frames: Frame[];

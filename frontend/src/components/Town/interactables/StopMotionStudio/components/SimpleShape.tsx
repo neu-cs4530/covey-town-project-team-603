@@ -29,7 +29,7 @@ const handleDragMove = (
 
   updateFrameElements(
     shapeList.map(elem => {
-      if (elem.type == 'simpleShape') {
+      if (elem.type === 'simpleShape') {
         const simpleShapeElem = elem as SimpleShape;
         const dragId = e.target.attrs.id;
 
@@ -57,15 +57,20 @@ export const simpleShapeToKonvaElement = (
   interactable: boolean,
 ) => {
   console.log('here for sure');
-  if (elem.shape == 'circle') {
+  if (elem.shape === 'circle') {
+    console.log(elem.x)
+    console.log(elem.y)
     return (
       <Circle
+        id={elem.id}
         key={elem.id}
         x={elem.x}
         y={elem.y}
+        rotation={elem.rotation}
         radius={20}
         draggable={interactable}
         onDragMove={e => handleDragMove(e, shapeList, updateFrameElements)}
+        fill='#000000'
       />
     );
   } else if (elem.shape == 'star') {

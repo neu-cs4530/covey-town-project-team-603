@@ -33,7 +33,7 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
 
       <Button onClick={addStar}>Add Star</Button>
 
-      <Button onClick={addRect}>Add Circle</Button>
+      <Button onClick={addRect}>Add Rect</Button>
     </Box>
   );
 };
