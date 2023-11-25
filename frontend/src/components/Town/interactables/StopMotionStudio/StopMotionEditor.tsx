@@ -110,15 +110,15 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   const exportMovie = async () => {
     const mimetype = 'image/gif';
 
-    const delay = 150; // 150 ms
+    const delay = 1000; // 150 ms
     setPlaybackMode(true);
     setCurrentFrameIndex(0); // set the first frame to be first
     let gif = new GIF({
       workers: 1,
       workerScript: URL.createObjectURL(workerBlob),
       quality: 10,
-      height: 800,
-      width: 1300
+      height: 1200,
+      width: 1950
     });
     gif.on('finished', function(blob) {
       console.log(blob);
@@ -127,22 +127,26 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     });
 
 
-    const playNextFrame = async (count: number) => {
+    const doNextFrame = (count: number) => {
       if (count < frames.length - 1) {
         console.log(count);
+               setTimeout(() => {
         const pixels = activeLayerRef.current.canvas.context._context;
-        gif.addFrame(pixels, {copy: true});
         console.log(pixels);
-        setCurrentFrameIndex(count + 1);
-        await playNextFrame(count + 1);
+        gif.addFrame(pixels, {copy: true});
+          setCurrentFrameIndex(count + 1);
+          doNextFrame(count + 1);
+        }, delay); // Adjust the delay time as needed
       } else {
         setPlaybackMode(false);
       }
     };
-    await playNextFrame(0);
+    doNextFrame(0);
+    setTimeout(() => {
     console.log('render')
     gif.render();
     console.log('rendered')
+    }, 15000)
   };
   
 
