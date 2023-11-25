@@ -289,7 +289,6 @@ const birdFigureWing1: FigureElement = {
   offset_attach_x: -3,
   offset_attach_y: 0,
   isDragging: false,
-  dragOverride: true
 };
 
 const birdFigureWing2: FigureElement = {
@@ -310,7 +309,6 @@ const birdFigureWing2: FigureElement = {
   offset_attach_x: +3,
   offset_attach_y: 0,
   isDragging: false,
-  dragOverride: true
 };
 
 export const PERSON_FIGURE_PROTO = [

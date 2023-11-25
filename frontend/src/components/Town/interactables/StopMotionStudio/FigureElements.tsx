@@ -28,7 +28,7 @@ interface KonvaTri {
 // Used in FigureElement to provide an appearance.
 type KonvaShape = KonvaCircle | KonvaRect | KonvaTri;
 
-// Type of
+// Type of figure
 export enum FigureType {
   PERSON,
   ANIMAL,
@@ -254,11 +254,9 @@ export const toKonvaElement = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) => {
-  console.log(interactable);
   let absolutePosnVar = absolutePosn(elem);
 
   function identityPos() {
-    console.log('identity');
     absolutePosnVar = absolutePosn(elem);
     return {
       x: absolutePosnVar.absoluteX,

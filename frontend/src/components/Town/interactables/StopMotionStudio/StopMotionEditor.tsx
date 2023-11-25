@@ -6,6 +6,7 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
+import { SimpleShape, SimpleShapeType } from './components/simpleShape';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
@@ -21,12 +22,25 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   // initialize current frame
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
 
+  // adds new figures to screen
   const addFigure = (newElems: FigureElement[]) => {
     setCurrentFrameIndex(frames.length - 1);
     setFrames((prevFrames: Frame[]) => {
       const updatedFrames = prevFrames.slice(0, -1);
       const lastFrame = prevFrames[prevFrames.length - 1];
       lastFrame.canvasElements = [...lastFrame.canvasElements, ...newElems];
+      updatedFrames.push(lastFrame);
+      return updatedFrames;
+    });
+  };
+
+  // adds new simple shapes to screen
+  const addSimpleShape = (newElem: SimpleShape) => {
+    setCurrentFrameIndex(frames.length - 1);
+    setFrames((prevFrames: Frame[]) => {
+      const updatedFrames = prevFrames.slice(0, -1);
+      const lastFrame = prevFrames[prevFrames.length - 1];
+      lastFrame.canvasElements = [...lastFrame.canvasElements, newElem];
       updatedFrames.push(lastFrame);
       return updatedFrames;
     });
@@ -42,6 +56,28 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   const addBird = () => {
     addFigure(generateFigure(FigureType.BIRD, 773, 500));
+  };
+
+  const addCircle = () => {
+    const newCircle: SimpleShape = {
+      shape: 'circle',
+      type: 'simpleShape',
+      id: crypto.randomUUID(),
+      x: 773,
+      y: 521,
+      rotation: 0,
+      isDragging: false,
+    };
+
+    addSimpleShape(newCircle);
+  };
+
+  const addStar = () => {
+    // addFigure(generateFigure);
+  };
+
+  const addRect = () => {
+    // addFigure(generateFigure);
   };
 
   function addNewFrame() {
@@ -150,7 +186,14 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         {/* items in row one */}
         <Flex>
           {/* panel for selecting new characters to drag onto the canvs */}
-          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal} addBird={addBird} />
+          <FiguresSelectionPanel
+            addPerson={addPerson}
+            addAnimal={addAnimal}
+            addBird={addBird}
+            addCircle={addCircle}
+            addStar={addStar}
+            addRect={addRect}
+          />
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
