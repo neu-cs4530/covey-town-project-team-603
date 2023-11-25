@@ -2,28 +2,24 @@ import { FigureElement } from './FigureElements';
 
 const personFigureTorso: FigureElement = {
   type: 'figure',
-  // a KonvaRect
   appearance: {
     type: 'rect',
     length: 100,
     width: 40,
   },
   id: 'figure_add_torso',
-  // This is the root
   parent: undefined,
-  // Because this is the root, these are absolute posns
-  offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-  offset_y: 521,
+  offset_x: 0, 
+  offset_y: 0,
   offset_rotation: 0,
   offset_attach_rotation: 0,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const personFigureHead: FigureElement = {
   type: 'figure',
-  // a KonvaCircle
   appearance: {
     type: 'circle',
     radius: 20,
@@ -36,7 +32,7 @@ const personFigureHead: FigureElement = {
   offset_attach_rotation: Math.PI / 2,
   offset_attach_x: 0,
   offset_attach_y: 20,
-  isDragging: false,
+  dragOverride: false
 };
 
 const personFigureLeftLeg: FigureElement = {
@@ -54,7 +50,7 @@ const personFigureLeftLeg: FigureElement = {
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const personFigureRightLeg: FigureElement = {
@@ -72,7 +68,7 @@ const personFigureRightLeg: FigureElement = {
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const personFigureLeftArm: FigureElement = {
@@ -90,7 +86,7 @@ const personFigureLeftArm: FigureElement = {
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const personFigureRightArm: FigureElement = {
@@ -108,33 +104,29 @@ const personFigureRightArm: FigureElement = {
   offset_attach_rotation: Math.PI / 4,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const animalFigureTorso: FigureElement = {
   type: 'figure',
-  // a KonvaRect
   appearance: {
     type: 'rect',
     length: 100,
     width: 40,
   },
   id: 'figure_3_torso',
-  // This is the root
   parent: undefined,
-  // Because this is the root, these are absolute posns
-  offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-  offset_y: 521,
+  offset_x: 0, 
+  offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const animalFigureHead: FigureElement = {
   type: 'figure',
-  // a KonvaCircle
   appearance: {
     type: 'circle',
     radius: 20,
@@ -147,12 +139,11 @@ const animalFigureHead: FigureElement = {
   offset_attach_rotation: 0,
   offset_attach_x: -20,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const animalFigureLeg1: FigureElement = {
   type: 'figure',
-  // a KonvaCircle
   appearance: {
     type: 'rect',
     length: 50,
@@ -166,12 +157,11 @@ const animalFigureLeg1: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const animalFigureLeg2: FigureElement = {
   type: 'figure',
-  // a KonvaCircle
   appearance: {
     type: 'rect',
     length: 50,
@@ -185,12 +175,11 @@ const animalFigureLeg2: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const animalFigureLeg3: FigureElement = {
   type: 'figure',
-  // a KonvaCircle
   appearance: {
     type: 'rect',
     length: 50,
@@ -204,12 +193,11 @@ const animalFigureLeg3: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const animalFigureLeg4: FigureElement = {
   type: 'figure',
-  // a KonvaCircle
   appearance: {
     type: 'rect',
     length: 50,
@@ -223,89 +211,75 @@ const animalFigureLeg4: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const birdFigureTorso: FigureElement = {
   type: 'figure',
-  // a KonvaRect
   appearance: {
     type: 'rect',
     length: 40,
     width: 12,
   },
   id: 'figure_4_torso',
-  // This is the root
   parent: undefined,
-  // Because this is the root, these are absolute posns
-  offset_x: 773, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-  offset_y: 521,
+  offset_x: 0, 
+    offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const birdFigureHead: FigureElement = {
   type: 'figure',
-  // a KonvaRect
   appearance: {
     type: 'circle',
     radius: 12,
   },
   id: 'figure_4_head',
-  // This is the root
   parent: birdFigureTorso,
-  // Because this is the root, these are absolute posns
-  offset_x: 52, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-  offset_y: 0,
+  offset_x: 52, 
+    offset_y: 0,
   offset_rotation: 0,
   offset_attach_rotation: 0,
   offset_attach_x: -12,
   offset_attach_y: 0,
-  isDragging: false,
+  dragOverride: false
 };
 
 const birdFigureWing1: FigureElement = {
   type: 'figure',
-  // a KonvaRect
   appearance: {
     type: 'tri',
     radius: 20,
   },
   id: 'figure_4_wing_1',
-  // This is the root
   parent: birdFigureTorso,
-  // Because this is the root, these are absolute posns
-  offset_x: 20, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+  offset_x: 20,   
   offset_y: -12,
   offset_rotation: (-1 * Math.PI) / 2,
   offset_attach_rotation: 0,
   offset_attach_x: -12,
   offset_attach_y: 0,
-  isDragging: false,
   dragOverride: true,
 };
 
 const birdFigureWing2: FigureElement = {
   type: 'figure',
-  // a KonvaRect
   appearance: {
     type: 'tri',
     radius: 20,
   },
   id: 'figure_4_wing_2',
-  // This is the root
   parent: birdFigureTorso,
-  // Because this is the root, these are absolute posns
-  offset_x: 20, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+  offset_x: 20,   
   offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
   offset_attach_x: +12,
   offset_attach_y: 0,
-  isDragging: false,
   dragOverride: true,
 };
 
