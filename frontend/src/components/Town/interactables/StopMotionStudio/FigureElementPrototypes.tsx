@@ -116,8 +116,8 @@ const animalFigureTorso: FigureElement = {
   // a KonvaRect
   appearance: {
     type: 'rect',
-    length: 50,
-    width: 20,
+    length: 100,
+    width: 40,
   },
   id: 'figure_3_torso',
   // This is the root
@@ -137,15 +137,15 @@ const animalFigureHead: FigureElement = {
   // a KonvaCircle
   appearance: {
     type: 'circle',
-    radius: 10,
+    radius: 20,
   },
   id: 'figure_3_head',
   parent: animalFigureTorso,
-  offset_x: 60,
-  offset_y: -20,
+  offset_x: 120,
+  offset_y: -40,
   offset_rotation: 0,
   offset_attach_rotation: 0,
-  offset_attach_x: -10,
+  offset_attach_x: -20,
   offset_attach_y: 0,
   isDragging: false,
 };
@@ -155,8 +155,8 @@ const animalFigureLeg1: FigureElement = {
   // a KonvaCircle
   appearance: {
     type: 'rect',
-    length: 25,
-    width: 5,
+    length: 50,
+    width: 10,
   },
   id: 'figure_3_leg_1',
   parent: animalFigureTorso,
@@ -174,12 +174,12 @@ const animalFigureLeg2: FigureElement = {
   // a KonvaCircle
   appearance: {
     type: 'rect',
-    length: 25,
-    width: 5,
+    length: 50,
+    width: 10,
   },
   id: 'figure_3_leg_2',
   parent: animalFigureTorso,
-  offset_x: 15,
+  offset_x: 30,
   offset_y: 0,
   offset_rotation: (-1 * Math.PI) / 2,
   offset_attach_rotation: (-1 * Math.PI) / 2,
@@ -193,12 +193,12 @@ const animalFigureLeg3: FigureElement = {
   // a KonvaCircle
   appearance: {
     type: 'rect',
-    length: 25,
-    width: 5,
+    length: 50,
+    width: 10,
   },
   id: 'figure_3_leg_3',
   parent: animalFigureTorso,
-  offset_x: 30,
+  offset_x: 60,
   offset_y: 0,
   offset_rotation: (-1 * Math.PI) / 2,
   offset_attach_rotation: (-1 * Math.PI) / 2,
@@ -212,12 +212,12 @@ const animalFigureLeg4: FigureElement = {
   // a KonvaCircle
   appearance: {
     type: 'rect',
-    length: 25,
-    width: 5,
+    length: 50,
+    width: 10,
   },
   id: 'figure_3_leg_4',
   parent: animalFigureTorso,
-  offset_x: 45,
+  offset_x: 90,
   offset_y: 0,
   offset_rotation: (-1 * Math.PI) / 2,
   offset_attach_rotation: (-1 * Math.PI) / 2,
@@ -231,8 +231,8 @@ const birdFigureTorso: FigureElement = {
   // a KonvaRect
   appearance: {
     type: 'rect',
-    length: 10,
-    width: 3,
+    length: 40,
+    width: 12,
   },
   id: 'figure_4_torso',
   // This is the root
@@ -252,13 +252,13 @@ const birdFigureHead: FigureElement = {
   // a KonvaRect
   appearance: {
     type: 'circle',
-    radius: 3,
+    radius: 12,
   },
   id: 'figure_4_head',
   // This is the root
   parent: birdFigureTorso,
   // Because this is the root, these are absolute posns
-  offset_x: 13, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+  offset_x: 52, //----------------------------------------------------------> these offset x and y should probably not be hard coded
   offset_y: 0,
   offset_rotation: 0,
   offset_attach_rotation: 0,
@@ -272,17 +272,17 @@ const birdFigureWing1: FigureElement = {
   // a KonvaRect
   appearance: {
     type: 'tri',
-    radius: 5,
+    radius: 20,
   },
   id: 'figure_4_wing_1',
   // This is the root
   parent: birdFigureTorso,
   // Because this is the root, these are absolute posns
-  offset_x: 5, //----------------------------------------------------------> these offset x and y should probably not be hard coded
-  offset_y: -3,
+  offset_x: 20, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+  offset_y: -12,
   offset_rotation: (-1 * Math.PI) / 2,
   offset_attach_rotation: 0,
-  offset_attach_x: -3,
+  offset_attach_x: -12,
   offset_attach_y: 0,
   isDragging: false,
   dragOverride: true,
@@ -293,17 +293,17 @@ const birdFigureWing2: FigureElement = {
   // a KonvaRect
   appearance: {
     type: 'tri',
-    radius: 5,
+    radius: 20,
   },
   id: 'figure_4_wing_2',
   // This is the root
   parent: birdFigureTorso,
   // Because this is the root, these are absolute posns
-  offset_x: 5, //----------------------------------------------------------> these offset x and y should probably not be hard coded
+  offset_x: 20, //----------------------------------------------------------> these offset x and y should probably not be hard coded
   offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
-  offset_attach_x: +3,
+  offset_attach_x: +12,
   offset_attach_y: 0,
   isDragging: false,
   dragOverride: true,
