@@ -9,13 +9,13 @@ const personFigureTorso: FigureElement = {
   },
   id: 'figure_add_torso',
   parent: undefined,
-  offset_x: 0, 
+  offset_x: 0,
   offset_y: 0,
   offset_rotation: 0,
   offset_attach_rotation: 0,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const personFigureHead: FigureElement = {
@@ -32,7 +32,7 @@ const personFigureHead: FigureElement = {
   offset_attach_rotation: Math.PI / 2,
   offset_attach_x: 0,
   offset_attach_y: 20,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const personFigureLeftLeg: FigureElement = {
@@ -50,7 +50,7 @@ const personFigureLeftLeg: FigureElement = {
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const personFigureRightLeg: FigureElement = {
@@ -68,7 +68,7 @@ const personFigureRightLeg: FigureElement = {
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const personFigureLeftArm: FigureElement = {
@@ -86,7 +86,7 @@ const personFigureLeftArm: FigureElement = {
   offset_attach_rotation: -(Math.PI / 2),
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const personFigureRightArm: FigureElement = {
@@ -104,7 +104,7 @@ const personFigureRightArm: FigureElement = {
   offset_attach_rotation: Math.PI / 4,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const animalFigureTorso: FigureElement = {
@@ -116,13 +116,13 @@ const animalFigureTorso: FigureElement = {
   },
   id: 'figure_3_torso',
   parent: undefined,
-  offset_x: 0, 
+  offset_x: 0,
   offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const animalFigureHead: FigureElement = {
@@ -139,7 +139,7 @@ const animalFigureHead: FigureElement = {
   offset_attach_rotation: 0,
   offset_attach_x: -20,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const animalFigureLeg1: FigureElement = {
@@ -157,7 +157,7 @@ const animalFigureLeg1: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const animalFigureLeg2: FigureElement = {
@@ -175,7 +175,7 @@ const animalFigureLeg2: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const animalFigureLeg3: FigureElement = {
@@ -193,7 +193,7 @@ const animalFigureLeg3: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const animalFigureLeg4: FigureElement = {
@@ -211,7 +211,7 @@ const animalFigureLeg4: FigureElement = {
   offset_attach_rotation: (-1 * Math.PI) / 2,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const birdFigureTorso: FigureElement = {
@@ -223,13 +223,13 @@ const birdFigureTorso: FigureElement = {
   },
   id: 'figure_4_torso',
   parent: undefined,
-  offset_x: 0, 
-    offset_y: 0,
+  offset_x: 0,
+  offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
   offset_attach_x: 0,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const birdFigureHead: FigureElement = {
@@ -240,13 +240,13 @@ const birdFigureHead: FigureElement = {
   },
   id: 'figure_4_head',
   parent: birdFigureTorso,
-  offset_x: 52, 
-    offset_y: 0,
+  offset_x: 52,
+  offset_y: 0,
   offset_rotation: 0,
   offset_attach_rotation: 0,
   offset_attach_x: -12,
   offset_attach_y: 0,
-  dragOverride: false
+  dragOverride: false,
 };
 
 const birdFigureWing1: FigureElement = {
@@ -257,7 +257,7 @@ const birdFigureWing1: FigureElement = {
   },
   id: 'figure_4_wing_1',
   parent: birdFigureTorso,
-  offset_x: 20,   
+  offset_x: 20,
   offset_y: -12,
   offset_rotation: (-1 * Math.PI) / 2,
   offset_attach_rotation: 0,
@@ -274,7 +274,7 @@ const birdFigureWing2: FigureElement = {
   },
   id: 'figure_4_wing_2',
   parent: birdFigureTorso,
-  offset_x: 20,   
+  offset_x: 20,
   offset_y: 0,
   offset_rotation: Math.PI / 2,
   offset_attach_rotation: 0,
