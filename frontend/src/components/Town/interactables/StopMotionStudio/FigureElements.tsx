@@ -273,7 +273,7 @@ export const toKonvaElement = (
           draggable={!elem.dragOverride && interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
-          fill='#ffffff'
+          fill='#000000'
         />
       );
     case 'circle':
@@ -288,7 +288,7 @@ export const toKonvaElement = (
           draggable={!elem.dragOverride && interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
-          fill='#ffffff'
+          fill='#000000'
         />
       );
     case 'tri':
@@ -304,7 +304,7 @@ export const toKonvaElement = (
           radius={elem.appearance.radius}
           dragBoundFunc={elem.parent && identityPos}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
-          fill='#ffffff'
+          fill='#000000'
         />
       );
   }
