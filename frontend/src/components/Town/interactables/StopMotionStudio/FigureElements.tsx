@@ -307,7 +307,7 @@ export const toKonvaElement = (
           x={absolutePosnVar.absoluteX}
           y={absolutePosnVar.absoluteY}
           rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
-          draggable={interactable}
+          draggable={!elem.dragOverride && interactable}
           radius={elem.appearance.radius}
           dragBoundFunc={elem.parent && identityPos}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
