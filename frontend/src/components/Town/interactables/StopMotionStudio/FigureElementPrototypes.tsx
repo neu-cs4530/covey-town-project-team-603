@@ -262,7 +262,7 @@ const birdFigureHead: FigureElement = {
   offset_y: 0,
   offset_rotation: 0,
   offset_attach_rotation: 0,
-  offset_attach_x: -3,
+  offset_attach_x: -12,
   offset_attach_y: 0,
   isDragging: false,
 };
