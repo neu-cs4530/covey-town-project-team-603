@@ -56,10 +56,7 @@ export const simpleShapeToKonvaElement = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) => {
-  console.log('here for sure');
   if (elem.shape === 'circle') {
-    console.log(elem.x)
-    console.log(elem.y)
     return (
       <Circle
         id={elem.id}
@@ -73,29 +70,35 @@ export const simpleShapeToKonvaElement = (
         fill='#000000'
       />
     );
-  } else if (elem.shape == 'star') {
+  } else if (elem.shape === 'star') {
     return (
       <Star
+        id={elem.id}
         key={elem.id}
         x={elem.x}
         y={elem.y}
+        rotation={elem.rotation}
         numPoints={5}
         innerRadius={20}
         outerRadius={40}
-        draggable
+        draggable={interactable}
         onDragMove={e => handleDragMove(e, shapeList, updateFrameElements)}
+        fill='#000000'
       />
     );
-  } else if (elem.shape == 'rect') {
+  } else if (elem.shape === 'rect') {
     return (
       <Rect
+        id={elem.id}
         key={elem.id}
         x={elem.x}
         y={elem.y}
         width={50}
         height={30}
-        draggable
+        rotation={elem.rotation}
+        draggable={interactable}
         onDragMove={e => handleDragMove(e, shapeList, updateFrameElements)}
+        fill='#000000'
       />
     );
   }
