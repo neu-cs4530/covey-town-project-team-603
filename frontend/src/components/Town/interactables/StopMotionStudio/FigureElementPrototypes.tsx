@@ -105,7 +105,7 @@ const personFigureRightArm: FigureElement = {
   offset_x: 40,
   offset_y: 10,
   offset_rotation: (3 * Math.PI) / 4,
-  offset_attach_rotation: (Math.PI / 4),
+  offset_attach_rotation: Math.PI / 4,
   offset_attach_x: 0,
   offset_attach_y: 0,
   isDragging: false,
