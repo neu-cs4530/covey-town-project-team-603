@@ -6,10 +6,13 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
+const GifEncoder = require('gif-encoder');
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
+
+  const activeLayerRef = React.useRef(null);
 
   const frame1: Frame = {
     frameID: 1,
@@ -98,6 +101,61 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(0);
   };
 
+  // plays back the stop motion animation so far
+  const exportMovie = async () => {
+    const mimetype = 'image/gif';
+    const data = new Uint8Array();
+
+    const delay = 150; // 150 ms
+    setPlaybackMode(true);
+    setCurrentFrameIndex(0); // set the first frame to be first
+    const buf = [];
+
+    const playNextFrame = async (count: number) => {
+      if (count < frames.length - 1) {
+        console.log(count);
+        const pixels = activeLayerRef.current.canvas.context._context.getImageData(
+          0,
+          0,
+          1000,
+          1000,
+        );
+        buf.push(pixels);
+        setTimeout(async () => {
+          setCurrentFrameIndex(count + 1);
+          await playNextFrame(count + 1);
+        }, delay); // Adjust the delay time as needed
+      } else {
+        setPlaybackMode(false);
+      }
+    };
+    await playNextFrame(0);
+
+    const gif = new GifEncoder(1001, 1001);
+    gif.on('readable', function () {
+      console.log('reading');
+      const blob = new Blob([gif.read()], { type: mimetype });
+      const bloburl = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style.cssText = 'display: none';
+      a.href = bloburl;
+
+      a.download = 'animation.json';
+      a.click();
+
+      URL.revokeObjectURL(bloburl);
+
+      document.body.removeChild(a);
+    });
+    gif.writeHeader();
+    for (let i = 0; i < buf.length; i++) {
+      gif.addFrame(buf[i]);
+    }
+    gif.finish();
+  };
+
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
@@ -159,6 +217,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
             setFrames={setFrames}
             playbackMode={playbackMode}
             currentFrame={currentFrameIndex}
+            activeLayerRef={activeLayerRef}
           />
         </Flex>
 
@@ -172,6 +231,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           fileInput={triggerFileInput}
           saveAnimState={saveAnimState}
           handleChange={handleFileChange}
+          exportMovie={exportMovie}
         />
       </Flex>
     </Box>

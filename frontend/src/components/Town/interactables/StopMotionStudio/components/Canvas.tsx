@@ -10,6 +10,7 @@ type CanvasProps = {
   setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
   playbackMode: boolean;
   currentFrame: number;
+  activeLayerRef: any;
 };
 
 // the interactable canvas to construct the stop motion scenes
@@ -18,6 +19,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   frames: canvasFrames,
   playbackMode: playbackMode,
   currentFrame: currentFrameIndex,
+  activeLayerRef: activeLayerRef,
 }) => {
   // the canvas should always be displaying two screens
   // 1. past frame which is not interactable
@@ -82,7 +84,7 @@ export const Canvas: React.FC<CanvasProps> = ({
         )}
 
         {/* Render the last frame (current frame) */}
-        <Layer>
+        <Layer ref={activeLayerRef}>
           {canvasFrames[currentFrameIndex].canvasElements.map(elem => {
             // Render each element of the last frame (current frame)
             if (elem.type == 'figure') {

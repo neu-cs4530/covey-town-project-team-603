@@ -104,7 +104,6 @@ function absolutePosn(elem: FigureElement) {
     iter = iter.parent;
   }
   const retval = { absoluteX, absoluteY, absoluteRotation };
-  console.log(retval);
 
   return retval;
 }
@@ -131,8 +130,6 @@ const handleDragMoveFigure = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const dragId = e.target.attrs.id;
-  console.log('dragmove');
-  console.log(`dragging the ${dragId}`);
 
   // we need to get the absolute "attachment point" to rotate a limb properly.
   const targetPositionX = e.target.position().x;
@@ -174,7 +171,6 @@ const handleDragMoveFigure = (
             newOffsetX = targetPositionX;
             newOffsetY = targetPositionY;
           } else {
-            console.log('rotate child');
             // if it is a child element...
 
             // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
@@ -222,7 +218,6 @@ const handleDragMoveFigure = (
         // FIXME: This won't work if it happens to be in the wrong order.
         // But it could also work if we make sure to lay it out in the 'right' way.
         if (figureElem.parent !== undefined && figureElem.parent.id === dragId) {
-          console.log('Reference fix!');
           figureElem.parent = {
             ...figureElem.parent,
             offset_x: targetPositionX,
@@ -254,11 +249,9 @@ export const toKonvaElement = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) => {
-  console.log(interactable);
   let absolutePosnVar = absolutePosn(elem);
 
   function identityPos() {
-    console.log('identity');
     absolutePosnVar = absolutePosn(elem);
     return {
       x: absolutePosnVar.absoluteX,
