@@ -42,7 +42,7 @@ function StopMotionStudioArea(): JSX.Element {
     );
   } else if (screen == 'studio') {
     return <StopMotionEditor backHome={goBackHome} />;
-  }
+  } else return <></>;
 }
 
 /**
