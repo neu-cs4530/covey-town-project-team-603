@@ -11,6 +11,7 @@ type ControlPanelProps = {
   frameForward: () => void;
   frameBackward: () => void;
   playback: () => void;
+  exportMovie: () => void;
 };
 
 // Bottom control panel for progressing through and viewing animation
@@ -23,6 +24,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   frameForward: frameForward,
   frameBackward: frameBackward,
   playback: playback,
+  exportMovie: exportMovie,
 }) => {
   return (
     <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
@@ -57,6 +59,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <Button size='md' height='48px' onClick={fileInp}>
           Load project
+        </Button>
+
+        <Button size='md' height='48px' onClick={exportMovie}>
+          Export Movie
         </Button>
       </Flex>
     </Box>

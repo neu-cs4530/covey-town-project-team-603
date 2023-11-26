@@ -1,7 +1,12 @@
 import React from 'react';
-import { Rect, Circle } from 'react-konva';
+import { Rect, Circle, RegularPolygon } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { CanvasElement } from './CanvasElements';
+import {
+  ANIMAL_FIGURE_PROTO,
+  BIRD_FIGURE_PROTO,
+  PERSON_FIGURE_PROTO,
+} from './FigureElementPrototypes';
 
 interface KonvaRect {
   type: 'rect';
@@ -14,9 +19,45 @@ interface KonvaCircle {
   radius: number;
 }
 
+interface KonvaTri {
+  type: 'tri';
+  radius: number;
+}
+
 // Types of konva shape.
 // Used in FigureElement to provide an appearance.
-type KonvaShape = KonvaCircle | KonvaRect;
+type KonvaShape = KonvaCircle | KonvaRect | KonvaTri;
+
+// Type of
+export enum FigureType {
+  PERSON,
+  ANIMAL,
+  BIRD,
+}
+
+export function generateFigure(
+  figure_type: FigureType,
+  root_starting_x: number,
+  root_starting_y: number,
+) {
+  let protoCopy;
+  if (figure_type === FigureType.PERSON) {
+    protoCopy = structuredClone(PERSON_FIGURE_PROTO);
+  } else if (figure_type === FigureType.ANIMAL) {
+    protoCopy = structuredClone(ANIMAL_FIGURE_PROTO);
+  } else {
+    protoCopy = structuredClone(BIRD_FIGURE_PROTO);
+  }
+  // By convention, the last member of a PERSON_FIGURE_PROTO array shall be the root.
+  const root = protoCopy[protoCopy.length - 1];
+  root.offset_x = root_starting_x;
+  root.offset_y = root_starting_y;
+
+  for (let i = 0; i < protoCopy.length; i++) {
+    protoCopy[i].id = crypto.randomUUID();
+  }
+  return protoCopy;
+}
 
 // TODO: Movement is hierarchical.
 // 1. Moving a "parent" node should move all of the children nodes.
@@ -36,14 +77,15 @@ export interface FigureElement extends CanvasElement {
   offset_y: number;
   offset_rotation: number;
 
-  // Where does this visually attach? encoded as an offset from the center
+  // Where does this visually attach to the parent? encoded as an offset from the center of the child (us)
   offset_attach_x: number;
   offset_attach_y: number;
 
   // How do we project out from the attachment point?
   offset_attach_rotation: number;
 
-  isDragging: boolean;
+  // If true, not ever draggable.
+  dragOverride: boolean;
 }
 
 // Get the absolute position of a FigureElement by summing up the offsets.
@@ -88,8 +130,6 @@ const handleDragMoveFigure = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
 ) => {
   const dragId = e.target.attrs.id;
-  console.log('dragmove');
-  console.log(`dragging the ${dragId}`);
 
   // we need to get the absolute "attachment point" to rotate a limb properly.
   const targetPositionX = e.target.position().x;
@@ -131,7 +171,6 @@ const handleDragMoveFigure = (
             newOffsetX = targetPositionX;
             newOffsetY = targetPositionY;
           } else {
-            console.log('rotate child');
             // if it is a child element...
 
             // FIXME: every move will apply a rotation, so even when the /drag angle/ is constantly the same,
@@ -179,7 +218,6 @@ const handleDragMoveFigure = (
         // FIXME: This won't work if it happens to be in the wrong order.
         // But it could also work if we make sure to lay it out in the 'right' way.
         if (figureElem.parent !== undefined && figureElem.parent.id === dragId) {
-          console.log('Reference fix!');
           figureElem.parent = {
             ...figureElem.parent,
             offset_x: targetPositionX,
@@ -211,11 +249,9 @@ export const toKonvaElement = (
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) => {
-  console.log(interactable);
   let absolutePosnVar = absolutePosn(elem);
 
   function identityPos() {
-    console.log('identity');
     absolutePosnVar = absolutePosn(elem);
     return {
       x: absolutePosnVar.absoluteX,
@@ -234,7 +270,7 @@ export const toKonvaElement = (
           rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
           height={elem.appearance.length}
           width={elem.appearance.width}
-          draggable={interactable}
+          draggable={!elem.dragOverride && interactable}
           dragBoundFunc={elem.parent && identityPos}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
           fill='#000000'
@@ -249,8 +285,23 @@ export const toKonvaElement = (
           y={absolutePosnVar.absoluteY}
           rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
           radius={elem.appearance.radius}
-          draggable={interactable}
-          // draggable={true}
+          draggable={!elem.dragOverride && interactable}
+          dragBoundFunc={elem.parent && identityPos}
+          onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
+          fill='#000000'
+        />
+      );
+    case 'tri':
+      return (
+        <RegularPolygon
+          sides={3}
+          key={elem.id}
+          id={elem.id}
+          x={absolutePosnVar.absoluteX}
+          y={absolutePosnVar.absoluteY}
+          rotation={absolutePosnVar.absoluteRotation * (180 / Math.PI) * -1}
+          draggable={!elem.dragOverride && interactable}
+          radius={elem.appearance.radius}
           dragBoundFunc={elem.parent && identityPos}
           onDragMove={e => handleDragMoveFigure(e, figureList, updateFrameElements)}
           fill='#000000'
