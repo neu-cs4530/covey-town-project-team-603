@@ -47,7 +47,7 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
         <Button onClick={addRect}>Add Rect</Button>
         <Textarea placeholder='Type here...' value={text} onChange={handleChange} />
         <Button colorScheme='blue' onClick={handleSubmit}>
-          Add Text 
+          Add Text
         </Button>
       </VStack>
     </Box>
