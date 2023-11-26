@@ -6,7 +6,13 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
-import { SimpleShape, newCircle, newRect, newStar } from './components/SimpleShape';
+import {
+  SimpleShape,
+  createSimpleShape,
+  newCircle,
+  newRect,
+  newStar,
+} from './components/SimpleShape';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
@@ -64,17 +70,17 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   // add circle
   const addCircle = () => {
-    addSimpleShape(newCircle);
+    addSimpleShape(createSimpleShape('circle'));
   };
 
   // add star
   const addStar = () => {
-    addSimpleShape(newStar);
+    addSimpleShape(createSimpleShape('star'));
   };
 
   // add rectangle
   const addRect = () => {
-    addSimpleShape(newRect);
+    addSimpleShape(createSimpleShape('rect'));
   };
 
   // add new frame

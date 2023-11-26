@@ -6,35 +6,44 @@ import { KonvaEventObject } from 'konva/lib/Node';
 // type for simple shape
 export type SimpleShapeType = 'circle' | 'star' | 'rect';
 
-export const newCircle: SimpleShape = {
-  shape: 'circle',
-  type: 'simpleShape',
-  id: crypto.randomUUID(),
-  x: 773,
-  y: 521,
-  rotation: 0,
-  isDragging: false,
-};
-
-export const newRect: SimpleShape = {
-  shape: 'rect',
-  type: 'simpleShape',
-  id: crypto.randomUUID(),
-  x: 773,
-  y: 521,
-  rotation: 0,
-  isDragging: false,
-};
-
-export const newStar: SimpleShape = {
-  shape: 'star',
-  type: 'simpleShape',
-  id: crypto.randomUUID(),
-  x: 773,
-  y: 521,
-  rotation: 0,
-  isDragging: false,
-};
+// create simple shape
+export function createSimpleShape(shape: string): SimpleShape {
+  switch (shape) {
+    // return simple circle
+    case 'circle':
+      return {
+        shape: 'circle',
+        type: 'simpleShape',
+        id: crypto.randomUUID(),
+        x: 773,
+        y: 521,
+        rotation: 0,
+        isDragging: false,
+      };
+    // return a simple rectangle
+    case 'rect':
+      return {
+        shape: 'rect',
+        type: 'simpleShape',
+        id: crypto.randomUUID(),
+        x: 773,
+        y: 521,
+        rotation: 0,
+        isDragging: false,
+      };
+    // return a simple star
+    default:
+      return {
+        shape: 'star',
+        type: 'simpleShape',
+        id: crypto.randomUUID(),
+        x: 773,
+        y: 521,
+        rotation: 0,
+        isDragging: false,
+      };
+  }
+}
 
 // simple shape interface
 export interface SimpleShape extends CanvasElement {
