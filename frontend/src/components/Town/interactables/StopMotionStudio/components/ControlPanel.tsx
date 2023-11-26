@@ -32,7 +32,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             Play
           </Button>
         </Box>
-
         <Box>
           <Button size='md' height='48px' marginRight='5px' onClick={frameBackward}>
             {'<--'}

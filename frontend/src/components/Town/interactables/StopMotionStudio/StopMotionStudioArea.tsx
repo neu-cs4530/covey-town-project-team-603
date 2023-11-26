@@ -25,18 +25,33 @@ function StopMotionStudioArea(): JSX.Element {
 
   if (screen == 'home') {
     return (
-      <Box backgroundColor={'blue'} height={'900'}>
+      <Box backgroundColor={'white'} height={'900'}>
         <VStack>
           <Box
-            paddingY={20}
+            paddingY={10}
             paddingX={20}
-            backgroundColor={'green'}
             display={'flex'}
             alignItems={'center'}
             justifyContent={'center'}>
-            <Text fontSize={30}>Stop motion studio</Text>
+            <Text fontSize={30}>Stop Motion Studio</Text>
           </Box>
           <Button onClick={() => setScreen('studio')}>Go to editor</Button>
+          <Box
+            paddingY={20}
+            paddingX={20}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}>
+            <div style={{ marginTop: '30px' }}>
+              <Text fontSize={20}> - Use the panel on the left to add new shapes to the canvas. </Text>
+              <Text fontSize={20}> - Add a new frame by using the 'Add Latest Frame' button </Text>
+              <Text fontSize={20}> - Traverse through added frames by using the arrow buttons </Text>
+              <Text fontSize={20}> - Use the play button to play animations. </Text>
+              <Text fontSize={20}> - Loading an exisitng project into the canvas using 'Load Project' </Text>
+              <Text fontSize={20}> - Use 'Save Project' to continue working in future sessions. </Text>
+              <Text fontSize={20}> - Download your animation as a GIF using the 'Export Movie' button </Text>
+            </div>
+          </Box>
         </VStack>
       </Box>
     );
