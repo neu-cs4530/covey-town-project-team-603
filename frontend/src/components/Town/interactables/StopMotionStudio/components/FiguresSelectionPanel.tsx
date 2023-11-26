@@ -28,8 +28,6 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   const [text, setText] = useState('');
   const handleChange = event => setText(event.target.value);
   const handleSubmit = () => {
-    // Here you can handle the submission, e.g., send the data to an API or log it
-    console.log('Submitted text:', text);
     addText(text);
   };
 
@@ -49,7 +47,7 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
         <Button onClick={addRect}>Add Rect</Button>
         <Textarea placeholder='Type here...' value={text} onChange={handleChange} />
         <Button colorScheme='blue' onClick={handleSubmit}>
-          Submit
+          Add Text 
         </Button>
       </VStack>
     </Box>
