@@ -1,10 +1,13 @@
-import { Box, Button, VStack } from '@chakra-ui/react';
-import React from 'react';
+import { Button, Box, Textarea, VStack } from '@chakra-ui/react';
+import React, { useState } from 'react';
 
 type FiguresSelectProps = {
   addPerson: () => void;
   addAnimal: () => void;
   addBird: () => void;
+
+  addText: (text: string) => void;
+
   addCircle: () => void;
   addStar: () => void;
   addRect: () => void;
@@ -15,10 +18,19 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   addPerson: addPerson,
   addAnimal: addAnimal,
   addBird: addBird,
+
+  addText: addText,
+
   addCircle: addCircle,
   addStar: addStar,
   addRect: addRect,
 }) => {
+  const [text, setText] = useState('');
+  const handleChange = event => setText(event.target.value);
+  const handleSubmit = () => {
+    addText(text);
+  };
+
   return (
     <Box width={'100%'} backgroundColor={'white'} padding={10}>
       <VStack spacing={4}>
@@ -33,6 +45,10 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
         <Button onClick={addStar}>Add Star</Button>
 
         <Button onClick={addRect}>Add Rect</Button>
+        <Textarea placeholder='Type here...' value={text} onChange={handleChange} />
+        <Button colorScheme='blue' onClick={handleSubmit}>
+          Add Text
+        </Button>
       </VStack>
     </Box>
   );

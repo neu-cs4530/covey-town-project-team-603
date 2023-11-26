@@ -67,6 +67,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     addFigure(generateFigure(FigureType.BIRD, 773, 500));
   };
 
+  const addText = (text: string) => {
+    addFigure([{ type: 'text', text: text, x: 773, y: 500, id: crypto.randomUUID() }]);
+  };
+
   // add circle
   const addCircle = () => {
     addSimpleShape(createSimpleShape('circle'));
@@ -219,6 +223,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
             addPerson={addPerson}
             addAnimal={addAnimal}
             addBird={addBird}
+            addText={addText}
             addCircle={addCircle}
             addStar={addStar}
             addRect={addRect}

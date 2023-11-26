@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Stage, Layer, Text, Rect } from 'react-konva';
 import { CanvasElement } from '../CanvasElements';
 import { FigureElement, toKonvaElement } from '../FigureElements';
 import { Frame } from '../Frame';
 import { Box } from '@chakra-ui/react';
 import { SimpleShape, simpleShapeToKonvaElement } from './SimpleShape';
+import { textToKonvaText } from './Text';
 
 type CanvasProps = {
   frames: Frame[];
@@ -43,6 +44,13 @@ export const Canvas: React.FC<CanvasProps> = ({
       return updatedFrames;
     });
   }
+  // stores the canvas frames
+  //const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
+
+  // this use effect currently manually sets one frame for testing
+  useEffect(() => {}, []);
+
+  // updater callback for current frame elements
 
   return (
     <Box
@@ -72,10 +80,18 @@ export const Canvas: React.FC<CanvasProps> = ({
                 );
               } else if (elem.type == 'simpleShape') {
                 // if the element is a simple shape
-                console.log('shape made it here man');
                 const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
                 return simpleShapeToKonvaElement(
                   simpleShapeElem,
+                  canvasFrames[currentFrameIndex - 1].canvasElements,
+                  updateFrameElements,
+                  false,
+                );
+                // return some other type here
+                return {};
+              } else if (elem.type === 'text') {
+                return textToKonvaText(
+                  elem,
                   canvasFrames[currentFrameIndex - 1].canvasElements,
                   updateFrameElements,
                   false,
@@ -113,6 +129,13 @@ export const Canvas: React.FC<CanvasProps> = ({
               const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
               return simpleShapeToKonvaElement(
                 simpleShapeElem,
+                canvasFrames[currentFrameIndex].canvasElements,
+                updateFrameElements,
+                currentFrameIndex == canvasFrames.length - 1,
+              );
+            } else if (elem.type === 'text') {
+              return textToKonvaText(
+                elem,
                 canvasFrames[currentFrameIndex].canvasElements,
                 updateFrameElements,
                 currentFrameIndex == canvasFrames.length - 1,
