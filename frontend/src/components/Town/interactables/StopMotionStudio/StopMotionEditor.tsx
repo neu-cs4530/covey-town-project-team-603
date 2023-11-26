@@ -67,7 +67,6 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     addFigure(generateFigure(FigureType.BIRD, 773, 500));
   };
 
-
   const addText = (text: string) => {
     addFigure([{ type: 'text', text: text, x: 773, y: 500, id: crypto.randomUUID() }]);
   };

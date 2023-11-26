@@ -1,10 +1,5 @@
-
-import { Button, Box, Text, Flex, Textarea } from '@chakra-ui/react';
+import { Button, Box, Textarea, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
-
-import { Box, Button, VStack } from '@chakra-ui/react';
-import React from 'react';
-
 
 type FiguresSelectProps = {
   addPerson: () => void;
@@ -16,7 +11,6 @@ type FiguresSelectProps = {
   addCircle: () => void;
   addStar: () => void;
   addRect: () => void;
-
 };
 
 // the left side panel which allows users to select and drag new items on to the canvas
@@ -30,7 +24,6 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   addCircle: addCircle,
   addStar: addStar,
   addRect: addRect,
-
 }) => {
   const [text, setText] = useState('');
   const handleChange = event => setText(event.target.value);
@@ -54,12 +47,11 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
         <Button onClick={addStar}>Add Star</Button>
 
         <Button onClick={addRect}>Add Rect</Button>
-                <Textarea placeholder='Type here...' value={text} onChange={handleChange} />
+        <Textarea placeholder='Type here...' value={text} onChange={handleChange} />
         <Button colorScheme='blue' onClick={handleSubmit}>
           Submit
         </Button>
       </VStack>
-
     </Box>
   );
 };

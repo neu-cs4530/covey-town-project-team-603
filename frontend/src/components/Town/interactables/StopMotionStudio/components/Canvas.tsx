@@ -5,6 +5,7 @@ import { FigureElement, toKonvaElement } from '../FigureElements';
 import { Frame } from '../Frame';
 import { Box } from '@chakra-ui/react';
 import { SimpleShape, simpleShapeToKonvaElement } from './SimpleShape';
+import { textToKonvaText } from './Text';
 
 type CanvasProps = {
   frames: Frame[];
@@ -49,54 +50,6 @@ export const Canvas: React.FC<CanvasProps> = ({
   // this use effect currently manually sets one frame for testing
   useEffect(() => {}, []);
 
-  // callback for the ondrag call
-  const handleDragMoveText = (
-    e: KonvaEventObject<DragEvent>,
-    shapeList: CanvasElement[],
-    updateFrameElements: (newValue: CanvasElement[]) => void,
-  ) => {
-    // we need to get the absolute "attachment point" to rotate a limb properly.
-    const newX = e.target.position().x;
-    const newY = e.target.position().y;
-
-    updateFrameElements(
-      shapeList.map(elem => {
-        if (elem.type === 'text') {
-          const simpleShapeElem = elem as SimpleShape;
-          const dragId = e.target.attrs.id;
-
-          if (simpleShapeElem.id == dragId) {
-            return {
-              ...simpleShapeElem,
-              x: newX,
-              y: newY,
-            };
-          } else {
-            return simpleShapeElem;
-          }
-        } else {
-          return elem;
-        }
-      }),
-    );
-  };
-
-  function toKonvaText(elem, textList, updateFrameElements, interactable: boolean) {
-    console.log(interactable);
-    return (
-      <Text
-        id={elem.id}
-        key={elem.id}
-        x={elem.x}
-        y={elem.y}
-        fontSize={25}
-        text={elem.text}
-        draggable={interactable}
-        onDragMove={e => handleDragMoveText(e, textList, updateFrameElements)}
-      />
-    );
-  }
-
   // updater callback for current frame elements
 
   return (
@@ -126,7 +79,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                   false,
                 );
               } else if (elem.type == 'simpleShape') {
-                                // if the element is a simple shape
+                // if the element is a simple shape
                 const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
                 return simpleShapeToKonvaElement(
                   simpleShapeElem,
@@ -137,11 +90,12 @@ export const Canvas: React.FC<CanvasProps> = ({
                 // return some other type here
                 return {};
               } else if (elem.type === 'text') {
-                return toKonvaText(
+                return textToKonvaText(
                   elem,
-                             canvasFrames[currentFrameIndex - 1].canvasElements,
+                  canvasFrames[currentFrameIndex - 1].canvasElements,
                   updateFrameElements,
                   false,
+                );
               }
             })}
           </Layer>
@@ -172,7 +126,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                 currentFrameIndex == canvasFrames.length - 1,
               );
             } else if (elem.type == 'simpleShape') {
-                            const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
+              const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
               return simpleShapeToKonvaElement(
                 simpleShapeElem,
                 canvasFrames[currentFrameIndex].canvasElements,
@@ -180,12 +134,12 @@ export const Canvas: React.FC<CanvasProps> = ({
                 currentFrameIndex == canvasFrames.length - 1,
               );
             } else if (elem.type === 'text') {
-              return toKonvaText(
+              return textToKonvaText(
                 elem,
                 canvasFrames[currentFrameIndex].canvasElements,
                 updateFrameElements,
-                                currentFrameIndex == canvasFrames.length - 1,
-
+                currentFrameIndex == canvasFrames.length - 1,
+              );
             }
           })}
         </Layer>
