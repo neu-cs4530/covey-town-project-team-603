@@ -47,7 +47,7 @@ function StopMotionStudioArea(): JSX.Element {
               <Text fontSize={20}> - Add a new frame by using the 'Add Latest Frame' button </Text>
               <Text fontSize={20}> - Traverse through added frames by using the arrow buttons </Text>
               <Text fontSize={20}> - Use the play button to play animations. </Text>
-              <Text fontSize={20}> - Loading an exisitng project into the canvas using 'Load Project' </Text>
+              <Text fontSize={20}> - Load an existing project into the canvas using 'Load Project' </Text>
               <Text fontSize={20}> - Use 'Save Project' to continue working in future sessions. </Text>
               <Text fontSize={20}> - Download your animation as a GIF using the 'Export Movie' button </Text>
             </div>
