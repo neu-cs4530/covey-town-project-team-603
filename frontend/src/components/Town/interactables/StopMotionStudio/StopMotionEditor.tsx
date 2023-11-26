@@ -6,13 +6,7 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
-import {
-  SimpleShape,
-  createSimpleShape,
-  newCircle,
-  newRect,
-  newStar,
-} from './components/SimpleShape';
+import { SimpleShape, createSimpleShape } from './components/SimpleShape';
 import GIF from 'gif.js';
 import { workerBlob } from './WorkerSetup';
 import { saveBlob } from './Util';
@@ -20,7 +14,7 @@ import { saveBlob } from './Util';
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
-    
+
   const activeLayerRef = React.useRef(null);
 
   // default frame

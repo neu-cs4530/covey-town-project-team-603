@@ -1,4 +1,4 @@
-import { Box, Text, Button, VStack, Flex } from '@chakra-ui/react';
+import { Box, Button, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 type FiguresSelectProps = {
