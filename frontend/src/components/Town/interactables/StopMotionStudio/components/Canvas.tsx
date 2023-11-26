@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Stage, Layer, Text, Rect } from 'react-konva';
 import { CanvasElement } from '../CanvasElements';
 import { FigureElement, toKonvaElement } from '../FigureElements';
 import { Frame } from '../Frame';
 import { Box } from '@chakra-ui/react';
+import { SimpleShape, simpleShapeToKonvaElement } from './SimpleShape';
 
 type CanvasProps = {
   frames: Frame[];
@@ -30,11 +31,10 @@ export const Canvas: React.FC<CanvasProps> = ({
   const canvasWidth = 1300;
   const canvasHeight = 800;
 
+  // callback function updates elements on drag
   function updateFrameElements(elems: CanvasElement[]) {
-    console.log('ypdate frame elements');
     update((previousFrames: Frame[]) => {
       // Make a shallow copy of the previous frames
-      //const updatedFrames = [...prevFrames];
       const updatedFrames = previousFrames.slice(0, -1);
       // Update the last frame (assuming there is at least one frame)
       const lastFrame = previousFrames[previousFrames.length - 1];
@@ -43,13 +43,6 @@ export const Canvas: React.FC<CanvasProps> = ({
       return updatedFrames;
     });
   }
-  // stores the canvas frames
-  //const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
-
-  // this use effect currently manually sets one frame for testing
-  useEffect(() => {}, []);
-
-  // updater callback for current frame elements
 
   return (
     <Box
@@ -66,8 +59,10 @@ export const Canvas: React.FC<CanvasProps> = ({
         {canvasFrames.length > 1 && currentFrameIndex > 0 && !playbackMode && (
           <Layer opacity={0.1}>
             {canvasFrames[currentFrameIndex - 1].canvasElements.map(elem => {
+              console.log('here first');
               // Render each element of the second-to-last frame
               if (elem.type == 'figure') {
+                // if the element is a figure
                 const figureElem = elem as FigureElement; // case current element to figure element
                 return toKonvaElement(
                   figureElem,
@@ -76,8 +71,15 @@ export const Canvas: React.FC<CanvasProps> = ({
                   false,
                 );
               } else if (elem.type == 'simpleShape') {
-                // return some other type here
-                return {};
+                // if the element is a simple shape
+                console.log('shape made it here man');
+                const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
+                return simpleShapeToKonvaElement(
+                  simpleShapeElem,
+                  canvasFrames[currentFrameIndex - 1].canvasElements,
+                  updateFrameElements,
+                  false,
+                );
               }
             })}
           </Layer>
@@ -100,7 +102,7 @@ export const Canvas: React.FC<CanvasProps> = ({
           {canvasFrames[currentFrameIndex].canvasElements.map(elem => {
             // Render each element of the last frame (current frame)
             if (elem.type == 'figure') {
-              const figureElem = elem as FigureElement; // case current element to figure element
+              const figureElem = elem as FigureElement; // cast current element to figure element
               return toKonvaElement(
                 figureElem,
                 canvasFrames[currentFrameIndex].canvasElements,
@@ -108,8 +110,13 @@ export const Canvas: React.FC<CanvasProps> = ({
                 currentFrameIndex == canvasFrames.length - 1,
               );
             } else if (elem.type == 'simpleShape') {
-              // return some other type here
-              return {};
+              const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
+              return simpleShapeToKonvaElement(
+                simpleShapeElem,
+                canvasFrames[currentFrameIndex].canvasElements,
+                updateFrameElements,
+                currentFrameIndex == canvasFrames.length - 1,
+              );
             }
           })}
         </Layer>

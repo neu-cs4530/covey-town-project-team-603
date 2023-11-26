@@ -28,7 +28,7 @@ interface KonvaTri {
 // Used in FigureElement to provide an appearance.
 type KonvaShape = KonvaCircle | KonvaRect | KonvaTri;
 
-// Type of
+// Type of figure
 export enum FigureType {
   PERSON,
   ANIMAL,

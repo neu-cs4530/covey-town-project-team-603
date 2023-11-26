@@ -6,6 +6,7 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
+import { SimpleShape, createSimpleShape } from './components/SimpleShape';
 import GIF from 'gif.js';
 import { workerBlob } from './WorkerSetup';
 import { saveBlob } from './Util';
@@ -16,16 +17,18 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   const activeLayerRef = React.useRef(null);
 
-  const frame1: Frame = {
+  // default frame
+  const defaultFrame: Frame = {
     frameID: 1,
     canvasElements: [],
   };
 
-  const [frames, setFrames] = useState<Frame[]>([frame1]);
+  const [frames, setFrames] = useState<Frame[]>([defaultFrame]);
 
   // initialize current frame
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
 
+  // adds new figures to screen
   const addFigure = (newElems: FigureElement[]) => {
     setCurrentFrameIndex(frames.length - 1);
     setFrames((prevFrames: Frame[]) => {
@@ -37,18 +40,49 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     });
   };
 
+  // adds new simple shapes to screen
+  const addSimpleShape = (newElem: SimpleShape) => {
+    setCurrentFrameIndex(frames.length - 1);
+    setFrames((prevFrames: Frame[]) => {
+      const updatedFrames = prevFrames.slice(0, -1);
+      const lastFrame = prevFrames[prevFrames.length - 1];
+      lastFrame.canvasElements = [...lastFrame.canvasElements, newElem];
+      updatedFrames.push(lastFrame);
+      return updatedFrames;
+    });
+  };
+
+  // add person
   const addPerson = () => {
     addFigure(generateFigure(FigureType.PERSON, 773, 500));
   };
 
+  // add animal
   const addAnimal = () => {
     addFigure(generateFigure(FigureType.ANIMAL, 773, 500));
   };
 
+  // add bird
   const addBird = () => {
     addFigure(generateFigure(FigureType.BIRD, 773, 500));
   };
 
+  // add circle
+  const addCircle = () => {
+    addSimpleShape(createSimpleShape('circle'));
+  };
+
+  // add star
+  const addStar = () => {
+    addSimpleShape(createSimpleShape('star'));
+  };
+
+  // add rectangle
+  const addRect = () => {
+    addSimpleShape(createSimpleShape('rect'));
+  };
+
+  // add new frame
   function addNewFrame() {
     setCurrentFrameIndex(frames.length);
     setFrames((prevFrames: Frame[]) => {
@@ -62,8 +96,6 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         frameID: prevFrames.length + 1,
         canvasElements: newFrameElements,
       };
-
-      //const newFrameList = [...prevFrames, newFrame];
 
       return [...prevFrames, newFrame]; //add new frame
     });
@@ -89,6 +121,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     setPlaybackMode(true);
     setCurrentFrameIndex(0); // set the first frame to be first
 
+    // plays next frame
     const playNextFrame = async (count: number) => {
       if (count < frames.length - 1) {
         setTimeout(() => {
@@ -159,6 +192,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     }
   };
 
+  // save animation to json format
   function saveAnimState() {
     const stranim = JSON.stringify(frames);
     const mimetype = 'application/json';
@@ -166,6 +200,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     saveBlob(blob);
   }
 
+  // causes file input
   const triggerFileInput = () => {
     const element = document.getElementById('fileInput');
     if (element !== null) {
@@ -180,7 +215,14 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         {/* items in row one */}
         <Flex>
           {/* panel for selecting new characters to drag onto the canvs */}
-          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal} addBird={addBird} />
+          <FiguresSelectionPanel
+            addPerson={addPerson}
+            addAnimal={addAnimal}
+            addBird={addBird}
+            addCircle={addCircle}
+            addStar={addStar}
+            addRect={addRect}
+          />
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
