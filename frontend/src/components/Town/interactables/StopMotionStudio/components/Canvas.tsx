@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Stage, Layer, Text } from 'react-konva';
+import { Stage, Layer, Text, Rect } from 'react-konva';
 import { CanvasElement } from '../CanvasElements';
 import { FigureElement, toKonvaElement } from '../FigureElements';
 import { Frame } from '../Frame';
@@ -10,6 +10,7 @@ type CanvasProps = {
   setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
   playbackMode: boolean;
   currentFrame: number;
+  activeLayerRef: React.RefObject<HTMLCanvasElement>;
 };
 
 // the interactable canvas to construct the stop motion scenes
@@ -18,6 +19,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   frames: canvasFrames,
   playbackMode: playbackMode,
   currentFrame: currentFrameIndex,
+  activeLayerRef: activeLayerRef,
 }) => {
   // the canvas should always be displaying two screens
   // 1. past frame which is not interactable
@@ -82,7 +84,19 @@ export const Canvas: React.FC<CanvasProps> = ({
         )}
 
         {/* Render the last frame (current frame) */}
-        <Layer>
+        <Layer ref={activeLayerRef}>
+          {playbackMode && (
+            <Rect
+              id='export-background'
+              key='export-background'
+              x={0}
+              y={0}
+              width={canvasWidth}
+              height={canvasHeight}
+              fill='#e5e5ea'
+              rotation={0}
+            />
+          )}
           {canvasFrames[currentFrameIndex].canvasElements.map(elem => {
             // Render each element of the last frame (current frame)
             if (elem.type == 'figure') {
