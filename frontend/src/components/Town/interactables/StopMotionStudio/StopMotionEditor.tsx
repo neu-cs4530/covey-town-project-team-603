@@ -13,10 +13,15 @@ import {
   newRect,
   newStar,
 } from './components/SimpleShape';
+import GIF from 'gif.js';
+import { workerBlob } from './WorkerSetup';
+import { saveBlob } from './Util';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
+    
+  const activeLayerRef = React.useRef(null);
 
   // default frame
   const defaultFrame: Frame = {
@@ -137,7 +142,43 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(0);
   };
 
-  // handle file input
+  // plays back the stop motion animation so far
+  const exportMovie = async () => {
+    const delay = 150; // 150 ms
+    setPlaybackMode(true);
+    setCurrentFrameIndex(0); // set the first frame to be first
+    const canvas = activeLayerRef.current.canvas;
+    const gif = new GIF({
+      workers: 1,
+      workerScript: URL.createObjectURL(workerBlob),
+      quality: 10,
+      height: canvas.height,
+      width: canvas.width,
+    });
+    gif.on('finished', function (blob) {
+      saveBlob(blob);
+    });
+
+    function sleep(ms) {
+      return new Promise(resolveFunc => setTimeout(resolveFunc, ms));
+    }
+
+    const doNextFrame = async (count: number) => {
+      if (count < frames.length - 1) {
+        console.log(count);
+        await sleep(delay);
+        const pixels = activeLayerRef.current.canvas.context._context;
+        gif.addFrame(pixels, { copy: true });
+        setCurrentFrameIndex(count + 1);
+        await doNextFrame(count + 1);
+      } else {
+        setPlaybackMode(false);
+      }
+    };
+    await doNextFrame(0);
+    gif.render();
+  };
+
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
@@ -174,6 +215,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
     URL.revokeObjectURL(bloburl);
     document.body.removeChild(a);
+    saveBlob(blob);
   }
 
   // causes file input
@@ -207,6 +249,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
             setFrames={setFrames}
             playbackMode={playbackMode}
             currentFrame={currentFrameIndex}
+            activeLayerRef={activeLayerRef}
           />
         </Flex>
 
@@ -220,6 +263,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           fileInput={triggerFileInput}
           saveAnimState={saveAnimState}
           handleChange={handleFileChange}
+          exportMovie={exportMovie}
         />
       </Flex>
     </Box>
