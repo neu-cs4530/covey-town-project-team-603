@@ -33,7 +33,12 @@ export const handleDragMoveText = (
   );
 };
 
-export function toKonvaText(elem, textList, updateFrameElements, interactable: boolean) {
+export function textToKonvaText(
+  elem,
+  textList: CanvasElement[],
+  updateFrameElements: (newValue: CanvasElement[]) => void,
+  interactable: boolean,
+) {
   console.log(interactable);
   return (
     <Text
