@@ -6,18 +6,19 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
-import { SimpleShape } from './components/SimpleShape';
+import { SimpleShape, newCircle, newRect, newStar } from './components/SimpleShape';
 
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
-  const frame1: Frame = {
+  // default frame
+  const defaultFrame: Frame = {
     frameID: 1,
     canvasElements: [],
   };
 
-  const [frames, setFrames] = useState<Frame[]>([frame1]);
+  const [frames, setFrames] = useState<Frame[]>([defaultFrame]);
 
   // initialize current frame
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
@@ -46,58 +47,37 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     });
   };
 
+  // add person
   const addPerson = () => {
     addFigure(generateFigure(FigureType.PERSON, 773, 500));
   };
 
+  // add animal
   const addAnimal = () => {
     addFigure(generateFigure(FigureType.ANIMAL, 773, 500));
   };
 
+  // add bird
   const addBird = () => {
     addFigure(generateFigure(FigureType.BIRD, 773, 500));
   };
 
+  // add circle
   const addCircle = () => {
-    const newCircle: SimpleShape = {
-      shape: 'circle',
-      type: 'simpleShape',
-      id: crypto.randomUUID(),
-      x: 773,
-      y: 521,
-      rotation: 0,
-      isDragging: false,
-    };
-
     addSimpleShape(newCircle);
   };
 
+  // add star
   const addStar = () => {
-    const newStar: SimpleShape = {
-      shape: 'star',
-      type: 'simpleShape',
-      id: crypto.randomUUID(),
-      x: 773,
-      y: 521,
-      rotation: 0,
-      isDragging: false,
-    };
     addSimpleShape(newStar);
   };
 
+  // add rectangle
   const addRect = () => {
-    const newRect: SimpleShape = {
-      shape: 'rect',
-      type: 'simpleShape',
-      id: crypto.randomUUID(),
-      x: 773,
-      y: 521,
-      rotation: 0,
-      isDragging: false,
-    };
     addSimpleShape(newRect);
   };
 
+  // add new frame
   function addNewFrame() {
     setCurrentFrameIndex(frames.length);
     setFrames((prevFrames: Frame[]) => {
@@ -111,8 +91,6 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         frameID: prevFrames.length + 1,
         canvasElements: newFrameElements,
       };
-
-      //const newFrameList = [...prevFrames, newFrame];
 
       return [...prevFrames, newFrame]; //add new frame
     });
@@ -138,6 +116,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     setPlaybackMode(true);
     setCurrentFrameIndex(0); // set the first frame to be first
 
+    // plays next frame
     const playNextFrame = async (count: number) => {
       if (count < frames.length - 1) {
         setTimeout(() => {
@@ -152,6 +131,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(0);
   };
 
+  // handle file input
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
@@ -171,6 +151,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     }
   };
 
+  // save animation to json format
   function saveAnimState() {
     const stranim = JSON.stringify(frames);
     const mimetype = 'application/json';
@@ -186,10 +167,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     a.click();
 
     URL.revokeObjectURL(bloburl);
-
     document.body.removeChild(a);
   }
 
+  // causes file input
   const triggerFileInput = () => {
     const element = document.getElementById('fileInput');
     if (element !== null) {

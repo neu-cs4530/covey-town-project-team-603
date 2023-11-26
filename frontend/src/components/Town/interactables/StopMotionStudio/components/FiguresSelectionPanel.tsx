@@ -1,4 +1,4 @@
-import { Button, Box, Text } from '@chakra-ui/react';
+import { Box, Text, Button, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 type FiguresSelectProps = {
@@ -20,20 +20,22 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   addRect: addRect,
 }) => {
   return (
-    <Box width={'100%'} backgroundColor={'orange'} padding={10}>
-      <Text>Figure Selection Window</Text>
+    <Box width={'100%'} backgroundColor={'white'} padding={10}>
+      <VStack spacing={4}>
+        <Text>Figure Selection Window</Text>
 
-      <Button onClick={addPerson}>Add Person</Button>
+        <Button onClick={addPerson}>Add Person</Button>
 
-      <Button onClick={addAnimal}>Add Animal</Button>
+        <Button onClick={addAnimal}>Add Animal</Button>
 
-      <Button onClick={addBird}>Add Bird</Button>
+        <Button onClick={addBird}>Add Bird</Button>
 
-      <Button onClick={addCircle}>Add Circle</Button>
+        <Button onClick={addCircle}>Add Circle</Button>
 
-      <Button onClick={addStar}>Add Star</Button>
+        <Button onClick={addStar}>Add Star</Button>
 
-      <Button onClick={addRect}>Add Rect</Button>
+        <Button onClick={addRect}>Add Rect</Button>
+      </VStack>
     </Box>
   );
 };
