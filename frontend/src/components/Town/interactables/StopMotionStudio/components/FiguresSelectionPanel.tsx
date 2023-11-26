@@ -22,8 +22,6 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   return (
     <Box width={'100%'} backgroundColor={'white'} padding={10}>
       <VStack spacing={4}>
-        <Text>Figure Selection Window</Text>
-
         <Button onClick={addPerson}>Add Person</Button>
 
         <Button onClick={addAnimal}>Add Animal</Button>
