@@ -43,13 +43,31 @@ function StopMotionStudioArea(): JSX.Element {
             alignItems={'center'}
             justifyContent={'center'}>
             <div style={{ marginTop: '30px' }}>
-              <Text fontSize={20}> - Use the panel on the left to add new shapes to the canvas. </Text>
-              <Text fontSize={20}> - Add a new frame by using the 'Add Latest Frame' button </Text>
-              <Text fontSize={20}> - Traverse through added frames by using the arrow buttons </Text>
+              <Text fontSize={20}>
+                {' '}
+                - Use the panel on the left to add new shapes to the canvas.{' '}
+              </Text>
+              <Text fontSize={20}>
+                {' '}
+                - Add a new frame by using the &apos;Add Latest Frame&apos; button{' '}
+              </Text>
+              <Text fontSize={20}>
+                {' '}
+                - Traverse through added frames by using the arrow buttons{' '}
+              </Text>
               <Text fontSize={20}> - Use the play button to play animations. </Text>
-              <Text fontSize={20}> - Load an existing project into the canvas using 'Load Project' </Text>
-              <Text fontSize={20}> - Use 'Save Project' to continue working in future sessions. </Text>
-              <Text fontSize={20}> - Download your animation as a GIF using the 'Export Movie' button </Text>
+              <Text fontSize={20}>
+                {' '}
+                - Load an existing project into the canvas using &apos;Load Project&apos;{' '}
+              </Text>
+              <Text fontSize={20}>
+                {' '}
+                - Use &apos;Save Project&apos; to continue working in future sessions.{' '}
+              </Text>
+              <Text fontSize={20}>
+                {' '}
+                - Download your animation as a GIF using the &apos;Export Movie&apos; button{' '}
+              </Text>
             </div>
           </Box>
         </VStack>
@@ -57,7 +75,7 @@ function StopMotionStudioArea(): JSX.Element {
     );
   } else if (screen == 'studio') {
     return <StopMotionEditor backHome={goBackHome} />;
-  }
+  } else return <></>;
 }
 
 /**
