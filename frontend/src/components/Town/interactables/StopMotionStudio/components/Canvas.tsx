@@ -49,6 +49,17 @@ export const Canvas: React.FC<CanvasProps> = ({
   // this use effect currently manually sets one frame for testing
   useEffect(() => {}, []);
 
+  function toKonvaText(elem, foo, bar, interactable: boolean) {
+    console.log(interactable)
+    return (<Text
+    x={773}
+    y={521}
+    fontSize={25}
+    text={elem.text}
+    draggable={interactable}
+    />)
+  }
+
   // updater callback for current frame elements
 
   return (
@@ -78,6 +89,13 @@ export const Canvas: React.FC<CanvasProps> = ({
               } else if (elem.type == 'simpleShape') {
                 // return some other type here
                 return {};
+              } else if (elem.type === 'text') {
+                return toKonvaText(
+                  elem,
+                  canvasFrames[currentFrameIndex - 1].canvasElements,
+                  updateFrameElements,
+                  false
+                )
               }
             })}
           </Layer>
@@ -110,6 +128,13 @@ export const Canvas: React.FC<CanvasProps> = ({
             } else if (elem.type == 'simpleShape') {
               // return some other type here
               return {};
+            } else if (elem.type === 'text') {
+                return toKonvaText(
+                  elem,
+                  canvasFrames[currentFrameIndex].canvasElements,
+                  updateFrameElements,
+                  true
+                )
             }
           })}
         </Layer>

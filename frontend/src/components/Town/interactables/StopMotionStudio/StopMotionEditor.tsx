@@ -48,6 +48,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   const addBird = () => {
     addFigure(generateFigure(FigureType.BIRD, 773, 500));
   };
+  
+  const addText = () => {
+    addFigure([{type: 'text', text: 'foo'}])
+  }
 
   function addNewFrame() {
     setCurrentFrameIndex(frames.length);
@@ -180,7 +184,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
         {/* items in row one */}
         <Flex>
           {/* panel for selecting new characters to drag onto the canvs */}
-          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal} addBird={addBird} />
+          <FiguresSelectionPanel addPerson={addPerson} addAnimal={addAnimal} addBird={addBird} addText={addText}/>
           <Spacer />
 
           {/* canvas for creating stop motion scene */}
