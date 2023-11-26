@@ -7,13 +7,3 @@ export type CanvasElementType = 'figure' | 'simpleShape';
 export interface CanvasElement {
   type: CanvasElementType;
 }
-
-// star shape interface
-export interface StarShape extends CanvasElement {
-  type: 'simpleShape';
-  id: string;
-  x: number;
-  y: number;
-  rotation: number;
-  isDragging: boolean;
-}
