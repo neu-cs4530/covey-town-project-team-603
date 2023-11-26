@@ -49,15 +49,52 @@ export const Canvas: React.FC<CanvasProps> = ({
   // this use effect currently manually sets one frame for testing
   useEffect(() => {}, []);
 
-  function toKonvaText(elem, foo, bar, interactable: boolean) {
-    console.log(interactable)
-    return (<Text
-    x={773}
-    y={521}
-    fontSize={25}
-    text={elem.text}
-    draggable={interactable}
-    />)
+  // callback for the ondrag call
+  const handleDragMoveText = (
+    e: KonvaEventObject<DragEvent>,
+    shapeList: CanvasElement[],
+    updateFrameElements: (newValue: CanvasElement[]) => void,
+  ) => {
+    // we need to get the absolute "attachment point" to rotate a limb properly.
+    const newX = e.target.position().x;
+    const newY = e.target.position().y;
+
+    updateFrameElements(
+      shapeList.map(elem => {
+        if (elem.type === 'text') {
+          const simpleShapeElem = elem as SimpleShape;
+          const dragId = e.target.attrs.id;
+
+          if (simpleShapeElem.id == dragId) {
+            return {
+              ...simpleShapeElem,
+              x: newX,
+              y: newY,
+            };
+          } else {
+            return simpleShapeElem;
+          }
+        } else {
+          return elem;
+        }
+      }),
+    );
+  };
+
+  function toKonvaText(elem, textList, updateFrameElements, interactable: boolean) {
+    console.log(interactable);
+    return (
+      <Text
+        id={elem.id}
+        key={elem.id}
+        x={elem.x}
+        y={elem.y}
+        fontSize={25}
+        text={elem.text}
+        draggable={interactable}
+        onDragMove={e => handleDragMoveText(e, textList, updateFrameElements)}
+      />
+    );
   }
 
   // updater callback for current frame elements
@@ -94,8 +131,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                   elem,
                   canvasFrames[currentFrameIndex - 1].canvasElements,
                   updateFrameElements,
-                  false
-                )
+                  false,
+                );
               }
             })}
           </Layer>
@@ -129,12 +166,12 @@ export const Canvas: React.FC<CanvasProps> = ({
               // return some other type here
               return {};
             } else if (elem.type === 'text') {
-                return toKonvaText(
-                  elem,
-                  canvasFrames[currentFrameIndex].canvasElements,
-                  updateFrameElements,
-                  true
-                )
+              return toKonvaText(
+                elem,
+                canvasFrames[currentFrameIndex].canvasElements,
+                updateFrameElements,
+                true,
+              );
             }
           })}
         </Layer>
