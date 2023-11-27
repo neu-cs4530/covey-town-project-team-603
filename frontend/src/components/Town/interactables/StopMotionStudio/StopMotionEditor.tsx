@@ -12,14 +12,22 @@ import GIF from 'gif.js';
 import { workerBlob } from './WorkerSetup';
 import { saveBlob } from './Util';
 
-// Stop motion editor
+/**
+ * StopMotionEditor component allows users to create and edit stop motion animations.
+ * It comprises a canvas for rendering the animation frames, a control panel for managing the frames,
+ * and a selection panel for adding new elements to the animation.
+ * Users can save, load, and export animations, as well as navigate through different frames.
+ *
+ * @param {function} backHome - Callback function to navigate back to the home screen.
+ */
+
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
   const activeLayerRef = React.useRef<Konva.Layer>(null);
 
-  // default frame
+  // Initialize the default frame for the animation
   const defaultFrame: Frame = {
     frameID: 1,
     canvasElements: [],
@@ -27,10 +35,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   const [frames, setFrames] = useState<Frame[]>([defaultFrame]);
 
-  // initialize current frame
+  // Track the current frame index for editing and playback
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(frames.length - 1);
 
-  // adds new figures to screen
+  // Function to add new figures to the current frame
   const addFigure = (newElems: FigureElement[]) => {
     setCurrentFrameIndex(frames.length - 1);
     setFrames((prevFrames: Frame[]) => {
@@ -42,7 +50,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     });
   };
 
-  // adds new simple shapes to screen
+  // Adds new simple shapes to screen
   const addSimpleShape = (newElem: SimpleShape) => {
     setCurrentFrameIndex(frames.length - 1);
     setFrames((prevFrames: Frame[]) => {
@@ -54,7 +62,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     });
   };
 
-  // adds new simple shapes to screen
+  // Adds new text elements
   const addTextShape = (text: string) => {
     setCurrentFrameIndex(frames.length - 1);
     setFrames((prevFrames: Frame[]) => {
@@ -166,7 +174,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     await playNextFrame(0);
   };
 
-  // plays back the stop motion animation so far
+  // Function to export the animation as a GIF
   const exportMovie = async () => {
     const delay = 150; // 150 ms
     setPlaybackMode(true);
@@ -188,11 +196,11 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     } else {
       throw new Error();
     }
-
+    // Adds a delay in ms
     function sleep(ms: number) {
       return new Promise(resolveFunc => setTimeout(resolveFunc, ms));
     }
-
+    // Creates the gif and renders it
     const doNextFrame = async (count: number) => {
       if (count < frames.length - 1) {
         console.log(count);
@@ -211,6 +219,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     gif.render();
   };
 
+  // Function to handle file input for loading animations
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
@@ -230,7 +239,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     }
   };
 
-  // save animation to json format
+  // Function to save the current animation state as JSON
   function saveAnimState() {
     const stranim = JSON.stringify(frames);
     const mimetype = 'application/json';
@@ -238,7 +247,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     saveBlob(blob);
   }
 
-  // causes file input
+  // Function to trigger file input for loading animations
   const triggerFileInput = () => {
     const element = document.getElementById('fileInput');
     if (element !== null) {
@@ -247,6 +256,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   };
 
   return (
+    // Render the editor layout with selection panel, canvas, and control panel
     <Box backgroundColor={'white'}>
       {/* vertical flex */}
       <Flex direction='column'>

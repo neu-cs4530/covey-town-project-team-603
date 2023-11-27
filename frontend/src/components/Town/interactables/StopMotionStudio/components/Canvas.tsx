@@ -7,15 +7,22 @@ import { Box } from '@chakra-ui/react';
 import { SimpleShape, simpleShapeToKonvaElement } from './SimpleShape';
 import { textToKonvaText } from './Text';
 
+/**
+ * The Canvas for the Stop Motion Studio represents the working area of the Stop Motion Animator.
+ * Here figures can be dragged around and manipulated on the top layer, and the previous layer
+ * is visible with low opacity in order to see edit history for smooth animation creation.
+ * This represents the visual representation of the Canvas.
+ */
+
 type CanvasProps = {
-  frames: Frame[];
-  setFrames: React.Dispatch<React.SetStateAction<Frame[]>>;
-  playbackMode: boolean;
-  currentFrame: number;
-  activeLayerRef: React.RefObject<HTMLCanvasElement>;
+  frames: Frame[]; // Array of frames representing the animation.
+  setFrames: React.Dispatch<React.SetStateAction<Frame[]>>; // Function to update frames.
+  playbackMode: boolean; // Flag to indicate if the canvas is in playback mode.
+  currentFrame: number; // Index of the current frame being edited.
+  activeLayerRef: React.RefObject<HTMLCanvasElement>; // Ref to the active layer for additional manipulations.
 };
 
-// the interactable canvas to construct the stop motion scenes
+// The interactable Canvas to construct the stop motion scenes
 export const Canvas: React.FC<CanvasProps> = ({
   setFrames: update,
   frames: canvasFrames,
@@ -23,16 +30,20 @@ export const Canvas: React.FC<CanvasProps> = ({
   currentFrame: currentFrameIndex,
   activeLayerRef: activeLayerRef,
 }) => {
-  // the canvas should always be displaying two screens
+  // the Canvas should always be displaying two screens
   // 1. past frame which is not interactable
   // 2. current editable frame with full opacity on top
 
   const canvasRef = useRef<HTMLDivElement | null>(null);
+  const canvasWidth = 1300; // Width of the canvas.
+  const canvasHeight = 800; // Height of the canvas.
 
-  const canvasWidth = 1300;
-  const canvasHeight = 800;
+  /**
+   * Updates the elements within the current frame.
+   * @param elems Array of CanvasElement to update the current frame with.
+   */
 
-  // callback function updates elements on drag
+  // Callback function updates elements on drag
   function updateFrameElements(elems: CanvasElement[]) {
     update((previousFrames: Frame[]) => {
       // Make a shallow copy of the previous frames
@@ -44,13 +55,11 @@ export const Canvas: React.FC<CanvasProps> = ({
       return updatedFrames;
     });
   }
-  // stores the canvas frames
-  //const [frames, setFrames] = useState<Frame[]>([frame1, frame2]);
 
-  // this use effect currently manually sets one frame for testing
+  // This use effect currently manually sets one frame for testing
   useEffect(() => {}, []);
 
-  // updater callback for current frame elements
+  // Updater callback for current frame elements
 
   return (
     <Box
@@ -103,6 +112,7 @@ export const Canvas: React.FC<CanvasProps> = ({
 
         {/* Render the last frame (current frame) */}
         <Layer ref={activeLayerRef}>
+          {/* background for export mode */}
           {playbackMode && (
             <Rect
               id='export-background'
@@ -117,6 +127,7 @@ export const Canvas: React.FC<CanvasProps> = ({
           )}
           {canvasFrames[currentFrameIndex].canvasElements.map(elem => {
             // Render each element of the last frame (current frame)
+            // Figures
             if (elem.type == 'figure') {
               const figureElem = elem as FigureElement; // cast current element to figure element
               return toKonvaElement(
@@ -124,7 +135,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                 canvasFrames[currentFrameIndex].canvasElements,
                 updateFrameElements,
                 currentFrameIndex == canvasFrames.length - 1,
-              );
+              ); // Simple Shapes
             } else if (elem.type == 'simpleShape') {
               const simpleShapeElem = elem as SimpleShape; // cast current element as simple shape
               return simpleShapeToKonvaElement(
@@ -133,6 +144,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                 updateFrameElements,
                 currentFrameIndex == canvasFrames.length - 1,
               );
+              // Text
             } else if (elem.type === 'textShape') {
               return textToKonvaText(
                 elem,
