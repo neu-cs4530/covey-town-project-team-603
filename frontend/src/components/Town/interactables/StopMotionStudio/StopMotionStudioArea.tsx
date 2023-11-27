@@ -15,18 +15,30 @@ import useTownController from '../../../../hooks/useTownController';
 import StopMotionAreaInteractable from '../StopMotionArea';
 import { StopMotionEditor } from './StopMotionEditor';
 
+/**
+ * Represents the main area of the Stop Motion Studio application.
+ * It allows users to navigate between different screens including the home screen and the editor.
+ * The home screen provides instructions and options to enter the editor.
+ * The editor screen is where users can create and edit stop motion animations.
+ */
+
 function StopMotionStudioArea(): JSX.Element {
+  // Screen types available in the Stop Motion Studio
   type Screen = 'home' | 'studio' | 'view screen';
+  // State to manage the current screen
   const [screen, setScreen] = useState<Screen>('home');
 
+  // Function to navigate back to the home screen
   const goBackHome = () => {
     setScreen('home');
   };
-
+  // Render logic based on the current screen
   if (screen == 'home') {
+    // Home screen layout with instructions and navigation button
     return (
       <Box backgroundColor={'white'} height={'900'}>
         <VStack>
+          {/* Header text */}
           <Box
             paddingY={10}
             paddingX={20}
@@ -35,7 +47,9 @@ function StopMotionStudioArea(): JSX.Element {
             justifyContent={'center'}>
             <Text fontSize={30}>Stop Motion Studio</Text>
           </Box>
+          {/* Button to navigate to the editor */}
           <Button onClick={() => setScreen('studio')}>Go to editor</Button>
+          {/* Instructional text for users */}
           <Box
             paddingY={20}
             paddingX={20}
@@ -74,14 +88,15 @@ function StopMotionStudioArea(): JSX.Element {
       </Box>
     );
   } else if (screen == 'studio') {
+    // Editor screen where stop motion animation is created
     return <StopMotionEditor backHome={goBackHome} />;
   } else return <></>;
 }
 
 /**
- * A wrapper component for the TicTacToeArea component.
- * Determines if the player is currently in a tic tac toe area on the map, and if so,
- * renders the TicTacToeArea component in a modal.
+ * A wrapper component for the StopMotionStudioArea component.
+ * Determines if the player is currently in a StopMotionAnimatorArea on the map, and if so,
+ * renders the StopMotionStudioArea component in a modal.
  */
 export default function StopMotionStudioAreaWrapper(): JSX.Element {
   const stopMotionArea = useInteractable<StopMotionAreaInteractable>('stopMotionArea');

@@ -1,19 +1,37 @@
 import React, { ChangeEvent } from 'react';
 import { Flex, Button, Box, Input } from '@chakra-ui/react';
 
+/**
+ * The Control Panel for the Stop Motion Studio represents the bar at the bottom of the screen
+ * which contains controls for creating an animation out of the figures on the Canvas.
+ * The actions included in the Control Panel buttons are:
+ * - playing back the current animation locally
+ * - going forwards and backwards in the frame list
+ * - adding a new frame with the currently displayed Canvas
+ * - loading a project file to the Animator to continue a previous session
+ * - saving a project to a file to be worked on again later
+ * - exporting a finished animation to a gif format for sharing
+ * - navigating back to the home screen of the Animator
+ */
+
+// Type definition for props passed to ControlPanel component.
+// These functions enable the ControlPanel to manage the animation state and UI.
+
 type ControlPanelProps = {
-  addNewFrame: () => void;
-  saveAnimState: () => void;
-  fileInput: () => void;
-  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  backHome: () => void;
-  frameForward: () => void;
-  frameBackward: () => void;
-  playback: () => void;
-  exportMovie: () => void;
+  addNewFrame: () => void; // Function to add a new frame to the animation.
+  saveAnimState: () => void; // Function to save the current state of the animation.
+  fileInput: () => void; // Function to handle file input actions.
+  handleChange: (event: ChangeEvent<HTMLInputElement>) => void; // Function to handle changes in the file input.
+  backHome: () => void; // Function to navigate back to the home screen.
+  frameForward: () => void; // Function to move forward in the frame list.
+  frameBackward: () => void; // Function to move backward in the frame list.
+  playback: () => void; // Function to play back the animation.
+  exportMovie: () => void; // Function to export the animation as a movie.
 };
 
 // Bottom control panel for progressing through and viewing animation
+// ControlPanel component: provides UI for controlling the animation creation and playback.
+
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   addNewFrame: addFrame,
   saveAnimState: saveAnim,
@@ -26,6 +44,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   exportMovie: exportMovie,
 }) => {
   return (
+    // Main container for the control panel
     <Box display='flex' alignItems='center' justifyContent='center' width={'100%'}>
       <Flex direction={'row'} justifyContent={'space-between'} padding={'10px'} width={'80%'}>
         <Box>
