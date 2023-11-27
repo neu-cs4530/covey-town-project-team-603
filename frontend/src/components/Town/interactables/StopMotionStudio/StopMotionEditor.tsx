@@ -6,7 +6,7 @@ import { ControlPanel } from './components/ControlPanel';
 import { FiguresSelectionPanel } from './components/FiguresSelectionPanel';
 import { Canvas } from './components/Canvas';
 import { generateFigure, FigureType } from './FigureElements';
-import { SimpleShape, createSimpleShape } from './components/SimpleShape';
+import { SimpleShape, TextShape, createSimpleShape } from './components/SimpleShape';
 import GIF from 'gif.js';
 import { workerBlob } from './WorkerSetup';
 import { saveBlob } from './Util';
@@ -53,6 +53,29 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     });
   };
 
+  // adds new simple shapes to screen
+  const addTextShape = (text: string) => {
+    setCurrentFrameIndex(frames.length - 1);
+    setFrames((prevFrames: Frame[]) => {
+      const updatedFrames = prevFrames.slice(0, -1);
+      const lastFrame = prevFrames[prevFrames.length - 1];
+
+      const newElem: TextShape = {
+        type: 'textShape',
+        text: text,
+        x: 773,
+        y: 500,
+        id: crypto.randomUUID(),
+        isDragging: false,
+        rotation: 0,
+      };
+
+      lastFrame.canvasElements = [...lastFrame.canvasElements, newElem];
+      updatedFrames.push(lastFrame);
+      return updatedFrames;
+    });
+  };
+
   // add person
   const addPerson = () => {
     addFigure(generateFigure(FigureType.PERSON, 773, 500));
@@ -69,7 +92,8 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   };
 
   const addText = (text: string) => {
-    addFigure([{ type: 'text', text: text, x: 773, y: 500, id: crypto.randomUUID() }]);
+    // addFigure([{ type: 'text', text: text, x: 773, y: 500, id: crypto.randomUUID() }]);
+    addTextShape(text);
   };
 
   // add circle

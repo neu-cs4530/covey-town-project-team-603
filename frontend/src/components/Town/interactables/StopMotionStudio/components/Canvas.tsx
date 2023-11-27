@@ -89,7 +89,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                 );
                 // return some other type here
                 return {};
-              } else if (elem.type === 'text') {
+              } else if (elem.type === 'textShape') {
                 return textToKonvaText(
                   elem,
                   canvasFrames[currentFrameIndex - 1].canvasElements,
@@ -133,7 +133,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                 updateFrameElements,
                 currentFrameIndex == canvasFrames.length - 1,
               );
-            } else if (elem.type === 'text') {
+            } else if (elem.type === 'textShape') {
               return textToKonvaText(
                 elem,
                 canvasFrames[currentFrameIndex].canvasElements,

@@ -4,7 +4,7 @@ import { Rect, Circle, Star } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 
 // type for simple shape
-export type SimpleShapeType = 'circle' | 'star' | 'rect';
+export type SimpleShapeType = 'circle' | 'star' | 'rect' | 'text';
 
 // create simple shape
 export function createSimpleShape(shape: string): SimpleShape {
@@ -43,6 +43,17 @@ export function createSimpleShape(shape: string): SimpleShape {
         isDragging: false,
       };
   }
+}
+
+// text shape interface
+export interface TextShape extends CanvasElement {
+  type: 'textShape';
+  text: string;
+  id: string;
+  x: number;
+  y: number;
+  rotation: number;
+  isDragging: boolean;
 }
 
 // simple shape interface
