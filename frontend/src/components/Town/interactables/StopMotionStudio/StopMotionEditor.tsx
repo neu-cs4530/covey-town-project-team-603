@@ -11,6 +11,7 @@ import GIF from 'gif.js';
 import { workerBlob } from './WorkerSetup';
 import { saveBlob } from './Util';
 
+// Stop motion editor
 export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.Element {
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
