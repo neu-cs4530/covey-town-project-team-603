@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Flex, Button, Box, Input } from '@chakra-ui/react';
 
 type ControlPanelProps = {
   addNewFrame: () => void;
   saveAnimState: () => void;
-  loadAnimState: () => void;
   fileInput: () => void;
-  handleChange: (event: Event) => void;
+  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
   backHome: () => void;
   frameForward: () => void;
   frameBackward: () => void;

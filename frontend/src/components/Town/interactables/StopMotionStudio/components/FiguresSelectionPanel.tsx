@@ -1,5 +1,5 @@
 import { Button, Box, Textarea, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 
 type FiguresSelectProps = {
   addPerson: () => void;
@@ -26,7 +26,7 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   addRect: addRect,
 }) => {
   const [text, setText] = useState('');
-  const handleChange = event => setText(event.target.value);
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => setText(event.target.value);
   const handleSubmit = () => {
     addText(text);
   };
