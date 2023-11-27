@@ -41,7 +41,7 @@ export function textToKonvaText(
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) {
-  let textElem = elem as TextShape;
+  const textElem = elem as TextShape;
   return (
     <Text
       id={textElem.id}
