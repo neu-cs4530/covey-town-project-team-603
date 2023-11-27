@@ -1,5 +1,6 @@
 import { Box, Flex, Spacer } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import Konva from 'konva';
 import { FigureElement } from './FigureElements';
 import { Frame } from './Frame';
 import { ControlPanel } from './components/ControlPanel';
@@ -16,7 +17,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
-  const activeLayerRef = React.useRef(null);
+  const activeLayerRef = React.useRef<Konva.Layer>(null);
 
   // default frame
   const defaultFrame: Frame = {
@@ -170,17 +171,23 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     const delay = 150; // 150 ms
     setPlaybackMode(true);
     setCurrentFrameIndex(0); // set the first frame to be first
-    const canvas = activeLayerRef.current.canvas;
-    const gif = new GIF({
-      workers: 1,
-      workerScript: URL.createObjectURL(workerBlob),
-      quality: 10,
-      height: canvas.height,
-      width: canvas.width,
-    });
-    gif.on('finished', function (blob) {
-      saveBlob(blob);
-    });
+    let gif: GIF;
+    let canvas;
+    if (activeLayerRef.current !== null) {
+      canvas = activeLayerRef.current.canvas;
+      gif = new GIF({
+        workers: 1,
+        workerScript: URL.createObjectURL(workerBlob),
+        quality: 10,
+        height: canvas.height,
+        width: canvas.width,
+      });
+      gif.on('finished', function (blob: Blob) {
+        saveBlob(blob);
+      });
+    } else {
+      throw new Error();
+    }
 
     function sleep(ms: number) {
       return new Promise(resolveFunc => setTimeout(resolveFunc, ms));
@@ -190,8 +197,10 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       if (count < frames.length - 1) {
         console.log(count);
         await sleep(delay);
-        const pixels = activeLayerRef.current.canvas.context._context;
-        gif.addFrame(pixels, { copy: true });
+        if (activeLayerRef.current !== null) {
+          const pixels = activeLayerRef.current.canvas.context._context;
+          gif.addFrame(pixels, { copy: true });
+        }
         setCurrentFrameIndex(count + 1);
         await doNextFrame(count + 1);
       } else {
