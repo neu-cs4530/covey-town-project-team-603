@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Flex, Button, Box, Input } from '@chakra-ui/react';
 
 /**
@@ -20,9 +20,8 @@ import { Flex, Button, Box, Input } from '@chakra-ui/react';
 type ControlPanelProps = {
   addNewFrame: () => void; // Function to add a new frame to the animation.
   saveAnimState: () => void; // Function to save the current state of the animation.
-  loadAnimState: () => void; // Function to load a previously saved animation state.
   fileInput: () => void; // Function to handle file input actions.
-  handleChange: (event: unknown) => void; // Function to handle changes in the file input.
+  handleChange: (event: ChangeEvent<HTMLInputElement>) => void; // Function to handle changes in the file input.
   backHome: () => void; // Function to navigate back to the home screen.
   frameForward: () => void; // Function to move forward in the frame list.
   frameBackward: () => void; // Function to move backward in the frame list.

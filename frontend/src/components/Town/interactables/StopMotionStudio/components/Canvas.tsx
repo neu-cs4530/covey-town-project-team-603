@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import Konva from 'konva';
 import { Stage, Layer, Text, Rect } from 'react-konva';
 import { CanvasElement } from '../CanvasElements';
 import { FigureElement, toKonvaElement } from '../FigureElements';
@@ -15,11 +16,12 @@ import { textToKonvaText } from './Text';
  */
 
 type CanvasProps = {
+  activeLayerRef: React.RefObject<HTMLCanvasElement>;
   frames: Frame[]; // Array of frames representing the animation.
   setFrames: React.Dispatch<React.SetStateAction<Frame[]>>; // Function to update frames.
   playbackMode: boolean; // Flag to indicate if the canvas is in playback mode.
   currentFrame: number; // Index of the current frame being edited.
-  activeLayerRef: React.RefObject<HTMLCanvasElement>; // Ref to the active layer for additional manipulations.
+  activeLayerRef: React.RefObject<Konva.Layer>; // Ref to the active layer for additional manipulations.
 };
 
 // The interactable Canvas to construct the stop motion scenes

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Text } from 'react-konva';
+import { CanvasElement } from '../CanvasElements';
+import { KonvaEventObject } from 'konva/lib/Node';
 
 // callback for the ondrag call
 export const handleDragMoveText = (
@@ -13,18 +15,18 @@ export const handleDragMoveText = (
 
   updateFrameElements(
     shapeList.map(elem => {
-      if (elem.type === 'text') {
-        const simpleShapeElem = elem as SimpleShape;
+      if (elem.type === 'textShape') {
+        const textShapeElem = elem as TextShape;
         const dragId = e.target.attrs.id;
 
-        if (simpleShapeElem.id == dragId) {
+        if (textShapeElem.id == dragId) {
           return {
-            ...simpleShapeElem,
+            ...textShapeElem,
             x: newX,
             y: newY,
           };
         } else {
-          return simpleShapeElem;
+          return textShapeElem;
         }
       } else {
         return elem;
@@ -34,22 +36,31 @@ export const handleDragMoveText = (
 };
 
 export function textToKonvaText(
-  elem,
-  textList: CanvasElement[],
+  elem: CanvasElement,
+  elementList: CanvasElement[],
   updateFrameElements: (newValue: CanvasElement[]) => void,
   interactable: boolean,
 ) {
-  console.log(interactable);
+  const textElem = elem as TextShape;
   return (
     <Text
-      id={elem.id}
-      key={elem.id}
-      x={elem.x}
-      y={elem.y}
+      id={textElem.id}
+      key={textElem.id}
+      x={textElem.x}
+      y={textElem.y}
       fontSize={25}
-      text={elem.text}
+      text={textElem.text}
       draggable={interactable}
-      onDragMove={e => handleDragMoveText(e, textList, updateFrameElements)}
+      onDragMove={e => handleDragMoveText(e, elementList, updateFrameElements)}
     />
   );
+}
+
+// TextShape interface
+export interface TextShape extends CanvasElement {
+  type: 'textShape';
+  text: string;
+  id: string;
+  x: number;
+  y: number;
 }

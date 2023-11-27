@@ -1,3 +1,4 @@
+import { InteractableType } from '../../../types/CoveyTownSocket';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 
 /**
@@ -12,6 +13,16 @@ export default class StopMotionArea extends Interactable {
    * Called when the StopMotionArea is added to the scene.
    * It sets up the visual appearance and text label of the interactable area.
    */
+
+  public occupants = [];
+
+  public game = undefined;
+
+  public name = 'Stop Motion Studio';
+
+  public player = 'foobar';
+
+  public type = 'StopMotionArea' as InteractableType;
 
   addedToScene() {
     super.addedToScene(); // Call the parent class's addedToScene method.

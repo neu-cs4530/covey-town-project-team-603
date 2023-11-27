@@ -1,5 +1,5 @@
 import { Box, Flex, Spacer } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import Konva from 'konva';
 import { FigureElement } from './FigureElements';
 import { Frame } from './Frame';
@@ -220,7 +220,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   };
 
   // Function to handle file input for loading animations
-  const handleFileChange = (event: Event) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
     if (file) {

@@ -1,4 +1,4 @@
-export function saveBlob(blob) {
+export function saveBlob(blob: Blob) {
   const bloburl = URL.createObjectURL(blob);
 
   const a = document.createElement('a');

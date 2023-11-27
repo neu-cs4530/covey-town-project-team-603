@@ -162,6 +162,7 @@ export interface StopMotionArea extends Interactable {
   game: GameInstance<T> | undefined;
   player: PlayerID;
   name: string;
+  occupants: PlayerID[];
   // history: GameResult[];
   // update this
 }
