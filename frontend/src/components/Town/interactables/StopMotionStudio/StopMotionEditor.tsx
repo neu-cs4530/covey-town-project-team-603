@@ -182,7 +182,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       saveBlob(blob);
     });
 
-    function sleep(ms) {
+    function sleep(ms: number) {
       return new Promise(resolveFunc => setTimeout(resolveFunc, ms));
     }
 
