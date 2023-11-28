@@ -16,7 +16,6 @@ import { textToKonvaText } from './Text';
  */
 
 type CanvasProps = {
-  activeLayerRef: React.RefObject<HTMLCanvasElement>;
   frames: Frame[]; // Array of frames representing the animation.
   setFrames: React.Dispatch<React.SetStateAction<Frame[]>>; // Function to update frames.
   playbackMode: boolean; // Flag to indicate if the canvas is in playback mode.
@@ -57,11 +56,6 @@ export const Canvas: React.FC<CanvasProps> = ({
       return updatedFrames;
     });
   }
-
-  // This use effect currently manually sets one frame for testing
-  useEffect(() => {}, []);
-
-  // Updater callback for current frame elements
 
   return (
     <Box

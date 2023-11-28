@@ -8,17 +8,20 @@ import {
   PERSON_FIGURE_PROTO,
 } from './FigureElementPrototypes';
 
+// KonvaRect type
 interface KonvaRect {
   type: 'rect';
   length: number;
   width: number;
 }
 
+// KonvaCircle type
 interface KonvaCircle {
   type: 'circle';
   radius: number;
 }
 
+// KonvaTri type
 interface KonvaTri {
   type: 'tri';
   radius: number;
@@ -35,6 +38,7 @@ export enum FigureType {
   BIRD,
 }
 
+// Function generates the figure for Figure type
 export function generateFigure(
   figure_type: FigureType,
   root_starting_x: number,
@@ -108,6 +112,7 @@ function absolutePosn(elem: FigureElement) {
   return retval;
 }
 
+// Function rotates child object around root object point
 const rotatePointAround = (
   origin_x: number,
   origin_y: number,
@@ -124,6 +129,7 @@ const rotatePointAround = (
   };
 };
 
+// Function callback handle drag of Figure type
 const handleDragMoveFigure = (
   e: KonvaEventObject<DragEvent>,
   figureList: CanvasElement[],
@@ -243,6 +249,7 @@ const handleDragMoveFigure = (
   );
 };
 
+// Function converts konva object to Chakra UI
 export const toKonvaElement = (
   elem: FigureElement,
   figureList: CanvasElement[],
@@ -260,6 +267,7 @@ export const toKonvaElement = (
   }
 
   switch (elem.appearance.type) {
+    // if rect
     case 'rect':
       return (
         <Rect
@@ -276,6 +284,7 @@ export const toKonvaElement = (
           fill='#000000'
         />
       );
+    // if circle
     case 'circle':
       return (
         <Circle
@@ -291,6 +300,7 @@ export const toKonvaElement = (
           fill='#000000'
         />
       );
+    // if triangle
     case 'tri':
       return (
         <RegularPolygon

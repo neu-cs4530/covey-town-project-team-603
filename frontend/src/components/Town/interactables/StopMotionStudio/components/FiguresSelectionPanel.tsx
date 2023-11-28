@@ -1,13 +1,12 @@
 import { Button, Box, Textarea, VStack } from '@chakra-ui/react';
 import React, { useState, ChangeEvent } from 'react';
 
+// parameter types for FigureSelectionPanel
 type FiguresSelectProps = {
   addPerson: () => void;
   addAnimal: () => void;
   addBird: () => void;
-
   addText: (text: string) => void;
-
   addCircle: () => void;
   addStar: () => void;
   addRect: () => void;
@@ -18,9 +17,7 @@ export const FiguresSelectionPanel: React.FC<FiguresSelectProps> = ({
   addPerson: addPerson,
   addAnimal: addAnimal,
   addBird: addBird,
-
   addText: addText,
-
   addCircle: addCircle,
   addStar: addStar,
   addRect: addRect,
