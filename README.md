@@ -48,3 +48,16 @@ automatically connect to the town with the friendly name "DEBUG_TOWN" (creating 
 
 In the `frontend` directory, run `npm run dev` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+### Stop Motion Instructions
+
+Clone the repository. (e.g., git clone git@github.com:neu-cs4530/covey-town-project-team-603.git) to use the ssh protocol.
+In `frontend`, you must write an .env file. A file with the contents:
+NEXT_PUBLIC_TOWNS_SERVICE_URL=http://localhost:8081 NEXT_PUBLIC_TOWN_DEV_MODE=true
+Is sufficient. The first variable sets the backend URL. The second disables Twilio video support and town selection, as appropriate for a local installation.
+In `townService`, (e.g., the backend), run `npm install`, and `npm start`. Wait for the output, `Listening on 8081`.
+(In another terminal), In `frontend`, run `npm install`. Then run `npm start`, so as to populate the `generated` folder. Then, `npm run dev` runs the frontend.
+You should now be able to visit the service at the default URL, http://localhost:3000. 
+To try out the feature, enter the area labeled “Stop Motion” and press spacebar.
+
+
