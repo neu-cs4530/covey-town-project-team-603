@@ -255,6 +255,12 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
     }
   };
 
+  // Function to trigger reset of frames
+  const resetFrames = () => {
+    setFrames([defaultFrame]);
+    setCurrentFrameIndex(0);
+  };
+
   return (
     // Render the editor layout with selection panel, canvas, and control panel
     <Box backgroundColor={'white'}>
@@ -295,6 +301,7 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
           saveAnimState={saveAnimState}
           handleChange={handleFileChange}
           exportMovie={exportMovie}
+          reset={resetFrames}
         />
       </Flex>
     </Box>

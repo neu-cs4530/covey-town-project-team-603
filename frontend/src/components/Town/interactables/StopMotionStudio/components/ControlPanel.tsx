@@ -27,6 +27,7 @@ type ControlPanelProps = {
   frameBackward: () => void; // Function to move backward in the frame list.
   playback: () => void; // Function to play back the animation.
   exportMovie: () => void; // Function to export the animation as a movie.
+  reset: () => void; // Function to reset the frames and cleare out the existing animation
 };
 
 // Bottom control panel for progressing through and viewing animation
@@ -42,6 +43,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   frameBackward: frameBackward,
   playback: playback,
   exportMovie: exportMovie,
+  reset: reset,
 }) => {
   return (
     // Main container for the control panel
@@ -63,6 +65,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <Button size='md' height='48px' onClick={addFrame}>
           Add Latest Frame
+        </Button>
+
+        <Button size='md' height='48px' onClick={reset}>
+          Delete + Reset Animation
         </Button>
 
         <Button size='md' height='48px' onClick={home}>
