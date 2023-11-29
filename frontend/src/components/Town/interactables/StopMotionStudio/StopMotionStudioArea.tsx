@@ -106,8 +106,6 @@ export default function StopMotionStudioAreaWrapper(): JSX.Element {
     townController.unPause();
     if (stopMotionArea) {
       townController.interactEnd(stopMotionArea);
-      // const controller = townController.getStopMotionAreaController(stopMotionArea);
-      // controller.leaveGame();
     }
   }, [townController, stopMotionArea]);
 
