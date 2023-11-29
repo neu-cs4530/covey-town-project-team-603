@@ -1,5 +1,6 @@
 import { FigureElement } from './FigureElements';
 
+// Torso is the parent of all other figure elements for the person figure
 const personFigureTorso: FigureElement = {
   type: 'figure',
   appearance: {
@@ -17,7 +18,7 @@ const personFigureTorso: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Figure head is a child of the torso
 const personFigureHead: FigureElement = {
   type: 'figure',
   appearance: {
@@ -34,7 +35,7 @@ const personFigureHead: FigureElement = {
   offset_attach_y: 20,
   dragOverride: false,
 };
-
+// Left leg of the person figure is a child of the torso
 const personFigureLeftLeg: FigureElement = {
   type: 'figure',
   appearance: {
@@ -52,7 +53,7 @@ const personFigureLeftLeg: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Right leg of the person figure is a child of the torso
 const personFigureRightLeg: FigureElement = {
   type: 'figure',
   appearance: {
@@ -70,7 +71,7 @@ const personFigureRightLeg: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Left arm of the person figure is a child of the torso
 const personFigureLeftArm: FigureElement = {
   type: 'figure',
   appearance: {
@@ -88,7 +89,7 @@ const personFigureLeftArm: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Right arm of the person figure is a child of the torso
 const personFigureRightArm: FigureElement = {
   type: 'figure',
   appearance: {
@@ -106,7 +107,7 @@ const personFigureRightArm: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Animal figure torso is the parent of all other animal figure elements
 const animalFigureTorso: FigureElement = {
   type: 'figure',
   appearance: {
@@ -124,7 +125,7 @@ const animalFigureTorso: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Animal figure head is a child of the torso
 const animalFigureHead: FigureElement = {
   type: 'figure',
   appearance: {
@@ -141,7 +142,7 @@ const animalFigureHead: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Animal figure leg 1 is a child of the torso
 const animalFigureLeg1: FigureElement = {
   type: 'figure',
   appearance: {
@@ -159,7 +160,7 @@ const animalFigureLeg1: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Animal figure leg 2 is a child of the torso
 const animalFigureLeg2: FigureElement = {
   type: 'figure',
   appearance: {
@@ -177,7 +178,7 @@ const animalFigureLeg2: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Animal figure leg 3 is a child of the torso
 const animalFigureLeg3: FigureElement = {
   type: 'figure',
   appearance: {
@@ -195,7 +196,7 @@ const animalFigureLeg3: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Animal figure leg 4 is a child of the torso
 const animalFigureLeg4: FigureElement = {
   type: 'figure',
   appearance: {
@@ -213,7 +214,7 @@ const animalFigureLeg4: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Bird figure torso is the parent of all other bird figure elements
 const birdFigureTorso: FigureElement = {
   type: 'figure',
   appearance: {
@@ -231,7 +232,7 @@ const birdFigureTorso: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Bird figure head is a child of the torso
 const birdFigureHead: FigureElement = {
   type: 'figure',
   appearance: {
@@ -248,7 +249,7 @@ const birdFigureHead: FigureElement = {
   offset_attach_y: 0,
   dragOverride: false,
 };
-
+// Bird figure wing is a child of the torso
 const birdFigureWing1: FigureElement = {
   type: 'figure',
   appearance: {
@@ -265,7 +266,7 @@ const birdFigureWing1: FigureElement = {
   offset_attach_y: 0,
   dragOverride: true,
 };
-
+// Bird figure wing is a child of the torso
 const birdFigureWing2: FigureElement = {
   type: 'figure',
   appearance: {
@@ -282,7 +283,7 @@ const birdFigureWing2: FigureElement = {
   offset_attach_y: 0,
   dragOverride: true,
 };
-
+// Combine all figure prototypes into one array
 export const PERSON_FIGURE_PROTO = [
   personFigureHead,
   personFigureLeftLeg,
@@ -291,7 +292,7 @@ export const PERSON_FIGURE_PROTO = [
   personFigureRightArm,
   personFigureTorso,
 ];
-
+// Combine all figure prototypes into one array
 export const ANIMAL_FIGURE_PROTO = [
   animalFigureHead,
   animalFigureLeg1,
@@ -300,7 +301,7 @@ export const ANIMAL_FIGURE_PROTO = [
   animalFigureLeg4,
   animalFigureTorso,
 ];
-
+// Combine all figure prototypes into one array
 export const BIRD_FIGURE_PROTO = [
   birdFigureHead,
   birdFigureWing1,
