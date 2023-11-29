@@ -25,6 +25,9 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
   const [playbackMode, setPlaybackMode] = useState<boolean>(false);
   useEffect(() => {}, []);
 
+  const initialX = 773;
+  const initialY = 500;
+
   const activeLayerRef = React.useRef<Konva.Layer>(null);
 
   // Initialize the default frame for the animation
@@ -72,8 +75,8 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
       const newElem: TextShape = {
         type: 'textShape',
         text: text,
-        x: 773,
-        y: 500,
+        x: initialX,
+        y: initialY,
         id: crypto.randomUUID(),
         isDragging: false,
         rotation: 0,
@@ -87,21 +90,21 @@ export function StopMotionEditor({ backHome }: { backHome: () => void }): JSX.El
 
   // add person
   const addPerson = () => {
-    addFigure(generateFigure(FigureType.PERSON, 773, 500));
+    addFigure(generateFigure(FigureType.PERSON, initialX, initialY));
   };
 
   // add animal
   const addAnimal = () => {
-    addFigure(generateFigure(FigureType.ANIMAL, 773, 500));
+    addFigure(generateFigure(FigureType.ANIMAL, initialX, initialY));
   };
 
   // add bird
   const addBird = () => {
-    addFigure(generateFigure(FigureType.BIRD, 773, 500));
+    addFigure(generateFigure(FigureType.BIRD, initialX, initialY));
   };
 
+  // add text
   const addText = (text: string) => {
-    // addFigure([{ type: 'text', text: text, x: 773, y: 500, id: crypto.randomUUID() }]);
     addTextShape(text);
   };
 
