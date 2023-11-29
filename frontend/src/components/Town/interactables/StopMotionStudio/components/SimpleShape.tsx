@@ -6,6 +6,10 @@ import { KonvaEventObject } from 'konva/lib/Node';
 // type for simple shape
 export type SimpleShapeType = 'circle' | 'star' | 'rect';
 
+// initial x and y values
+const INITIAL_X = 773;
+const INITIAL_Y = 521;
+
 // create simple shape
 export function createSimpleShape(shape: string): SimpleShape {
   switch (shape) {
@@ -15,8 +19,8 @@ export function createSimpleShape(shape: string): SimpleShape {
         shape: 'circle',
         type: 'simpleShape',
         id: crypto.randomUUID(),
-        x: 773,
-        y: 521,
+        x: INITIAL_X,
+        y: INITIAL_Y,
         rotation: 0,
         isDragging: false,
       };
@@ -26,8 +30,8 @@ export function createSimpleShape(shape: string): SimpleShape {
         shape: 'rect',
         type: 'simpleShape',
         id: crypto.randomUUID(),
-        x: 773,
-        y: 521,
+        x: INITIAL_X,
+        y: INITIAL_Y,
         rotation: 0,
         isDragging: false,
       };
@@ -37,8 +41,8 @@ export function createSimpleShape(shape: string): SimpleShape {
         shape: 'star',
         type: 'simpleShape',
         id: crypto.randomUUID(),
-        x: 773,
-        y: 521,
+        x: INITIAL_X,
+        y: INITIAL_Y,
         rotation: 0,
         isDragging: false,
       };
