@@ -22,7 +22,7 @@ function renderStopMotionArea() {
   );
 }
 describe('Rendering the StopMotionStudioArea', () => {
-  it('Should render the modal, with a tutorial', () => {
+  it('Should render the modal', () => {
     renderStopMotionArea();
     expect(screen.queryByText('Join New Game')).not.toBeInTheDocument();
     expect(screen.queryAllByText('Stop Motion Studio')[0]).toBeInTheDocument();
