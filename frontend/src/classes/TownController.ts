@@ -650,25 +650,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   /**
-   * Retrives the game stop motion area controller corresponding to an ID, or
-   * throws an error if the game area controller does not exist
-   *
-   * @param stopMotionArea StopMotionArea
-   * @returns StopMotionAreaController
-   */
-  public getStopMotionAreaController(stopMotionArea: StopMotionArea): StopMotionAreaController {
-    const existingController = this._interactableControllers.find(
-      eachExistingArea => eachExistingArea.id === stopMotionArea.name,
-    );
-    console.log('controller: ', existingController);
-    if (existingController instanceof StopMotionAreaController) {
-      return existingController as StopMotionAreaController;
-    } else {
-      throw new Error('Stop motion area controller not created');
-    }
-  }
-
-  /**
    * Retrives the game area controller corresponding to a game area by ID, or
    * throws an error if the game area controller does not exist
    *
