@@ -5,7 +5,6 @@ import Interactable, { KnownInteractableTypes } from '../Interactable';
  * StopMotionArea class extends the Interactable class to represent a specific interactive area
  * within a game scene, specifically designed for stop motion animation interactions.
  */
-
 export default class StopMotionArea extends Interactable {
   private _isInteracting = false; // Flag to track the interaction state of the stop motion area.
 
@@ -18,7 +17,8 @@ export default class StopMotionArea extends Interactable {
 
   public game = undefined;
 
-  public name = 'Stop Motion Studio';
+  // public name = 'Stop Motion Studio';
+  public name = 'stopMotionArea';
 
   public player = 'foobar';
 
