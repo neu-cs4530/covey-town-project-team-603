@@ -22,4 +22,3 @@ export function saveBlob(blob: Blob) {
   // Removing the anchor from the document body after use.
   document.body.removeChild(a);
 }
-
