@@ -103,14 +103,16 @@ export default function StopMotionStudioAreaWrapper(): JSX.Element {
   const townController = useTownController();
 
   const closeModal = useCallback(() => {
+    townController.unPause();
     if (stopMotionArea) {
       townController.interactEnd(stopMotionArea);
-      const controller = townController.getStopMotionAreaController(stopMotionArea);
-      controller.leaveGame();
+      // const controller = townController.getStopMotionAreaController(stopMotionArea);
+      // controller.leaveGame();
     }
   }, [townController, stopMotionArea]);
 
   if (stopMotionArea) {
+    townController.pause();
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
