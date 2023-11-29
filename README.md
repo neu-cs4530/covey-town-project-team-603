@@ -56,7 +56,7 @@ In `frontend`, you must write an .env file. A file with the contents:
 NEXT_PUBLIC_TOWNS_SERVICE_URL=http://localhost:8081 NEXT_PUBLIC_TOWN_DEV_MODE=true
 Is sufficient. The first variable sets the backend URL. The second disables Twilio video support and town selection, as appropriate for a local installation.
 In `townService`, (e.g., the backend), run `npm install`, and `npm start`. Wait for the output, `Listening on 8081`.
-(In another terminal), In `frontend`, run `npm install`. Then run `npm start`, so as to populate the `generated` folder. Then, `npm run dev` runs the frontend.
+(In another terminal), In `frontend`, run `npm install --force`. Then run `npm start`, so as to populate the `generated` folder. Then, `npm run dev` runs the frontend. See https://github.com/konvajs/react-konva/issues/710 -- it is necessary to install konva ^9.0.0 to make Konva importing play nicely with jest, but that necessitates upgrading react-konva to ^18.0.0. But that in turn necessitates upgrading all react peer-depending packages to use react ^18.0.0, which is a significant task that we feel is out of scope.
 You should now be able to visit the service at the default URL, http://localhost:3000. 
 To try out the feature, enter the area labeled “Stop Motion” and press spacebar.
 
