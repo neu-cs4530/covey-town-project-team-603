@@ -30,7 +30,8 @@ jobs:
         run: cd townService; npm install && npm run prestart && npm run lint && npm test
 
       - name: Build and test frontend components
-        run: cd frontend; npm install && npm run prestart && npm run lint && npm test
+        # The reasoning for --force is explained near the end of README.md.
+        run: cd frontend; npm install --force && npm run prestart && npm run lint && npm test
 #   deploy:
 #     if: github.ref == 'refs/heads/master'
 #     needs: build-and-test
